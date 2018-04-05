@@ -1,0 +1,28 @@
+//
+//  JZEvent.swift
+//  JZCalendarViewExample
+//
+//  Created by Jeff Zhang on 3/4/18.
+//  Copyright © 2018 Jeff Zhang. All rights reserved.
+//
+
+import UIKit
+import JZCalendarView
+
+class JZEvent: BaseEvent {
+    
+    var location: String
+    var eventType: Int
+    
+    init(title: String, startDate: Date, endDate: Date, location: String, eventType: Int) {
+        self.location = location
+        self.eventType = eventType
+        super.init(title: title, startDate: startDate, endDate: endDate)
+    }
+    
+    override func copy(with zone: NSZone?) -> Any {
+        return JZEvent(title: title, startDate: startDate, endDate: endDate, location: location, eventType: eventType)
+    }
+    
+    
+}

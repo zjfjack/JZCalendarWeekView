@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ciV-hx-0O7">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="uME-gz-g9l">
+            <objects>
+                <navigationController id="ciV-hx-0O7" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="ayy-SC-efH">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="fP8-zy-06q" kind="relationship" relationship="rootViewController" id="u2W-q3-o0p"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Cna-xL-95I" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-111" y="123"/>
+        </scene>
+        <!--Root View Controller-->
+        <scene sceneID="9Fo-rc-AyO">
+            <objects>
+                <viewController id="fP8-zy-06q" customClass="RootViewController" customModule="JZCalendarViewExample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="gcE-oJ-Vcm">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ahy-zm-E7y" customClass="JZWeekView" customModule="JZCalendarViewExample" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Ahy-zm-E7y" firstAttribute="leading" secondItem="gZt-RK-qpM" secondAttribute="leading" id="3II-Zm-xaA"/>
+                            <constraint firstItem="gZt-RK-qpM" firstAttribute="bottom" secondItem="Ahy-zm-E7y" secondAttribute="bottom" id="KeM-14-x3k"/>
+                            <constraint firstItem="gZt-RK-qpM" firstAttribute="trailing" secondItem="Ahy-zm-E7y" secondAttribute="trailing" id="O8l-uE-Ycl"/>
+                            <constraint firstItem="Ahy-zm-E7y" firstAttribute="top" secondItem="gZt-RK-qpM" secondAttribute="top" id="gd2-IO-gfE"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="gZt-RK-qpM"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="61I-Uy-e3s"/>
+                    <connections>
+                        <outlet property="calendarView" destination="Ahy-zm-E7y" id="zCz-co-pkP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Q9E-bu-glC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="753" y="123"/>
+        </scene>
+    </scenes>
+</document>

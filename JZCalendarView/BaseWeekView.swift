@@ -10,8 +10,6 @@ import UIKit
 
 open class BaseWeekView: UIView {
     
-    public typealias EventsByDate = [Date:[BaseEvent]]
-    
     public var collectionView: UICollectionView!
     
     public var flowLayout: WeekViewFlowLayout!
@@ -74,10 +72,10 @@ open class BaseWeekView: UIView {
         registerViewClasses()
     }
     
-    func registerViewClasses() {
+    open func registerViewClasses() {
         
         //supplementary
-        collectionView.registerSupplimentaryViews([ColumnHeader.self, RowHeader.self, CornerHeader.self])
+        collectionView.registerSupplimentaryViews([ColumnHeader.self, CornerHeader.self, RowHeader.self])
         
         //decoration
         flowLayout.registerDecorationViews([ColumnHeaderBackground.self, RowHeaderBackground.self, BaseCurrentTimeIndicator.self])
@@ -87,6 +85,7 @@ open class BaseWeekView: UIView {
     
     open override func layoutSubviews() {
         super.layoutSubviews()
+        
         flowLayout.sectionWidth = (frame.width - flowLayout.rowHeaderWidth) / CGFloat(numOfDays)
         initialContentOffset = collectionView.contentOffset
     }
@@ -104,6 +103,7 @@ open class BaseWeekView: UIView {
     public func setupCalendar(numOfDays:Int, setDate:Date, firstDayOfWeek:DayOfWeek? = nil, allEvents: EventsByDate) {
         
         self.numOfDays = numOfDays
+        self.allEventsBySection = allEvents
         
         if let firstDayOfWeek = firstDayOfWeek{
             let setDayOfWeek = setDate.getDayOfWeek()
@@ -210,7 +210,7 @@ open class BaseWeekView: UIView {
 }
 
 
-extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource{
+extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 3 * numOfDays
@@ -226,13 +226,13 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource{
         }
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         return UICollectionViewCell()
     }
     
     
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        var view: UICollectionReusableView
+        let view: UICollectionReusableView
         
         switch kind {
             
@@ -505,10 +505,10 @@ extension BaseWeekView {
     func getLongpressStartTime(date: Date, dateInSection: Date, timeMinInterval: Int) -> Date {
         
         let startDate: Date
-        if Date.daysBetween(start: date, end: dateInSection) == 1 {
+        if Date.daysBetween(start: dateInSection, end: date) == 1 {
             //Below the bottom set as the following day
             startDate = date.startOfDay
-        } else if Date.daysBetween(start: date, end: dateInSection) == -1 {
+        } else if Date.daysBetween(start: dateInSection, end: date) == -1 {
              //Beyond the top set as the current day
             startDate = dateInSection.startOfDay
         } else {

@@ -45,15 +45,46 @@ enum ScrollDirection {
 }
 
 public enum DayOfWeek: Int {
-    /// Days of the week.
     case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 }
 
+public typealias EventsByDate = [Date:[BaseEvent]]
+
 open class WeekViewHelper {
     
-    
-    
-    
+    open class func getIntraEventsByDate<T: BaseEvent>(originEvents: [T]) -> [Date: [T]] {
+        var treatedEvents = [Date: [T]]()
+        for event in originEvents {
+            let startDateStartDay = event.startDate.startOfDay
+            let daysBetween = Date.daysBetween(start: event.startDate, end: event.endDate)
+            if daysBetween == 0 {
+                if treatedEvents[startDateStartDay] == nil {
+                    treatedEvents[startDateStartDay] = [T]()
+                }
+                let copiedEvent = event.copy() as! T
+                treatedEvents[startDateStartDay]!.append(copiedEvent)
+            } else {
+                //Crossing day
+                for day in 0...daysBetween {
+                    let currentStartDate = startDateStartDay.add(component: .day, value: day)
+                    if treatedEvents[currentStartDate] == nil {
+                        treatedEvents[currentStartDate] = [T]()
+                    }
+                    let newEvent = event.copy() as! T
+                    if day == 0 {
+                        newEvent.intraEndDate = startDateStartDay.endOfDay
+                    } else if day == daysBetween {
+                        newEvent.intraStartDate = currentStartDate
+                    } else {
+                        newEvent.intraStartDate = currentStartDate.startOfDay
+                        newEvent.intraEndDate = currentStartDate.endOfDay
+                    }
+                    treatedEvents[currentStartDate]!.append(newEvent)
+                }
+            }
+        }
+        return treatedEvents
+    }
 }
 
 extension NSObject {

@@ -27,6 +27,7 @@
 		8E1BA972206B61B7007BE13C /* BaseEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA971206B61B7007BE13C /* BaseEventCell.swift */; };
 		8E1BA974206B64B3007BE13C /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA973206B64B3007BE13C /* DateExtension.swift */; };
 		8E1BA976206B6B12007BE13C /* UICollectionViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA975206B6B12007BE13C /* UICollectionViewExtension.swift */; };
+		8E5BB3FB2073154F00FA853F /* WeekViewHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		8E1BA971206B61B7007BE13C /* BaseEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseEventCell.swift; sourceTree = "<group>"; };
 		8E1BA973206B64B3007BE13C /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		8E1BA975206B6B12007BE13C /* UICollectionViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewExtension.swift; sourceTree = "<group>"; };
+		8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekViewHelperTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				8E023C77206C6E4B00C523BE /* BaseWeekViewTest.swift */,
+				8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */,
 				8E023C79206C6E4B00C523BE /* Info.plist */,
 			);
 			path = JZCalendarViewTests;
@@ -288,6 +291,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E5BB3FB2073154F00FA853F /* WeekViewHelperTest.swift in Sources */,
 				8E023C78206C6E4B00C523BE /* BaseWeekViewTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

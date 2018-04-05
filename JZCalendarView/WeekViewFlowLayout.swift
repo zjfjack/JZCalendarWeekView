@@ -177,7 +177,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         // row Header Background
         (attributes, rowHeaderBackgroundAttributes) =
             layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
-                                              ofKind: RowHeader.className,
+                                              ofKind: RowHeaderBackground.className,
                                               withItemCache: rowHeaderBackgroundAttributes)
         attributes.frame = CGRect(x: rowHeaderMinX, y: collectionView!.contentOffset.y,
                                   width: rowHeaderWidth, height: collectionView!.frame.height)
@@ -664,7 +664,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         return Calendar.current.date(from: components)!
     }
     
-    func dateForColumnHeader(at indexPath: IndexPath) -> Date {
+    public func dateForColumnHeader(at indexPath: IndexPath) -> Date {
         let day = delegate?.collectionView(collectionView!, layout: self, dayForSection: indexPath.section)
         return Calendar.current.startOfDay(for: day!)
     }

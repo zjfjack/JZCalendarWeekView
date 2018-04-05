@@ -30,6 +30,10 @@ extension Date {
         return Calendar.current.startOfDay(for: self)
     }
     
+    var endOfDay: Date {
+        return Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: self)!
+    }
+    
     func getDayOfWeek() -> DayOfWeek {
         let weekDayNum = Calendar.current.component(.weekday, from: self)
         let weekDay = DayOfWeek(rawValue: weekDayNum)!
