@@ -19,7 +19,7 @@
 		8E1BA962206B4B99007BE13C /* RowHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA961206B4B99007BE13C /* RowHeader.swift */; };
 		8E1BA964206B4E82007BE13C /* CornerHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA963206B4E82007BE13C /* CornerHeader.swift */; };
 		8E1BA966206B4F0B007BE13C /* GridLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA965206B4F0B007BE13C /* GridLine.swift */; };
-		8E1BA968206B4F40007BE13C /* BaseCurrentTimeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA967206B4F40007BE13C /* BaseCurrentTimeIndicator.swift */; };
+		8E1BA968206B4F40007BE13C /* CurrentTimeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA967206B4F40007BE13C /* CurrentTimeIndicator.swift */; };
 		8E1BA96A206B5350007BE13C /* WeekViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA969206B5350007BE13C /* WeekViewHelper.swift */; };
 		8E1BA96C206B5B3F007BE13C /* ColumnHeaderBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA96B206B5B3F007BE13C /* ColumnHeaderBackground.swift */; };
 		8E1BA96E206B5B55007BE13C /* RowHeaderBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA96D206B5B55007BE13C /* RowHeaderBackground.swift */; };
@@ -56,7 +56,7 @@
 		8E1BA961206B4B99007BE13C /* RowHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowHeader.swift; sourceTree = "<group>"; };
 		8E1BA963206B4E82007BE13C /* CornerHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerHeader.swift; sourceTree = "<group>"; };
 		8E1BA965206B4F0B007BE13C /* GridLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridLine.swift; sourceTree = "<group>"; };
-		8E1BA967206B4F40007BE13C /* BaseCurrentTimeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCurrentTimeIndicator.swift; sourceTree = "<group>"; };
+		8E1BA967206B4F40007BE13C /* CurrentTimeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentTimeIndicator.swift; sourceTree = "<group>"; };
 		8E1BA969206B5350007BE13C /* WeekViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekViewHelper.swift; sourceTree = "<group>"; };
 		8E1BA96B206B5B3F007BE13C /* ColumnHeaderBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColumnHeaderBackground.swift; sourceTree = "<group>"; };
 		8E1BA96D206B5B55007BE13C /* RowHeaderBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowHeaderBackground.swift; sourceTree = "<group>"; };
@@ -127,6 +127,7 @@
 			children = (
 				8E1BA956206B47DA007BE13C /* BaseWeekView.swift */,
 				8E1BA95A206B4826007BE13C /* WeekViewFlowLayout.swift */,
+				8E1BA969206B5350007BE13C /* WeekViewHelper.swift */,
 				8E1BA95C206B4AD9007BE13C /* Views */,
 				8E023C82206C730A00C523BE /* Model */,
 				8E1BA955206B4687007BE13C /* Util */,
@@ -139,7 +140,6 @@
 		8E1BA955206B4687007BE13C /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				8E1BA969206B5350007BE13C /* WeekViewHelper.swift */,
 				8E1BA973206B64B3007BE13C /* DateExtension.swift */,
 				8E1BA975206B6B12007BE13C /* UICollectionViewExtension.swift */,
 				8E023C80206C715900C523BE /* UIViewExtensions.swift */,
@@ -172,7 +172,7 @@
 			isa = PBXGroup;
 			children = (
 				8E1BA965206B4F0B007BE13C /* GridLine.swift */,
-				8E1BA967206B4F40007BE13C /* BaseCurrentTimeIndicator.swift */,
+				8E1BA967206B4F40007BE13C /* CurrentTimeIndicator.swift */,
 				8E1BA96B206B5B3F007BE13C /* ColumnHeaderBackground.swift */,
 				8E1BA96D206B5B55007BE13C /* RowHeaderBackground.swift */,
 				8E1BA96F206B6051007BE13C /* CornerHeaderBackground.swift */,
@@ -305,7 +305,7 @@
 				8E1BA970206B6051007BE13C /* CornerHeaderBackground.swift in Sources */,
 				8E1BA976206B6B12007BE13C /* UICollectionViewExtension.swift in Sources */,
 				8E1BA95B206B4826007BE13C /* WeekViewFlowLayout.swift in Sources */,
-				8E1BA968206B4F40007BE13C /* BaseCurrentTimeIndicator.swift in Sources */,
+				8E1BA968206B4F40007BE13C /* CurrentTimeIndicator.swift in Sources */,
 				8E1BA960206B4B84007BE13C /* ColumnHeader.swift in Sources */,
 				8E023C84206C732300C523BE /* BaseEvent.swift in Sources */,
 				8E1BA974206B64B3007BE13C /* DateExtension.swift in Sources */,

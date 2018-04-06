@@ -11,7 +11,7 @@ import JZCalendarView
 
 class RootViewModel: NSObject {
     
-    private let currentDate = Date()
+    private let currentDate = Date().add(component: .hour, value: 1)
     private let secondDate = Date().add(component: .day, value: -2)
     
     lazy var events = [JZEvent(title: "One", startDate: currentDate, endDate: currentDate.add(component: .hour, value: 1) , location: "Melbourne", eventType: 0),

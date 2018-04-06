@@ -30,7 +30,8 @@ open class ColumnHeader: UICollectionReusableView {
         stackView.spacing = 2
         addSubview(stackView)
         stackView.setAnchorConstraintsEqualTo(centerXAnchor: centerXAnchor, centerYAnchor: centerYAnchor)
-        
+        lblDay.textAlignment = .center
+        lblWeekday.textAlignment = .center
         lblDay.font = UIFont.systemFont(ofSize: 17)
         lblWeekday.font = UIFont.systemFont(ofSize: 12)
     }

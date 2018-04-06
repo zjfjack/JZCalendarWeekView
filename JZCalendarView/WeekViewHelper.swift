@@ -21,7 +21,7 @@ enum DecorationViewKinds {
     static let cornerHeaderBackground = CornerHeaderBackground.className
     static let verticalGridline = "VerticalGridline"
     static let horizontalGridline = "HorizontalGridline"
-    static let currentTimeGridline = BaseCurrentTimeIndicator.className
+    static let currentTimeGridline = CurrentTimeIndicator.className
 }
 
 enum HourGridDivision: Int {
@@ -46,6 +46,12 @@ enum ScrollDirection {
 
 public enum DayOfWeek: Int {
     case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
+}
+
+public enum CalendarViewScrollType {
+    case pageScroll
+    case sectionScroll
+    //TODO: - infiniteScroll
 }
 
 public typealias EventsByDate = [Date:[BaseEvent]]

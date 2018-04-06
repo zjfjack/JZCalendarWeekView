@@ -25,15 +25,18 @@ class RootViewController: UIViewController {
     private func setupCalendarView() {
         
         calendarView.setupCalendar(numOfDays: 1, setDate: Date(), allEvents: viewModel.eventsByDate)
-        
     }
     
     private func setupNaviBar() {
         
         self.navigationItem.title = "Day View"
-        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(presentOptionsVC))
     }
     
+    @objc func presentOptionsVC() {
+        let optionsVC = OptionsViewController()
+        self.navigationController?.pushViewController(optionsVC, animated: true)
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

@@ -12,7 +12,6 @@ public protocol WeekViewFlowLayoutDelegate: class {
     func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, dayForSection section: Int) -> Date
     func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, startTimeForItemAtIndexPath indexPath: IndexPath) -> Date
     func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, endTimeForItemAtIndexPath indexPath: IndexPath) -> Date
-    func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, cellTypeForItemAtIndexPath indexPath: IndexPath) -> String
 }
 
 open class WeekViewFlowLayout: UICollectionViewFlowLayout {
@@ -174,14 +173,6 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         // row header
         let rowHeaderMinX = fmax(collectionView!.contentOffset.x, 0)
         
-        // row Header Background
-        (attributes, rowHeaderBackgroundAttributes) =
-            layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
-                                              ofKind: RowHeaderBackground.className,
-                                              withItemCache: rowHeaderBackgroundAttributes)
-        attributes.frame = CGRect(x: rowHeaderMinX, y: collectionView!.contentOffset.y,
-                                  width: rowHeaderWidth, height: collectionView!.frame.height)
-        attributes.zIndex = zIndexForElementKind(DecorationViewKinds.rowHeaderBackground)
         
         //current time gridline
         var hasTimeLineInAllSections = false
@@ -207,23 +198,23 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         }
         if !hasTimeLineInAllSections {currentTimeHorizontalGridlineAttributes.removeAll()}
         
-        // column header background
-        (attributes, columnHeaderBackgroundAttributes) =
-            layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
-                                              ofKind: DecorationViewKinds.columnHeaderBackground,
-                                              withItemCache: columnHeaderBackgroundAttributes)
-        attributes.frame = CGRect(origin: collectionView!.contentOffset,
-                                  size: CGSize(width: collectionView!.frame.width,
-                                               height: columnHeaderHeight + (collectionView!.contentOffset.y < 0 ? abs(collectionView!.contentOffset.y) : 0 )))
-        attributes.zIndex = zIndexForElementKind(DecorationViewKinds.columnHeaderBackground)
-        
-        // Top left corner
+        // Corner Header
         (attributes, cornerHeaderAttributes) =
             layoutAttributesForSupplemantaryView(at: IndexPath(row: 0, section: 0),
                                                  ofKind: SupplementaryViewKinds.cornerHeader,
                                                  withItemCache: cornerHeaderAttributes)
-        
+        attributes.frame = CGRect(origin: collectionView!.contentOffset,
+                                  size: CGSize.init(width: rowHeaderWidth, height: columnHeaderHeight))
         attributes.zIndex = zIndexForElementKind(SupplementaryViewKinds.cornerHeader)
+        
+        // row Header Background
+        (attributes, rowHeaderBackgroundAttributes) =
+            layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
+                                              ofKind: RowHeaderBackground.className,
+                                              withItemCache: rowHeaderBackgroundAttributes)
+        attributes.frame = CGRect(x: rowHeaderMinX, y: collectionView!.contentOffset.y,
+                                  width: rowHeaderWidth, height: collectionView!.frame.height)
+        attributes.zIndex = zIndexForElementKind(DecorationViewKinds.rowHeaderBackground)
         
         // row header
         for rowHeaderIndex in 0...24 {
@@ -238,6 +229,16 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
                                       height: hourHeight)
             attributes.zIndex = zIndexForElementKind(SupplementaryViewKinds.rowHeader)
         }
+        
+        // column header background
+        (attributes, columnHeaderBackgroundAttributes) =
+            layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
+                                              ofKind: DecorationViewKinds.columnHeaderBackground,
+                                              withItemCache: columnHeaderBackgroundAttributes)
+        attributes.frame = CGRect(origin: collectionView!.contentOffset,
+                                  size: CGSize(width: collectionView!.frame.width,
+                                               height: columnHeaderHeight + (collectionView!.contentOffset.y < 0 ? abs(collectionView!.contentOffset.y) : 0 )))
+        attributes.zIndex = zIndexForElementKind(DecorationViewKinds.columnHeaderBackground)
         
         // Column Header
         let columnHeaderMinY = fmax(collectionView!.contentOffset.y, 0.0)
@@ -257,6 +258,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
             
             layoutItemsAttributes(section: section, sectionX: sectionMinX, calendarStartY: calendarGridMinY)
         }
+        
         layoutHorizontalGridLinesAttributes(calendarStartX: calendarContentMinX, calendarStartY: calendarContentMinY)
         
     }
@@ -636,16 +638,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         }
     }
     
-    func cellTypeForIndexPath(_ indexPath: IndexPath) -> String{
-        if let type = delegate?.collectionView(collectionView!, layout: self, cellTypeForItemAtIndexPath: indexPath){
-            return type
-        }else{
-            fatalError()
-        }
-    }
-    
-    
-    func scrollCollectionViewToCurrent() {
+    func scrollCollectionViewToCurrentTime() {
         let y = max(0, min(CGFloat(Calendar.current.component(.hour, from: Date())) * hourHeight - collectionView!.frame.height / 2 + columnHeaderHeight,
                            collectionView!.contentSize.height - collectionView!.frame.height))
         
@@ -654,7 +647,6 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         self.collectionView!.contentOffset = CGPoint(x: self.collectionView!.contentOffset.x, y: y)
         collectionView!.delegate = tempDelegate
     }
-    
     
     
     // MARK: - Dates
@@ -678,7 +670,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         switch kind {
             
         case SupplementaryViewKinds.cornerHeader:
-            return minOverlayZ + 12
+            return minOverlayZ + 9
         case SupplementaryViewKinds.rowHeader:
             return minOverlayZ + 8
         case DecorationViewKinds.rowHeaderBackground:
@@ -688,7 +680,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         case DecorationViewKinds.columnHeaderBackground:
             return minOverlayZ + 5
         case DecorationViewKinds.currentTimeGridline:
-            return minOverlayZ
+            return minOverlayZ + 4
         case DecorationViewKinds.horizontalGridline:
             return minBackgroundZ + 3
         case DecorationViewKinds.verticalGridline:

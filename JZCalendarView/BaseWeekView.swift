@@ -15,25 +15,25 @@ open class BaseWeekView: UIView {
     public var flowLayout: WeekViewFlowLayout!
     
     public var initDate: Date!
-    
     public var numOfDays: Int!
+    public var scrollType: CalendarViewScrollType!
+    public var allEventsBySection: EventsByDate!
     
-    public var isOneDayScroll: Bool = false
     private var isFirstAppear: Bool = true
     
-    var initialContentOffset = CGPoint.zero
-    var scrollSections:CGFloat!
+    private var initialContentOffset = CGPoint.zero
+    private var scrollSections:CGFloat!
     
     var longPressType: LongPressType = .none
 //    var longPressView: LongPressCellView! TODO
     var longPressView = UIView()
     private var isScrolling: Bool = false
     
+    
     private var isDirectionLocked = false
     private var lockedDirection: ScrollDirection!
     
     
-    public var allEventsBySection: EventsByDate!
     
     enum LongPressType {
         case none
@@ -63,7 +63,6 @@ open class BaseWeekView: UIView {
         collectionView.bounces = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = UIColor.white
         addSubview(collectionView)
         
@@ -78,7 +77,7 @@ open class BaseWeekView: UIView {
         collectionView.registerSupplimentaryViews([ColumnHeader.self, CornerHeader.self, RowHeader.self])
         
         //decoration
-        flowLayout.registerDecorationViews([ColumnHeaderBackground.self, RowHeaderBackground.self, BaseCurrentTimeIndicator.self])
+        flowLayout.registerDecorationViews([ColumnHeaderBackground.self, RowHeaderBackground.self, CurrentTimeIndicator.self])
         flowLayout.register(GridLine.self, forDecorationViewOfKind: DecorationViewKinds.verticalGridline)
         flowLayout.register(GridLine.self, forDecorationViewOfKind: DecorationViewKinds.horizontalGridline)
     }
@@ -90,7 +89,7 @@ open class BaseWeekView: UIView {
         initialContentOffset = collectionView.contentOffset
     }
     
-    func updateWeekView(to date: Date){
+    open func updateWeekView(to date: Date) {
         
         self.initDate = date.add(component: .day, value: -numOfDays)
         DispatchQueue.main.async { [unowned self] in
@@ -99,18 +98,33 @@ open class BaseWeekView: UIView {
         }
     }
     
-    //FirstOfWeek if nil, start from the setDate
-    public func setupCalendar(numOfDays:Int, setDate:Date, firstDayOfWeek:DayOfWeek? = nil, allEvents: EventsByDate) {
+    
+    /**
+     Basic Setup method for JZCalendarView,it **must** be called.
+     
+     - Parameters:
+        - numOfDays: number of days in a page
+        - setDate: the initial set date
+        - allEvents: The dictionary of all the events for present. WeekViewHelper.getIntraEventsByDate can help transform the data
+        - firstDayOfWeek: First day of a week, only works when numberOfDays is 7. Default value is nil, and the first day shown is the setDate
+        - scrollType: The horizontal scroll type for this view. Default value is pageScroll
+    */
+    open func setupCalendar(numOfDays:Int,
+                            setDate:Date,
+                            allEvents: EventsByDate,
+                            scrollType: CalendarViewScrollType = .pageScroll,
+                            firstDayOfWeek:DayOfWeek? = nil) {
         
         self.numOfDays = numOfDays
         self.allEventsBySection = allEvents
+        self.scrollType = scrollType
         
-        if let firstDayOfWeek = firstDayOfWeek{
+        if let firstDayOfWeek = firstDayOfWeek, numOfDays == 7 {
             let setDayOfWeek = setDate.getDayOfWeek()
             var diff = setDayOfWeek.rawValue - firstDayOfWeek.rawValue
-            if diff < 0 {diff = 7 - abs(diff)}
+            if diff < 0 { diff = 7 - abs(diff) }
             self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays - diff)
-        }else{
+        } else {
             self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays)
         }
         
@@ -120,12 +134,14 @@ open class BaseWeekView: UIView {
             
             if self.isFirstAppear {
                 self.isFirstAppear = false
-                self.flowLayout.scrollCollectionViewToCurrent()
+                self.flowLayout.scrollCollectionViewToCurrentTime()
             }
         }
     }
     
-    
+    /// Reload the collectionView and flowLayout
+    /// - Parameters:
+    ///   - reloadEvents: If provided new events, current events will be reloaded. Default value is nil.
     public func forceReload(reloadEvents: [Date: [BaseEvent]]? = nil) {
         if let events = reloadEvents {
             self.allEventsBySection = events
@@ -170,7 +186,7 @@ open class BaseWeekView: UIView {
     }
     
     // directionalLockEnabled
-    fileprivate func determineScrollDirection() -> ScrollDirection {
+    fileprivate func getScrollDirection() -> ScrollDirection {
         var scrollDirection: ScrollDirection
         
         if initialContentOffset.x != collectionView.contentOffset.x &&
@@ -192,10 +208,8 @@ open class BaseWeekView: UIView {
         return scrollDirection
     }
     
-    fileprivate func determineScrollDirectionAxis() -> ScrollDirection {
-        let scrollDirection = determineScrollDirection()
-        
-        switch scrollDirection {
+    fileprivate var scrollDirectionAxis: ScrollDirection {
+        switch getScrollDirection() {
         case .left, .right:
             return .horizontal
         case .up, .down:
@@ -243,7 +257,7 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
             
         case SupplementaryViewKinds.rowHeader:
             let rowHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! RowHeader
-            rowHeader.updateCell(date: flowLayout.dateForColumnHeader(at: indexPath))
+            rowHeader.updateCell(date: flowLayout.dateForTimeRowHeader(at: indexPath))
             view = rowHeader
             
         case SupplementaryViewKinds.cornerHeader:
@@ -264,7 +278,7 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
-        if determineScrollDirectionAxis() == .vertical {return}
+        if scrollDirectionAxis == .vertical {return}
         targetContentOffset.pointee = scrollView.contentOffset
         pagingEffect(scrollView: scrollView, velocity: velocity)
     }
@@ -275,20 +289,17 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     // end dragging for loading drag to the leftmost and rightmost should load page
-    // fast dragging missing scrollviewdidscroll for checking all day view
     public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         
         //for directionLock
-        if !decelerate{
+        if !decelerate {
             isDirectionLocked = false
         }
         
-        if determineScrollDirectionAxis() == .vertical {return}
+        if scrollDirectionAxis == .vertical {return}
         
         //loading page
         loadPage(scrollView: scrollView)
-        
-        if !isOneDayScroll {return}
     }
     
     //set content offset
@@ -297,47 +308,36 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         //for directionLock
         isDirectionLocked = false
         
-        if !isOneDayScroll{
+        if scrollType != .sectionScroll {
             loadPage(scrollView: scrollView)
         }
-        //changing initial date for one day scroll after paging effect
-        if isOneDayScroll && scrollSections != 0{
+        //changing initial date(loadPage) for one day scroll after paging effect
+        if scrollType == .sectionScroll && scrollSections != 0 {
             initDate = initDate.add(component: .day, value: -Int(scrollSections))
             self.forceReload()
         }
         //for long press
         isScrolling = false
-        
     }
     
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        if !isDirectionLocked{
-            if abs(scrollView.contentOffset.x - initialContentOffset.x) > abs(scrollView.contentOffset.y - initialContentOffset.y){
-                lockedDirection = .vertical
-            }else{
-                lockedDirection = .horizontal
-            }
+        if !isDirectionLocked {
+            let isScrollingHorizontally = abs(scrollView.contentOffset.x - initialContentOffset.x) > abs(scrollView.contentOffset.y - initialContentOffset.y)
+            lockedDirection = isScrollingHorizontally ? .vertical : .horizontal
             isDirectionLocked = true
         }
         
-        
         // forbid scrolling two directions together
-        let scrollDirection = determineScrollDirectionAxis()
-        var newOffset: CGPoint
-        
-        if scrollDirection == .crazy  {
-            if lockedDirection == .vertical{
-                newOffset = CGPoint(x: scrollView.contentOffset.x, y: initialContentOffset.y);
-            } else {
-                newOffset = CGPoint(x: initialContentOffset.x, y: scrollView.contentOffset.y);
-            }
+        if scrollDirectionAxis == .crazy {
+            let newOffset = lockedDirection == .vertical ? CGPoint(x: scrollView.contentOffset.x, y: initialContentOffset.y) :
+                                                           CGPoint(x: initialContentOffset.x, y: scrollView.contentOffset.y)
             scrollView.contentOffset = newOffset
         }
     }
     
-    private func pagingEffect(scrollView: UIScrollView, velocity: CGPoint){
+    private func pagingEffect(scrollView: UIScrollView, velocity: CGPoint) {
         
         let yCurrentOffset = scrollView.contentOffset.y
         let xCurrentOffset = scrollView.contentOffset.x
@@ -345,23 +345,23 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         
         let scrollXDistance = initialContentOffset.x - xCurrentOffset
         //scroll one section
-        if isOneDayScroll{
+        if scrollType == .sectionScroll {
             let sectionWidth = flowLayout.sectionWidth!
             scrollSections = (scrollXDistance/sectionWidth).rounded()
             scrollView.setContentOffset(CGPoint(x:initialContentOffset.x-sectionWidth * scrollSections,y:yCurrentOffset), animated: true)
-            
-        }else{
+        } else {
+            //Only for pageScroll
             let scrollProportion:CGFloat = 1/5
             let isVelocitySatisfied = abs(velocity.x) > 0.2
             //scroll a whole page
-            if scrollXDistance >= 0{
-                if scrollXDistance >= scrollProportion * contentViewWidth || isVelocitySatisfied{
+            if scrollXDistance >= 0 {
+                if scrollXDistance >= scrollProportion * contentViewWidth || isVelocitySatisfied {
                     scrollView.setContentOffset(CGPoint(x:initialContentOffset.x-contentViewWidth,y:yCurrentOffset), animated: true)
                 }else{
                     scrollView.setContentOffset(initialContentOffset, animated: true)
                 }
             }else{
-                if -scrollXDistance >= scrollProportion * contentViewWidth || isVelocitySatisfied{
+                if -scrollXDistance >= scrollProportion * contentViewWidth || isVelocitySatisfied {
                     scrollView.setContentOffset(CGPoint(x:initialContentOffset.x+contentViewWidth,y:yCurrentOffset), animated: true)
                 }else{
                     scrollView.setContentOffset(initialContentOffset, animated: true)
@@ -370,7 +370,7 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
     }
     //for loading next page or previous only
-    private func loadPage(scrollView: UIScrollView){
+    private func loadPage(scrollView: UIScrollView) {
         let maximumOffset = scrollView.contentSize.width - scrollView.frame.width
         let currentOffset = scrollView.contentOffset.x
         
@@ -443,7 +443,7 @@ extension BaseWeekView {
     }
     
     
-    func updateTimeLabel(time: Date, point: CGPoint){
+    func updateTimeLabel(time: Date, point: CGPoint) {
         
         let timeLabel = UILabel(frame: .zero)
 //        let timeLabel = longPressView.timeLabel! TODO
@@ -479,7 +479,7 @@ extension BaseWeekView {
     
     
     
-    func updateScroll(point: CGPoint){
+    func updateScroll(point: CGPoint) {
         
         //vertical
         if point.y < getTopMarginY() + 10 && !isScrolling{
@@ -521,54 +521,45 @@ extension BaseWeekView {
     }
     
     
-    func scrollingTo(direction: ScrollDirection){
+    func scrollingTo(direction: ScrollDirection) {
         
         let currentOffset = collectionView.contentOffset
         let maxOffsetY = collectionView.contentSize.height - collectionView.bounds.height + collectionView.contentInset.bottom
         
-        if direction == .up || direction == .down{
+        if direction == .up || direction == .down {
             
             var yOffset = CGFloat()
             
-            if isOneDayScroll{
+            //TODO: NOT SURE WHY NEED THIS LINE
+            if scrollType == .sectionScroll {
                 scrollSections = 0
             }
             
-            if direction == .up{
+            if direction == .up {
                 yOffset = max(0,currentOffset.y - 50)
                 collectionView.setContentOffset(CGPoint(x: currentOffset.x,y: yOffset) , animated: true)
-            }else{
+            } else {
                 yOffset = min(maxOffsetY,currentOffset.y + 50)
                 collectionView.setContentOffset(CGPoint(x: currentOffset.x,y: yOffset) , animated: true)
             }
             //scrollview didEndAnimation will not set isScrolling, should set by ourselves
-            if yOffset == 0 || yOffset == maxOffsetY{
+            if yOffset == 0 || yOffset == maxOffsetY {
                 isScrolling = false
             }
             
-        }else{
-            
-            if isOneDayScroll{
-                
+        } else {
+            switch scrollType! {
+            case .sectionScroll:
                 let sectionWidth = flowLayout.sectionWidth!
-                
-                if direction == .left{
-                    scrollSections = -1
-                }else{
-                    scrollSections = 1
-                }
-                collectionView.setContentOffset(CGPoint(x:currentOffset.x-sectionWidth * scrollSections,y:currentOffset.y), animated: true)
-                
-            }else{
+                scrollSections = direction == .left ? -1 : 1
+                collectionView.setContentOffset(CGPoint(x: currentOffset.x - sectionWidth * scrollSections, y: currentOffset.y), animated: true)
+            case .pageScroll:
                 let contentViewWidth = frame.width - flowLayout.rowHeaderWidth
-                if direction == .left{
-                    collectionView.setContentOffset(CGPoint(x:contentViewWidth * 2,y:currentOffset.y), animated: true)
-                }else{
-                    collectionView.setContentOffset(CGPoint(x:0,y:currentOffset.y), animated: true)
-                }
+                let contentOffsetX = direction == .left ? contentViewWidth * 2 : 0
+                collectionView.setContentOffset(CGPoint(x: contentOffsetX, y: currentOffset.y), animated: true)
             }
         }
-        //must set initial contentoffset because will begin dragging will not be called
+        //must set initial contentoffset because willBeginDragging will not be called
         initialContentOffset = collectionView.contentOffset
     }
     

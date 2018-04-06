@@ -20,6 +20,7 @@
 		8E7263DF2074B55300ECF7CD /* SoloEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7263DC2074B55300ECF7CD /* SoloEventCell.swift */; };
 		8E7263E02074B55300ECF7CD /* SoloEventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E7263DD2074B55300ECF7CD /* SoloEventCell.xib */; };
 		8E7263E32074B73300ECF7CD /* JZWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7263E22074B73300ECF7CD /* JZWeekView.swift */; };
+		8E9AE75B20773F3500B7004E /* OptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9AE75A20773F3500B7004E /* OptionsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,7 @@
 		8E7263DC2074B55300ECF7CD /* SoloEventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoloEventCell.swift; sourceTree = "<group>"; };
 		8E7263DD2074B55300ECF7CD /* SoloEventCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SoloEventCell.xib; sourceTree = "<group>"; };
 		8E7263E22074B73300ECF7CD /* JZWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZWeekView.swift; sourceTree = "<group>"; };
+		8E9AE75A20773F3500B7004E /* OptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,7 +123,10 @@
 			children = (
 				8E5BB4012073226100FA853F /* RootViewModel.swift */,
 				8E5BB3D32072F4A000FA853F /* RootViewController.swift */,
+				8E9AE75A20773F3500B7004E /* OptionsViewController.swift */,
 				8E7263E22074B73300ECF7CD /* JZWeekView.swift */,
+				8E7263DC2074B55300ECF7CD /* SoloEventCell.swift */,
+				8E7263DD2074B55300ECF7CD /* SoloEventCell.xib */,
 				8E7263E12074B6F100ECF7CD /* Helper & Custom */,
 				8E5BB3D12072F4A000FA853F /* AppDelegate.swift */,
 				8E5BB3D52072F4A000FA853F /* Main.storyboard */,
@@ -160,8 +165,6 @@
 			children = (
 				8E5BB403207322BA00FA853F /* JZEvent.swift */,
 				8E5BB406207325AB00FA853F /* Extensions.swift */,
-				8E7263DC2074B55300ECF7CD /* SoloEventCell.swift */,
-				8E7263DD2074B55300ECF7CD /* SoloEventCell.xib */,
 			);
 			path = "Helper & Custom";
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				8E7263DF2074B55300ECF7CD /* SoloEventCell.swift in Sources */,
 				8E7263E32074B73300ECF7CD /* JZWeekView.swift in Sources */,
 				8E5BB3D22072F4A000FA853F /* AppDelegate.swift in Sources */,
+				8E9AE75B20773F3500B7004E /* OptionsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

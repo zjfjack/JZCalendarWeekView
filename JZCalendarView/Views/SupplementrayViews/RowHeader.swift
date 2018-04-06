@@ -18,7 +18,9 @@ open class RowHeader: UICollectionReusableView {
         super.init(frame: .zero)
         addSubview(lblTime)
         lblTime.setAnchorConstraintsEqualTo(centerXAnchor: centerXAnchor, centerYAnchor: centerYAnchor)
-        dateFormatter.dateFormat = "HH"
+        dateFormatter.dateFormat = "HH:mm"
+        lblTime.textColor = WeekViewColors.rowHeaderTime
+        lblTime.font = UIFont.systemFont(ofSize: 12)
     }
     
     public func updateCell(date: Date) {
