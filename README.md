@@ -2,7 +2,8 @@
 iOS Calendar Week/Day View in Swift
 
 Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
-If you have any question, feel free to contact me. Jeff Zhang: zekejeff@gmail.com
+
+This is a new repository and it is my first time to write a library. If you have any question and suggestion, feel free to contact me. Jeff Zhang: zekejeff@gmail.com
 
 
 ## Features
