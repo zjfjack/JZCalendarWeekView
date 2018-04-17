@@ -46,9 +46,25 @@ enum ScrollDirection {
 
 public enum DayOfWeek: Int {
     case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
+    
+    public func getDayName() -> String {
+        switch self {
+        case .sunday: return "Sunday"
+        case .monday: return "Monday"
+        case .tuesday: return "Tuesday"
+        case .wednesday: return "Wednesday"
+        case .thursday: return "Thursday"
+        case .friday: return "Friday"
+        case .saturday: return "Saturday"
+        }
+    }
+    
+    public static func getDayOfWeekList() -> [DayOfWeek] {
+        return [.sunday, .monday, .tuesday, .wednesday, .thursday, .friday, .saturday]
+    }
 }
 
-public enum CalendarViewScrollType {
+public enum CalendarViewScrollType: String {
     case pageScroll
     case sectionScroll
     //TODO: - infiniteScroll
@@ -90,15 +106,5 @@ open class WeekViewHelper {
             }
         }
         return treatedEvents
-    }
-}
-
-extension NSObject {
-    var className: String {
-        return String(describing: type(of: self))
-    }
-    
-    class var className: String {
-        return String(describing: self)
     }
 }

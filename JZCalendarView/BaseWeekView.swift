@@ -11,16 +11,15 @@ import UIKit
 open class BaseWeekView: UIView {
     
     public var collectionView: UICollectionView!
-    
     public var flowLayout: WeekViewFlowLayout!
     
     public var initDate: Date!
     public var numOfDays: Int!
     public var scrollType: CalendarViewScrollType!
+    public var firstDayOfWeek: DayOfWeek?
     public var allEventsBySection: EventsByDate!
     
     private var isFirstAppear: Bool = true
-    
     private var initialContentOffset = CGPoint.zero
     private var scrollSections:CGFloat!
     
@@ -28,12 +27,8 @@ open class BaseWeekView: UIView {
 //    var longPressView: LongPressCellView! TODO
     var longPressView = UIView()
     private var isScrolling: Bool = false
-    
-    
     private var isDirectionLocked = false
     private var lockedDirection: ScrollDirection!
-    
-    
     
     enum LongPressType {
         case none
@@ -50,8 +45,8 @@ open class BaseWeekView: UIView {
         super.init(coder: aDecoder)
         setup()
     }
-    
-    func setup() {
+        
+    open func setup() {
         
         flowLayout = WeekViewFlowLayout()
         flowLayout.delegate = self
@@ -65,7 +60,6 @@ open class BaseWeekView: UIView {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.backgroundColor = UIColor.white
         addSubview(collectionView)
-        
         collectionView.setAnchorConstraintsFullSizeTo(view: self)
         
         registerViewClasses()
@@ -81,23 +75,13 @@ open class BaseWeekView: UIView {
         flowLayout.register(GridLine.self, forDecorationViewOfKind: DecorationViewKinds.verticalGridline)
         flowLayout.register(GridLine.self, forDecorationViewOfKind: DecorationViewKinds.horizontalGridline)
     }
-    
+   
     open override func layoutSubviews() {
         super.layoutSubviews()
         
         flowLayout.sectionWidth = (frame.width - flowLayout.rowHeaderWidth) / CGFloat(numOfDays)
         initialContentOffset = collectionView.contentOffset
     }
-    
-    open func updateWeekView(to date: Date) {
-        
-        self.initDate = date.add(component: .day, value: -numOfDays)
-        DispatchQueue.main.async { [unowned self] in
-            self.layoutSubviews()
-            self.forceReload()
-        }
-    }
-    
     
     /**
      Basic Setup method for JZCalendarView,it **must** be called.
@@ -120,12 +104,11 @@ open class BaseWeekView: UIView {
         self.scrollType = scrollType
         
         if let firstDayOfWeek = firstDayOfWeek, numOfDays == 7 {
-            let setDayOfWeek = setDate.getDayOfWeek()
-            var diff = setDayOfWeek.rawValue - firstDayOfWeek.rawValue
-            if diff < 0 { diff = 7 - abs(diff) }
-            self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays - diff)
+            updateFirstDayOfWeek(setDate: setDate, firstDayOfWeek: firstDayOfWeek)
+            
         } else {
             self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays)
+            self.firstDayOfWeek = .sunday
         }
         
         DispatchQueue.main.async { [unowned self] in
@@ -153,6 +136,37 @@ open class BaseWeekView: UIView {
         flowLayout.invalidateLayoutCache()
         collectionView.reloadData()
     }
+        
+    
+    /// Reload the WeekView to date with no animation
+    /// - Parameters:
+    ///    - date: this date is the current date in one-day view rather than initDate
+    open func updateWeekView(to date: Date) {
+        self.initDate = date.add(component: .day, value: -numOfDays)
+        DispatchQueue.main.async { [unowned self] in
+            self.layoutSubviews()
+            self.forceReload()
+        }
+    }
+    
+    /**
+        Used to Refresh the weekView when viewWillTransition
+     
+        **Must override viewWillTransition in the ViewController and call this function**
+    */
+    open func refreshWeekView() {
+        updateWeekView(to: self.initDate.add(component: .day, value: numOfDays))
+    }
+    
+    open func updateFirstDayOfWeek(setDate: Date, firstDayOfWeek: DayOfWeek?) {
+        guard let firstDayOfWeek = firstDayOfWeek, numOfDays == 7 else { return }
+        let setDayOfWeek = setDate.getDayOfWeek()
+        var diff = setDayOfWeek.rawValue - firstDayOfWeek.rawValue
+        if diff < 0 { diff = 7 - abs(diff) }
+        self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays - diff)
+        self.firstDayOfWeek = firstDayOfWeek
+    }
+
     
     // Get date from points(Long press leftright Margin problem considered region before row header should be the following day)
     func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
@@ -177,7 +191,7 @@ open class BaseWeekView: UIView {
         return (hour, minute)
     }
     
-    func getDateForPoint(pointCollectionView: CGPoint, pointSelfView: CGPoint) -> Date{
+    func getDateForPoint(pointCollectionView: CGPoint, pointSelfView: CGPoint) -> Date {
         
         let yearMonthDay = getDateForX(xCollectionView: pointCollectionView.x, xSelfView: pointSelfView.x)
         let hourMinute = getDateForY(pointCollectionView.y)
@@ -241,7 +255,7 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return UICollectionViewCell()
+        preconditionFailure("This method must be overridden")
     }
     
     
@@ -270,6 +284,7 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         
         return view
     }
+    
     
     
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -421,11 +436,10 @@ extension BaseWeekView: WeekViewFlowLayoutDelegate {
         }
     }
     
-    //only used in timeslot(overrided in timeslotWeekView)
+    //TODO: Only used when multiple cell types are used and need different overlap rules => layoutItemsAttributes
     public func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, cellTypeForItemAtIndexPath indexPath: IndexPath) -> String {
         return BaseEventCell.className
     }
-    
 }
 
 //Long press Gesture methods

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E048ED4207EF65000A532BA /* OptionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E048ED3207EF65000A532BA /* OptionsViewModel.swift */; };
+		8E048ED6207EF83300A532BA /* ExpandableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E048ED5207EF83300A532BA /* ExpandableHeaderView.swift */; };
+		8E048ED9207F26F500A532BA /* OptionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E048ED7207F26F500A532BA /* OptionsTableViewCell.swift */; };
+		8E048EDA207F26F500A532BA /* OptionsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E048ED8207F26F500A532BA /* OptionsTableViewCell.xib */; };
 		8E5BB3D22072F4A000FA853F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB3D12072F4A000FA853F /* AppDelegate.swift */; };
 		8E5BB3D42072F4A000FA853F /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB3D32072F4A000FA853F /* RootViewController.swift */; };
 		8E5BB3D72072F4A000FA853F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E5BB3D52072F4A000FA853F /* Main.storyboard */; };
@@ -15,6 +19,7 @@
 		8E5BB4022073226100FA853F /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB4012073226100FA853F /* RootViewModel.swift */; };
 		8E5BB404207322BA00FA853F /* JZEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB403207322BA00FA853F /* JZEvent.swift */; };
 		8E5BB407207325AB00FA853F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB406207325AB00FA853F /* Extensions.swift */; };
+		8E5EE63D20857A6500150FD3 /* ExpandableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E5EE63C20857A6500150FD3 /* ExpandableHeaderView.xib */; };
 		8E7263D62074ADE900ECF7CD /* JZCalendarView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E5BB3EE2072F6D800FA853F /* JZCalendarView.framework */; };
 		8E7263D72074ADE900ECF7CD /* JZCalendarView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8E5BB3EE2072F6D800FA853F /* JZCalendarView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8E7263DF2074B55300ECF7CD /* SoloEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7263DC2074B55300ECF7CD /* SoloEventCell.swift */; };
@@ -62,6 +67,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8E048ED3207EF65000A532BA /* OptionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewModel.swift; sourceTree = "<group>"; };
+		8E048ED5207EF83300A532BA /* ExpandableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableHeaderView.swift; sourceTree = "<group>"; };
+		8E048ED7207F26F500A532BA /* OptionsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsTableViewCell.swift; sourceTree = "<group>"; };
+		8E048ED8207F26F500A532BA /* OptionsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OptionsTableViewCell.xib; sourceTree = "<group>"; };
 		8E5BB3CE2072F4A000FA853F /* JZCalendarViewExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JZCalendarViewExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E5BB3D12072F4A000FA853F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E5BB3D32072F4A000FA853F /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
@@ -73,6 +82,7 @@
 		8E5BB4012073226100FA853F /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
 		8E5BB403207322BA00FA853F /* JZEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZEvent.swift; sourceTree = "<group>"; };
 		8E5BB406207325AB00FA853F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		8E5EE63C20857A6500150FD3 /* ExpandableHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExpandableHeaderView.xib; sourceTree = "<group>"; };
 		8E7263DC2074B55300ECF7CD /* SoloEventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoloEventCell.swift; sourceTree = "<group>"; };
 		8E7263DD2074B55300ECF7CD /* SoloEventCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SoloEventCell.xib; sourceTree = "<group>"; };
 		8E7263E22074B73300ECF7CD /* JZWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZWeekView.swift; sourceTree = "<group>"; };
@@ -91,6 +101,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8E048ED1207EF5FC00A532BA /* OptionsView */ = {
+			isa = PBXGroup;
+			children = (
+				8E048ED3207EF65000A532BA /* OptionsViewModel.swift */,
+				8E9AE75A20773F3500B7004E /* OptionsViewController.swift */,
+				8E048ED5207EF83300A532BA /* ExpandableHeaderView.swift */,
+				8E5EE63C20857A6500150FD3 /* ExpandableHeaderView.xib */,
+				8E048ED7207F26F500A532BA /* OptionsTableViewCell.swift */,
+				8E048ED8207F26F500A532BA /* OptionsTableViewCell.xib */,
+			);
+			path = OptionsView;
+			sourceTree = "<group>";
+		};
 		8E5BB3C52072F4A000FA853F = {
 			isa = PBXGroup;
 			children = (
@@ -123,10 +146,10 @@
 			children = (
 				8E5BB4012073226100FA853F /* RootViewModel.swift */,
 				8E5BB3D32072F4A000FA853F /* RootViewController.swift */,
-				8E9AE75A20773F3500B7004E /* OptionsViewController.swift */,
 				8E7263E22074B73300ECF7CD /* JZWeekView.swift */,
 				8E7263DC2074B55300ECF7CD /* SoloEventCell.swift */,
 				8E7263DD2074B55300ECF7CD /* SoloEventCell.xib */,
+				8E048ED1207EF5FC00A532BA /* OptionsView */,
 				8E7263E12074B6F100ECF7CD /* Helper & Custom */,
 				8E5BB3D12072F4A000FA853F /* AppDelegate.swift */,
 				8E5BB3D52072F4A000FA853F /* Main.storyboard */,
@@ -198,7 +221,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Jeff Zhang";
 				TargetAttributes = {
 					8E5BB3CD2072F4A000FA853F = {
@@ -254,7 +277,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E5BB3DC2072F4A000FA853F /* LaunchScreen.storyboard in Resources */,
+				8E5EE63D20857A6500150FD3 /* ExpandableHeaderView.xib in Resources */,
 				8E7263E02074B55300ECF7CD /* SoloEventCell.xib in Resources */,
+				8E048EDA207F26F500A532BA /* OptionsTableViewCell.xib in Resources */,
 				8E5BB3D92072F4A000FA853F /* Assets.xcassets in Resources */,
 				8E5BB3D72072F4A000FA853F /* Main.storyboard in Resources */,
 			);
@@ -271,9 +296,12 @@
 				8E5BB3D42072F4A000FA853F /* RootViewController.swift in Sources */,
 				8E5BB4022073226100FA853F /* RootViewModel.swift in Sources */,
 				8E5BB404207322BA00FA853F /* JZEvent.swift in Sources */,
+				8E048ED9207F26F500A532BA /* OptionsTableViewCell.swift in Sources */,
 				8E7263DF2074B55300ECF7CD /* SoloEventCell.swift in Sources */,
 				8E7263E32074B73300ECF7CD /* JZWeekView.swift in Sources */,
 				8E5BB3D22072F4A000FA853F /* AppDelegate.swift in Sources */,
+				8E048ED6207EF83300A532BA /* ExpandableHeaderView.swift in Sources */,
+				8E048ED4207EF65000A532BA /* OptionsViewModel.swift in Sources */,
 				8E9AE75B20773F3500B7004E /* OptionsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -322,6 +350,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -329,6 +358,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -379,6 +409,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -386,6 +417,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

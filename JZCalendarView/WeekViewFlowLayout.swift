@@ -566,6 +566,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         allAttributes.removeAll()
     }
     
+    //Not used now
     func invalidateItemsCache() {
         itemAttributes.removeAll()
     }
@@ -579,7 +580,6 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
                     visibleSections.add(section)
                 }
         }
-        //44.3% CPU
         prepareHorizontalTileSectionLayoutForSections(visibleSections)
         
         return allAttributes.filter({ rect.intersects($0.frame) })

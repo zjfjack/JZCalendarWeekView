@@ -18,31 +18,72 @@ class RootViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupBasic()
         setupCalendarView()
         setupNaviBar()
     }
     
+    func setupBasic() {
+        //Add this to fix lower than iOS11 problems
+        self.automaticallyAdjustsScrollViewInsets = false
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        calendarView.refreshWeekView()
+    }
+    
     private func setupCalendarView() {
         
-        calendarView.setupCalendar(numOfDays: 1, setDate: Date(), allEvents: viewModel.eventsByDate)
+        calendarView.setupCalendar(numOfDays: 7, setDate: Date(), allEvents: viewModel.eventsByDate)
     }
     
     private func setupNaviBar() {
         
         self.navigationItem.title = "Day View"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(presentOptionsVC))
+        let optionsButton = UIButton(type: .system)
+        optionsButton.setImage(#imageLiteral(resourceName: "icon_options"), for: .normal)
+        optionsButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        optionsButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        optionsButton.addTarget(self, action: #selector(presentOptionsVC), for: .touchUpInside)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: optionsButton)
     }
     
     @objc func presentOptionsVC() {
-        let optionsVC = OptionsViewController()
-        self.navigationController?.pushViewController(optionsVC, animated: true)
+        let optionsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "OptionsViewController") as! OptionsViewController
+        let optionsViewModel = OptionsViewModel(selectedData: getSelectedData())
+        optionsVC.viewModel = optionsViewModel
+        optionsVC.delegate = self
+        let navigationVC = UINavigationController(rootViewController: optionsVC)
+        self.present(navigationVC, animated: true, completion: nil)
+    }
+    
+    private func getSelectedData() -> OptionsSelectedData {
+        let numOfDays = calendarView.numOfDays!
+        let dayOfWeek = numOfDays == 7 ? calendarView.firstDayOfWeek : nil
+        return OptionsSelectedData(date: calendarView.initDate.add(component: .day, value: numOfDays),
+                                   numOfDays: numOfDays,
+                                   scrollType: calendarView.scrollType,
+                                   firstDayOfWeek: dayOfWeek)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+}
 
-
+extension RootViewController: OptionsViewDelegate {
+    
+    func finishUpdate(selectedData: OptionsSelectedData) {
+        //Update numOfDays Only
+        calendarView.numOfDays = selectedData.numOfDays
+        calendarView.forceReload()
+        //Update Date Only
+        calendarView.updateWeekView(to: selectedData.date)
+        //Update Scroll Type Only
+        calendarView.scrollType = selectedData.scrollType
+        //Update FirstDayOfWeek
+        calendarView.updateFirstDayOfWeek(setDate: selectedData.date, firstDayOfWeek: selectedData.firstDayOfWeek)
+    }
 }
 

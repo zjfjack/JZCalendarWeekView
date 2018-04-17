@@ -26,7 +26,7 @@
 		8E1BA970206B6051007BE13C /* CornerHeaderBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA96F206B6051007BE13C /* CornerHeaderBackground.swift */; };
 		8E1BA972206B61B7007BE13C /* BaseEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA971206B61B7007BE13C /* BaseEventCell.swift */; };
 		8E1BA974206B64B3007BE13C /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA973206B64B3007BE13C /* DateExtension.swift */; };
-		8E1BA976206B6B12007BE13C /* UICollectionViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA975206B6B12007BE13C /* UICollectionViewExtension.swift */; };
+		8E478FA320846A8000668F05 /* OtherExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E478FA220846A8000668F05 /* OtherExtensions.swift */; };
 		8E5BB3FB2073154F00FA853F /* WeekViewHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */; };
 /* End PBXBuildFile section */
 
@@ -63,7 +63,7 @@
 		8E1BA96F206B6051007BE13C /* CornerHeaderBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerHeaderBackground.swift; sourceTree = "<group>"; };
 		8E1BA971206B61B7007BE13C /* BaseEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseEventCell.swift; sourceTree = "<group>"; };
 		8E1BA973206B64B3007BE13C /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
-		8E1BA975206B6B12007BE13C /* UICollectionViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewExtension.swift; sourceTree = "<group>"; };
+		8E478FA220846A8000668F05 /* OtherExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherExtensions.swift; sourceTree = "<group>"; };
 		8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekViewHelperTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -141,9 +141,9 @@
 			isa = PBXGroup;
 			children = (
 				8E1BA973206B64B3007BE13C /* DateExtension.swift */,
-				8E1BA975206B6B12007BE13C /* UICollectionViewExtension.swift */,
 				8E023C80206C715900C523BE /* UIViewExtensions.swift */,
 				8E023C85206C956F00C523BE /* WeekViewColors.swift */,
+				8E478FA220846A8000668F05 /* OtherExtensions.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -237,7 +237,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Jeff Zhang";
 				TargetAttributes = {
 					8E023C74206C6E4B00C523BE = {
@@ -301,9 +301,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E1BA96C206B5B3F007BE13C /* ColumnHeaderBackground.swift in Sources */,
+				8E478FA320846A8000668F05 /* OtherExtensions.swift in Sources */,
 				8E023C81206C715900C523BE /* UIViewExtensions.swift in Sources */,
 				8E1BA970206B6051007BE13C /* CornerHeaderBackground.swift in Sources */,
-				8E1BA976206B6B12007BE13C /* UICollectionViewExtension.swift in Sources */,
 				8E1BA95B206B4826007BE13C /* WeekViewFlowLayout.swift in Sources */,
 				8E1BA968206B4F40007BE13C /* CurrentTimeIndicator.swift in Sources */,
 				8E1BA960206B4B84007BE13C /* ColumnHeader.swift in Sources */,
@@ -373,6 +373,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -380,6 +381,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -433,6 +435,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -440,6 +443,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

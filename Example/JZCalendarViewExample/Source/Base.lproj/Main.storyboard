@@ -60,7 +60,7 @@
         <!--Options View Controller-->
         <scene sceneID="A1o-p0-qFd">
             <objects>
-                <viewController id="b9L-5r-rQJ" customClass="OptionsViewController" customModule="JZCalendarViewExample" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="OptionsViewController" id="b9L-5r-rQJ" customClass="OptionsViewController" customModule="JZCalendarViewExample" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NTQ-zb-q2K">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -86,7 +86,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PhH-fS-qJ7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1601" y="124"/>
+            <point key="canvasLocation" x="1462" y="123"/>
         </scene>
     </scenes>
 </document>
