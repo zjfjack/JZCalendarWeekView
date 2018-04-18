@@ -168,8 +168,13 @@ open class BaseWeekView: UIView {
     }
 
     
-    // Get date from points(Long press leftright Margin problem considered region before row header should be the following day)
-    func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
+    /**
+     Get date from points(Long press leftright Margin problem considered region before row header should be the following day)
+        - Parameters:
+            - xCollectionView: x position in collectionView
+            - xSelfView: x position in current view (self)
+     */
+    private func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
         
         let section = Int((xCollectionView - flowLayout.rowHeaderWidth) / flowLayout.sectionWidth)
         
@@ -184,22 +189,31 @@ open class BaseWeekView: UIView {
         
     }
     
-    func getDateForY(_ y: CGFloat) -> (Int, Int) {
-        let adjustedY = y - flowLayout.columnHeaderHeight - flowLayout.contentsMargin.top - flowLayout.sectionMargin.top
+    /// Get time from point y position
+    /// - Parameters:
+    ///    - yCollectionView: y position in collectionView
+    private func getDateForY(yCollectionView: CGFloat) -> (Int, Int) {
+        let adjustedY = yCollectionView - flowLayout.columnHeaderHeight - flowLayout.contentsMargin.top - flowLayout.sectionMargin.top
         let hour = Int(adjustedY / flowLayout.hourHeight)
         let minute = Int((adjustedY / flowLayout.hourHeight - CGFloat(hour)) * 60)
         return (hour, minute)
     }
     
-    func getDateForPoint(pointCollectionView: CGPoint, pointSelfView: CGPoint) -> Date {
+    /**
+     Get date from current point, can be used for gesture recognizer
+        - Parameters:
+            - pointCollectionView: current point position in collectionView
+            - pointSelfView: current point in current view (self)
+     */
+    public func getDateForPoint(pointCollectionView: CGPoint, pointSelfView: CGPoint) -> Date {
         
         let yearMonthDay = getDateForX(xCollectionView: pointCollectionView.x, xSelfView: pointSelfView.x)
-        let hourMinute = getDateForY(pointCollectionView.y)
+        let hourMinute = getDateForY(yCollectionView: pointCollectionView.y)
         
         return Calendar.current.date(bySettingHour: hourMinute.0, minute: hourMinute.1, second: 0, of: yearMonthDay)!
     }
     
-    // directionalLockEnabled
+    /// Get weekview scroll direction (directionalLockEnabled)
     fileprivate func getScrollDirection() -> ScrollDirection {
         var scrollDirection: ScrollDirection
         
@@ -222,6 +236,7 @@ open class BaseWeekView: UIView {
         return scrollDirection
     }
     
+    /// Get scroll direction axis
     fileprivate var scrollDirectionAxis: ScrollDirection {
         switch getScrollDirection() {
         case .left, .right:
@@ -240,6 +255,7 @@ open class BaseWeekView: UIView {
 
 extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     
+    //In order to keep efficiency, only 3 pages exist at the same time, previous-current-next
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 3 * numOfDays
     }
@@ -286,7 +302,6 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     
-    
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         initialContentOffset = scrollView.contentOffset
     }
@@ -310,10 +325,7 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         if !decelerate {
             isDirectionLocked = false
         }
-        
         if scrollDirectionAxis == .vertical {return}
-        
-        //loading page
         loadPage(scrollView: scrollView)
     }
     
@@ -352,6 +364,7 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
     }
     
+    ///It is used for scroll paging effect, scrollTypes sectionScroll and pageScroll applied here
     private func pagingEffect(scrollView: UIScrollView, velocity: CGPoint) {
         
         let yCurrentOffset = scrollView.contentOffset.y
@@ -384,7 +397,8 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
             }
         }
     }
-    //for loading next page or previous only
+    
+    ///For loading next page or previous page (Only three pages exist)
     private func loadPage(scrollView: UIScrollView) {
         let maximumOffset = scrollView.contentSize.width - scrollView.frame.width
         let currentOffset = scrollView.contentOffset.x
@@ -399,8 +413,8 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
     }
     
-    @objc func loadNextOrPrevPage(isNext: Bool) {
-        
+    ///Can be overrided to do some operations before reload
+    open func loadNextOrPrevPage(isNext: Bool) {
         let addValue = isNext ? numOfDays : -numOfDays
         self.initDate = self.initDate.add(component: .day, value: addValue!)
         self.forceReload()

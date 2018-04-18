@@ -24,7 +24,7 @@ class WeekViewHelperTest: XCTestCase {
     func testGetIntraEventsByDateSameDateEvents() {
         let testDate = Date().startOfDay
         let sameDayEvent = BaseEvent(title: "firstDate", startDate: testDate, endDate: testDate.add(component: .hour, value: 3))
-        let sameDateResults = WeekViewHelper.getIntraEventsByDate(originEvents: [sameDayEvent])
+        let sameDateResults = WeekViewHelper.getIntraEventsByDate(originalEvents: [sameDayEvent])
         XCTAssertTrue(sameDateResults.keys.count == 1, "Result should be only one date")
         
         if let testDateEvents = sameDateResults[testDate], testDateEvents.count == 1 {
@@ -42,7 +42,7 @@ class WeekViewHelperTest: XCTestCase {
         let testThirdDate = testStartDate.add(component: .day, value: 2)
         
         let crossTwoDayEvent = BaseEvent(title: "TwoDay", startDate: testStartDate, endDate: testThirdDate)
-        let twoDayResults = WeekViewHelper.getIntraEventsByDate(originEvents: [crossTwoDayEvent])
+        let twoDayResults = WeekViewHelper.getIntraEventsByDate(originalEvents: [crossTwoDayEvent])
         XCTAssertTrue(twoDayResults.keys.count == 3, "Result should be two dates")
         
         if let firstDayEvents = twoDayResults[testStartDate.startOfDay], firstDayEvents.count == 1 {

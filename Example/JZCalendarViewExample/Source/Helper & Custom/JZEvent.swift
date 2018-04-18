@@ -13,11 +13,13 @@ class JZEvent: BaseEvent {
     
     var location: String
     var eventType: Int
+    var title: String
     
     init(title: String, startDate: Date, endDate: Date, location: String, eventType: Int) {
         self.location = location
         self.eventType = eventType
-        super.init(title: title, startDate: startDate, endDate: endDate)
+        self.title = title
+        super.init(startDate: startDate, endDate: endDate)
     }
     
     override func copy(with zone: NSZone?) -> Any {

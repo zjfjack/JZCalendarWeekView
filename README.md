@@ -17,9 +17,11 @@ This is a new repository and it is my first time to write a library. If you have
 - Doing:
     - [ ] Refactoring code, writing comments and usage
 
-- Todo:
+- Todo
+    - [ ] Supports all devices including iPad and iPhone X and all orientations
     - [ ] Gestures: Tap to select & Long press to drag
     - [ ] New scroll type: Infinite scroll
+    - [ ] Supports different types of events
     - [ ] Supports Top custom decoration/supplementry view
 
 

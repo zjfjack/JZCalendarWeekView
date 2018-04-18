@@ -9,49 +9,42 @@
 import UIKit
 
 public protocol WeekViewFlowLayoutDelegate: class {
+    /// Get the date for given section
     func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, dayForSection section: Int) -> Date
+    /// Get the start time for given item indexPath
     func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, startTimeForItemAtIndexPath indexPath: IndexPath) -> Date
+    /// Get the end time for given item indexPath
     func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, endTimeForItemAtIndexPath indexPath: IndexPath) -> Date
+    /// TODO: Get the cell type for given item indexPath (Used for different cell types in the future)
+    func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, cellTypeForItemAtIndexPath indexPath: IndexPath) -> String
 }
 
 open class WeekViewFlowLayout: UICollectionViewFlowLayout {
-    typealias AttDic = Dictionary<IndexPath, UICollectionViewLayoutAttributes>
     
     // UI params
     var hourHeight: CGFloat!
     var rowHeaderWidth: CGFloat!
     var columnHeaderHeight: CGFloat!
     var sectionWidth: CGFloat!
-    var hourGridDivisionValue: HourGridDivision!
-    
+    var hourGridDivision: HourGridDivision!
     var minuteHeight: CGFloat { return hourHeight / 60 }
     
-    let displayHeaderBackgroundAtOrigin = true
-    let gridThickness: CGFloat = 0.5
+    open let defaultHourHeight: CGFloat = 50
+    open let defaultRowHeaderWidth: CGFloat = 42
+    open let defaultColumnHeaderHeight: CGFloat = 44
+    open let defaultHourGridDivision = HourGridDivision.noneDiv
+    //If you want to change following constants, subclass the WeekViewFlowLayout, and override them
+    open let defaultGridThickness: CGFloat = 0.5
+    open let defaultCurrentTimeLineHeight: CGFloat = 10
+    open let contentsMargin = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0) //Margin for the flowLayout in collectionView
+    open let sectionMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    open let itemMargin = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+    
+    private var maxSectionHeight: CGFloat { return columnHeaderHeight + hourHeight * 24 + contentsMargin.top + contentsMargin.bottom } //weekview contentSize height
+    
     let minOverlayZ = 1000  // Allows for 900 items in a section without z overlap issues
     let minCellZ = 100      // Allows for 100 items in a section's background
     let minBackgroundZ = 0
-    
-    //weekview contentSize height
-    let topOrBotMargin:CGFloat = 10
-    var maxSectionHeight: CGFloat { return columnHeaderHeight + hourHeight * 24 + topOrBotMargin * 2 }
-    var contentsMargin: UIEdgeInsets { return UIEdgeInsets(top: topOrBotMargin, left: 0, bottom: 0, right: 0) }
-    let sectionMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-    let cellMargin = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
-    
-    var currentTimeIndicatorSize: CGSize { return CGSize(width: rowHeaderWidth, height: 10.0) }
-    
-    weak var delegate: WeekViewFlowLayoutDelegate?
-    var currentTimeComponents: DateComponents {
-        if (cachedCurrentTimeComponents[0] != nil) {
-            return cachedCurrentTimeComponents[0]!
-        }
-        
-        cachedCurrentTimeComponents[0] = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: Date())
-        return cachedCurrentTimeComponents[0]!
-    }
-    
-    private var minuteTimer: Timer?
     
     // Attributes
     var cachedDayDateComponents = Dictionary<Int, DateComponents>()
@@ -60,6 +53,15 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
     var cachedEndTimeDateComponents = Dictionary<IndexPath, DateComponents>()
     var registeredDecorationClasses = Dictionary<String, AnyClass>()
     var needsToPopulateAttributesForAllSections = true
+    
+    var currentTimeComponents: DateComponents {
+        if cachedCurrentTimeComponents[0] == nil {
+            cachedCurrentTimeComponents[0] = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: Date())
+        }
+        return cachedCurrentTimeComponents[0]!
+    }
+    
+    typealias AttDic = Dictionary<IndexPath, UICollectionViewLayoutAttributes>
     
     var allAttributes = Array<UICollectionViewLayoutAttributes>()
     var itemAttributes = AttDic()
@@ -72,15 +74,23 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
     var cornerHeaderAttributes = AttDic()
     var currentTimeHorizontalGridlineAttributes = AttDic()
     
-    let currentTimeLineHeight: CGFloat = 10
-    let hourHeightConst:CGFloat = 50
-    let rowHeaderWidthConst: CGFloat = 42
-    let columnHeaderHeightConst: CGFloat = 44
+    weak var delegate: WeekViewFlowLayoutDelegate?
+    private var minuteTimer: Timer?
     
-    // MARK:- Life cycle
+    // Default UI parameters Initializer
     override init() {
         super.init()
-        initialize()
+        
+        setupUIParams()
+        initializeMinuteTick()
+    }
+    
+    // Custom UI parameters Initializer
+    init(hourHeight:CGFloat?=nil, rowHeaderWidth:CGFloat?=nil, columnHeaderHeight:CGFloat?=nil, hourGridDivision:HourGridDivision?=nil) {
+        super.init()
+        
+        setupUIParams(hourHeight: hourHeight, rowHeaderWidth: rowHeaderWidth, columnHeaderHeight: columnHeaderHeight, hourGridDivision: hourGridDivision)
+        initializeMinuteTick()
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -91,23 +101,20 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         minuteTimer?.invalidate()
     }
     
-    //setup all margins
-    func initialize() {
-        hourHeight = hourHeightConst
-        rowHeaderWidth = rowHeaderWidthConst
-        columnHeaderHeight = columnHeaderHeightConst
-        hourGridDivisionValue = .noneDiv
-        
-        initializeMinuteTick()
+    private func setupUIParams(hourHeight:CGFloat?=nil, rowHeaderWidth:CGFloat?=nil, columnHeaderHeight:CGFloat?=nil, hourGridDivision:HourGridDivision?=nil) {
+        self.hourHeight = hourHeight ?? defaultHourHeight
+        self.rowHeaderWidth = rowHeaderWidth ?? defaultRowHeaderWidth
+        self.columnHeaderHeight = columnHeaderHeight ?? defaultColumnHeaderHeight
+        self.hourGridDivision = hourGridDivision ?? defaultHourGridDivision
     }
     
-    func initializeMinuteTick() {
+    private func initializeMinuteTick() {
         let fireDate = Calendar.current.date(byAdding: .minute, value: 1, to: Date())!
         minuteTimer = Timer(fireAt: fireDate, interval: 60, target: self, selector: #selector(minuteTick), userInfo: nil, repeats: true)
         RunLoop.current.add(minuteTimer!, forMode: .defaultRunLoopMode)
     }
     
-    @objc func minuteTick() {
+    @objc private func minuteTick() {
         cachedCurrentTimeComponents.removeAll()
         invalidateLayout()
     }
@@ -182,14 +189,14 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
                 let timeY = calendarContentMinY + nearbyint(CGFloat(currentTimeComponents.hour!) * hourHeight
                     + CGFloat(currentTimeComponents.minute!) * minuteHeight)
                 let sectionMinX = calendarContentMinX + sectionWidth * CGFloat(section)
-                let currentTimeHorizontalGridlineMinY = timeY - nearbyint(gridThickness / 2.0) - currentTimeLineHeight/2
+                let currentTimeHorizontalGridlineMinY = timeY - nearbyint(defaultGridThickness / 2.0) - defaultCurrentTimeLineHeight/2
                 (attributes, currentTimeHorizontalGridlineAttributes) =
                     layoutAttributesForDecorationView(at: IndexPath(item: 0, section: section),
                                                       ofKind: DecorationViewKinds.currentTimeGridline,
                                                       withItemCache: currentTimeHorizontalGridlineAttributes)
                 
                 attributes.frame = CGRect(x: sectionMinX, y: currentTimeHorizontalGridlineMinY,
-                                          width: sectionWidth, height: currentTimeLineHeight)
+                                          width: sectionWidth, height: defaultCurrentTimeLineHeight)
                 attributes.zIndex = zIndexForElementKind(DecorationViewKinds.currentTimeGridline)
                 currentTimeHorizontalGridlineAttributes.removeAll()
                 currentTimeHorizontalGridlineAttributes[indexPath] = attributes
@@ -287,10 +294,10 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
                 endHourY = CGFloat(itemEndTime.hour!) * hourHeight
             }
             
-            let itemMinX = nearbyint(sectionX + cellMargin.left)
-            let itemMinY = nearbyint(startHourY + startMinuteY + calendarStartY + cellMargin.top)
-            let itemMaxX = nearbyint(itemMinX + (sectionWidth - (cellMargin.left + cellMargin.right)))
-            let itemMaxY = nearbyint(endHourY + endMinuteY + calendarStartY - cellMargin.bottom)
+            let itemMinX = nearbyint(sectionX + itemMargin.left)
+            let itemMinY = nearbyint(startHourY + startMinuteY + calendarStartY + itemMargin.top)
+            let itemMaxX = nearbyint(itemMinX + (sectionWidth - (itemMargin.left + itemMargin.right)))
+            let itemMaxY = nearbyint(endHourY + endMinuteY + calendarStartY - itemMargin.bottom)
             
             attributes.frame = CGRect(x: itemMinX, y: itemMinY,
                                       width: itemMaxX - itemMinX,
@@ -310,9 +317,9 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
             layoutAttributesForDecorationView(at: IndexPath(item: 0, section: section),
                                               ofKind: DecorationViewKinds.verticalGridline,
                                               withItemCache: verticalGridlineAttributes)
-        attributes.frame = CGRect(x: nearbyint(sectionX - gridThickness / 2.0),
+        attributes.frame = CGRect(x: nearbyint(sectionX - defaultGridThickness / 2.0),
                                   y: calendarGridMinY,
-                                  width: gridThickness,
+                                  width: defaultGridThickness,
                                   height: sectionHeight)
         attributes.zIndex = zIndexForElementKind(DecorationViewKinds.verticalGridline)
     }
@@ -329,17 +336,17 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
                                                   withItemCache: horizontalGridlineAttributes)
             let horizontalGridlineXOffset = calendarStartX + sectionMargin.left
             let horizontalGridlineMinX = fmax(horizontalGridlineXOffset, collectionView!.contentOffset.x + horizontalGridlineXOffset)
-            let horizontalGridlineMinY = nearbyint(calendarStartY + (hourHeight * CGFloat(hour))) - (gridThickness / 2.0)
+            let horizontalGridlineMinY = nearbyint(calendarStartY + (hourHeight * CGFloat(hour))) - (defaultGridThickness / 2.0)
             let horizontalGridlineWidth = fmin(calendarGridWidth, collectionView!.frame.width)
             
             attributes.frame = CGRect(x: horizontalGridlineMinX,
                                       y: horizontalGridlineMinY,
                                       width: horizontalGridlineWidth,
-                                      height: gridThickness)
+                                      height: defaultGridThickness)
             attributes.zIndex = zIndexForElementKind(DecorationViewKinds.horizontalGridline)
             horizontalGridlineIndex += 1
             
-            if hourGridDivisionValue.rawValue > 0 {
+            if hourGridDivision.rawValue > 0 {
                 horizontalGridlineIndex = drawHourDividersAtGridLineIndex(horizontalGridlineIndex, hour: hour,
                                                                           startX: horizontalGridlineMinX,
                                                                           startY: horizontalGridlineMinY,
@@ -352,7 +359,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
                                          startY calendarStartY: CGFloat, gridlineWidth: CGFloat) -> Int {
         var _gridlineIndex = gridlineIndex
         var attributes = UICollectionViewLayoutAttributes()
-        let numberOfDivisions = 60 / hourGridDivisionValue.rawValue
+        let numberOfDivisions = 60 / hourGridDivision.rawValue
         let divisionHeight = hourHeight / CGFloat(numberOfDivisions)
         
         for division in 1..<numberOfDivisions {
@@ -361,8 +368,8 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
             (attributes, horizontalGridlineAttributes) = layoutAttributesForDecorationView(at: horizontalGridlineIndexPath,
                                                                                            ofKind: DecorationViewKinds.horizontalGridline,
                                                                                            withItemCache: horizontalGridlineAttributes)
-            let horizontalGridlineMinY = nearbyint(calendarStartY + (divisionHeight * CGFloat(division)) - (gridThickness / 2.0))
-            attributes.frame = CGRect(x: calendarStartX, y: horizontalGridlineMinY, width: gridlineWidth, height: gridThickness)
+            let horizontalGridlineMinY = nearbyint(calendarStartY + (divisionHeight * CGFloat(division)) - (defaultGridThickness / 2.0))
+            attributes.frame = CGRect(x: calendarStartX, y: horizontalGridlineMinY, width: gridlineWidth, height: defaultGridThickness)
             attributes.alpha = 0.3
             attributes.zIndex = zIndexForElementKind(DecorationViewKinds.horizontalGridline)
             
@@ -518,19 +525,19 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
                 var dividedAttributes = [UICollectionViewLayoutAttributes]()
                 
                 for divisionAttributes in overlappingItems {
-                    let itemWidth = divisionWidth - cellMargin.left - cellMargin.right
+                    let itemWidth = divisionWidth - itemMargin.left - itemMargin.right
                     
                     // It it hasn't yet been adjusted, perform adjustment
                     if !adjustedAttributes.contains(divisionAttributes) {
                         var divisionAttributesFrame = divisionAttributes.frame
-                        divisionAttributesFrame.origin.x = sectionMinX + cellMargin.left
+                        divisionAttributesFrame.origin.x = sectionMinX + itemMargin.left
                         divisionAttributesFrame.size.width = itemWidth
                         
                         // Horizontal Layout
                         var adjustments = 1
                         for dividedItemAttributes in dividedAttributes {
                             if dividedItemAttributes.frame.intersects(divisionAttributesFrame) {
-                                divisionAttributesFrame.origin.x = sectionMinX + ((divisionWidth * CGFloat(adjustments)) + cellMargin.left)
+                                divisionAttributesFrame.origin.x = sectionMinX + ((divisionWidth * CGFloat(adjustments)) + itemMargin.left)
                                 adjustments += 1
                             }
                         }

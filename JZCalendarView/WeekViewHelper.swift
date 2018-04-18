@@ -24,15 +24,6 @@ enum DecorationViewKinds {
     static let currentTimeGridline = CurrentTimeIndicator.className
 }
 
-enum HourGridDivision: Int {
-    case noneDiv = 0
-    case minutes_5 = 5
-    case minutes_10 = 10
-    case minutes_15 = 15
-    case minutes_20 = 20
-    case minutes_30 = 30
-}
-
 enum ScrollDirection {
     case none
     case crazy
@@ -42,6 +33,15 @@ enum ScrollDirection {
     case down
     case horizontal
     case vertical
+}
+
+public enum HourGridDivision: Int {
+    case noneDiv = 0
+    case minutes_5 = 5
+    case minutes_10 = 10
+    case minutes_15 = 15
+    case minutes_20 = 20
+    case minutes_30 = 30
 }
 
 public enum DayOfWeek: Int {
@@ -74,9 +74,16 @@ public typealias EventsByDate = [Date:[BaseEvent]]
 
 open class WeekViewHelper {
     
-    open class func getIntraEventsByDate<T: BaseEvent>(originEvents: [T]) -> [Date: [T]] {
+    /**
+     Get calculated events dictionary with intraStartTime and intraEndTime
+     - Parameters:
+        - originalEvents: A list of original Events (subclassed from BaseEvent)
+     - Returns:
+        A dictionary used by BaseWeekView. Key is a day Date, value is all the events in that day
+     */
+    open class func getIntraEventsByDate<T: BaseEvent>(originalEvents: [T]) -> [Date: [T]] {
         var treatedEvents = [Date: [T]]()
-        for event in originEvents {
+        for event in originalEvents {
             let startDateStartDay = event.startDate.startOfDay
             let daysBetween = Date.daysBetween(start: event.startDate, end: event.endDate)
             if daysBetween == 0 {

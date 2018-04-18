@@ -10,7 +10,6 @@ import UIKit
 
 open class BaseEvent: NSObject, NSCopying {
     
-    open var title: String = ""
     open var startDate: Date
     open var endDate: Date
     
@@ -19,8 +18,7 @@ open class BaseEvent: NSObject, NSCopying {
     open var intraStartDate: Date
     open var intraEndDate: Date
     
-    public init(title: String, startDate: Date, endDate: Date) {
-        self.title = title
+    public init(startDate: Date, endDate: Date) {
         self.startDate = startDate
         self.endDate = endDate
         self.intraStartDate = startDate
@@ -29,6 +27,6 @@ open class BaseEvent: NSObject, NSCopying {
     
     //Must be overrided
     open func copy(with zone: NSZone? = nil) -> Any {
-        return BaseEvent.init(title: title, startDate: startDate, endDate: endDate)
+        return BaseEvent.init(startDate: startDate, endDate: endDate)
     }
 }

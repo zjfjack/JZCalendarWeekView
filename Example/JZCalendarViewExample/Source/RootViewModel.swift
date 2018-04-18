@@ -24,7 +24,7 @@ class RootViewModel: NSObject {
     override init() {
         super.init()
         
-        eventsByDate = WeekViewHelper.getIntraEventsByDate(originEvents: events)
+        eventsByDate = WeekViewHelper.getIntraEventsByDate(originalEvents: events)
         
     }
     
