@@ -1,4 +1,4 @@
-# JZCalendarView
+# JZCalendarWeekView
 iOS Calendar Week/Day View in Swift
 
 Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
@@ -43,7 +43,7 @@ Please check the example project for now.
 
 ## License
 
-JZCalendarView is available under the MIT license. See the [LICENSE](https://github.com/zjfjack/JZCalendarView/blob/master/LICENSE)  for more info.
+JZCalendarWeekView is available under the MIT license. See the [LICENSE](https://github.com/zjfjack/JZCalendarWeekView/blob/master/LICENSE)  for more info.
 
 
 
