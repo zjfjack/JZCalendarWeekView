@@ -103,12 +103,10 @@ open class BaseWeekView: UIView {
         self.allEventsBySection = allEvents
         self.scrollType = scrollType
         
-        if let firstDayOfWeek = firstDayOfWeek, numOfDays == 7 {
-            updateFirstDayOfWeek(setDate: setDate, firstDayOfWeek: firstDayOfWeek)
-            
+        if numOfDays == 7 {
+            updateFirstDayOfWeek(setDate: setDate, firstDayOfWeek: firstDayOfWeek ?? .sunday)
         } else {
             self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays)
-            self.firstDayOfWeek = .sunday
         }
         
         DispatchQueue.main.async { [unowned self] in
@@ -255,7 +253,7 @@ open class BaseWeekView: UIView {
 
 extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     
-    //In order to keep efficiency, only 3 pages exist at the same time, previous-current-next
+    // In order to keep efficiency, only 3 pages exist at the same time, previous-current-next
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 3 * numOfDays
     }

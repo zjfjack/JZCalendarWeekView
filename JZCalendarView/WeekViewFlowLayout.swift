@@ -3,7 +3,7 @@
 //  JZCalendarView
 //
 //  Created by Jeff Zhang on 28/3/18.
-//  Inspired by WRCalendarView
+//  Inspired and followed by WRCalendarView (https://github.com/wayfinders/WRCalendarView)
 //
 
 import UIKit
@@ -29,16 +29,16 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
     var hourGridDivision: HourGridDivision!
     var minuteHeight: CGFloat { return hourHeight / 60 }
     
-    open let defaultHourHeight: CGFloat = 50
-    open let defaultRowHeaderWidth: CGFloat = 42
-    open let defaultColumnHeaderHeight: CGFloat = 44
-    open let defaultHourGridDivision = HourGridDivision.noneDiv
+    open var defaultHourHeight: CGFloat = 50
+    open var defaultRowHeaderWidth: CGFloat = 42
+    open var defaultColumnHeaderHeight: CGFloat = 44
+    open var defaultHourGridDivision = HourGridDivision.noneDiv
     //If you want to change following constants, subclass the WeekViewFlowLayout, and override them
-    open let defaultGridThickness: CGFloat = 0.5
-    open let defaultCurrentTimeLineHeight: CGFloat = 10
-    open let contentsMargin = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0) //Margin for the flowLayout in collectionView
-    open let sectionMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-    open let itemMargin = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+    open var defaultGridThickness: CGFloat = 0.5
+    open var defaultCurrentTimeLineHeight: CGFloat = 10
+    open var contentsMargin = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0) //Margin for the flowLayout in collectionView
+    open var sectionMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    open var itemMargin = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
     
     private var maxSectionHeight: CGFloat { return columnHeaderHeight + hourHeight * 24 + contentsMargin.top + contentsMargin.bottom } //weekview contentSize height
     
@@ -72,7 +72,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
     var verticalGridlineAttributes = AttDic()
     var horizontalGridlineAttributes = AttDic()
     var cornerHeaderAttributes = AttDic()
-    var currentTimeHorizontalGridlineAttributes = AttDic()
+    var currentTimeLineAttributes = AttDic()
     
     weak var delegate: WeekViewFlowLayoutDelegate?
     private var minuteTimer: Timer?
@@ -146,8 +146,8 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         super.prepare()
         
         if needsToPopulateAttributesForAllSections {
-            prepareHorizontalTileSectionLayoutForSections(NSIndexSet.init(indexesIn:
-                NSRange.init(location: 0, length: collectionView!.numberOfSections)))
+            prepareHorizontalTileSectionLayoutForSections(NSIndexSet(indexesIn:
+                NSRange(location: 0, length: collectionView!.numberOfSections)))
             needsToPopulateAttributesForAllSections = false
         }
         
@@ -161,12 +161,12 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
             allAttributes.append(contentsOf: verticalGridlineAttributes.values)
             allAttributes.append(contentsOf: horizontalGridlineAttributes.values)
             allAttributes.append(contentsOf: cornerHeaderAttributes.values)
-            allAttributes.append(contentsOf: currentTimeHorizontalGridlineAttributes.values)
+            allAttributes.append(contentsOf: currentTimeLineAttributes.values)
             allAttributes.append(contentsOf: itemAttributes.values)
         }
     }
     
-    func prepareHorizontalTileSectionLayoutForSections(_ sectionIndexes: NSIndexSet) {
+    open func prepareHorizontalTileSectionLayoutForSections(_ sectionIndexes: NSIndexSet) {
         guard collectionView!.numberOfSections != 0 else { return }
         
         var attributes =  UICollectionViewLayoutAttributes()
@@ -174,77 +174,64 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         let sectionWidth = sectionMargin.left + self.sectionWidth + sectionMargin.right
         let sectionHeight = nearbyint(hourHeight * 24 + sectionMargin.top + sectionMargin.bottom)
         let calendarGridMinY = columnHeaderHeight + contentsMargin.top
-        
         let calendarContentMinX = rowHeaderWidth + contentsMargin.left + sectionMargin.left
         let calendarContentMinY = columnHeaderHeight + contentsMargin.top + sectionMargin.top
-        // row header
         let rowHeaderMinX = fmax(collectionView!.contentOffset.x, 0)
         
-        
-        //current time gridline
+        // Current time line
         var hasTimeLineInAllSections = false
         sectionIndexes.enumerate(_:) { (section, stop) in
             let indexPath = IndexPath(row: 0, section: section)
+            //  Only show current time line in today section
             if dateForColumnHeader(at: indexPath).isToday {
                 let timeY = calendarContentMinY + nearbyint(CGFloat(currentTimeComponents.hour!) * hourHeight
                     + CGFloat(currentTimeComponents.minute!) * minuteHeight)
                 let sectionMinX = calendarContentMinX + sectionWidth * CGFloat(section)
                 let currentTimeHorizontalGridlineMinY = timeY - nearbyint(defaultGridThickness / 2.0) - defaultCurrentTimeLineHeight/2
-                (attributes, currentTimeHorizontalGridlineAttributes) =
-                    layoutAttributesForDecorationView(at: IndexPath(item: 0, section: section),
-                                                      ofKind: DecorationViewKinds.currentTimeGridline,
-                                                      withItemCache: currentTimeHorizontalGridlineAttributes)
-                
-                attributes.frame = CGRect(x: sectionMinX, y: currentTimeHorizontalGridlineMinY,
-                                          width: sectionWidth, height: defaultCurrentTimeLineHeight)
+                (attributes, currentTimeLineAttributes) = layoutAttributesForDecorationView(at: IndexPath(item: 0, section: section),
+                                                                                            ofKind: DecorationViewKinds.currentTimeGridline,
+                                                                                            withItemCache: currentTimeLineAttributes)
+                attributes.frame = CGRect(x: sectionMinX, y: currentTimeHorizontalGridlineMinY, width: sectionWidth, height: defaultCurrentTimeLineHeight)
                 attributes.zIndex = zIndexForElementKind(DecorationViewKinds.currentTimeGridline)
-                currentTimeHorizontalGridlineAttributes.removeAll()
-                currentTimeHorizontalGridlineAttributes[indexPath] = attributes
+                //Remove some reused sections attributes
+                currentTimeLineAttributes.removeAll()
+                currentTimeLineAttributes[indexPath] = attributes
                 hasTimeLineInAllSections = true
             }
         }
-        if !hasTimeLineInAllSections {currentTimeHorizontalGridlineAttributes.removeAll()}
+        if !hasTimeLineInAllSections {currentTimeLineAttributes.removeAll()}
         
+    
         // Corner Header
-        (attributes, cornerHeaderAttributes) =
-            layoutAttributesForSupplemantaryView(at: IndexPath(row: 0, section: 0),
-                                                 ofKind: SupplementaryViewKinds.cornerHeader,
-                                                 withItemCache: cornerHeaderAttributes)
-        attributes.frame = CGRect(origin: collectionView!.contentOffset,
-                                  size: CGSize.init(width: rowHeaderWidth, height: columnHeaderHeight))
+        (attributes, cornerHeaderAttributes) = layoutAttributesForSupplemantaryView(at: IndexPath(row: 0, section: 0),
+                                                                                    ofKind: SupplementaryViewKinds.cornerHeader,
+                                                                                    withItemCache: cornerHeaderAttributes)
+        attributes.frame = CGRect(origin: collectionView!.contentOffset, size: CGSize(width: rowHeaderWidth, height: columnHeaderHeight))
         attributes.zIndex = zIndexForElementKind(SupplementaryViewKinds.cornerHeader)
         
-        // row Header Background
-        (attributes, rowHeaderBackgroundAttributes) =
-            layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
-                                              ofKind: RowHeaderBackground.className,
-                                              withItemCache: rowHeaderBackgroundAttributes)
-        attributes.frame = CGRect(x: rowHeaderMinX, y: collectionView!.contentOffset.y,
-                                  width: rowHeaderWidth, height: collectionView!.frame.height)
+        // Row Header Background
+        (attributes, rowHeaderBackgroundAttributes) = layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
+                                                                                        ofKind: RowHeaderBackground.className,
+                                                                                        withItemCache: rowHeaderBackgroundAttributes)
+        attributes.frame = CGRect(x: rowHeaderMinX, y: collectionView!.contentOffset.y, width: rowHeaderWidth, height: collectionView!.frame.height)
         attributes.zIndex = zIndexForElementKind(DecorationViewKinds.rowHeaderBackground)
         
-        // row header
+        // Row header
         for rowHeaderIndex in 0...24 {
-            (attributes, rowHeaderAttributes) =
-                layoutAttributesForSupplemantaryView(at: IndexPath(item: rowHeaderIndex, section: 0),
-                                                     ofKind: SupplementaryViewKinds.rowHeader,
-                                                     withItemCache: rowHeaderAttributes)
+            (attributes, rowHeaderAttributes) = layoutAttributesForSupplemantaryView(at: IndexPath(item: rowHeaderIndex, section: 0),
+                                                                                     ofKind: SupplementaryViewKinds.rowHeader,
+                                                                                     withItemCache: rowHeaderAttributes)
             let rowHeaderMinY = calendarContentMinY + hourHeight * CGFloat(rowHeaderIndex) - nearbyint(hourHeight / 2.0)
-            attributes.frame = CGRect(x: rowHeaderMinX,
-                                      y: rowHeaderMinY,
-                                      width: rowHeaderWidth,
-                                      height: hourHeight)
+            attributes.frame = CGRect(x: rowHeaderMinX, y: rowHeaderMinY, width: rowHeaderWidth, height: hourHeight)
             attributes.zIndex = zIndexForElementKind(SupplementaryViewKinds.rowHeader)
         }
         
         // column header background
-        (attributes, columnHeaderBackgroundAttributes) =
-            layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
-                                              ofKind: DecorationViewKinds.columnHeaderBackground,
-                                              withItemCache: columnHeaderBackgroundAttributes)
-        attributes.frame = CGRect(origin: collectionView!.contentOffset,
-                                  size: CGSize(width: collectionView!.frame.width,
-                                               height: columnHeaderHeight + (collectionView!.contentOffset.y < 0 ? abs(collectionView!.contentOffset.y) : 0 )))
+        (attributes, columnHeaderBackgroundAttributes) = layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
+                                                                                           ofKind: DecorationViewKinds.columnHeaderBackground,
+                                                                                           withItemCache: columnHeaderBackgroundAttributes)
+        let attributesHeight = columnHeaderHeight + (collectionView!.contentOffset.y < 0 ? abs(collectionView!.contentOffset.y) : 0 )
+        attributes.frame = CGRect(origin: collectionView!.contentOffset, size: CGSize(width: collectionView!.frame.width, height: attributesHeight))
         attributes.zIndex = zIndexForElementKind(DecorationViewKinds.columnHeaderBackground)
         
         // Column Header
@@ -252,22 +239,17 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         
         sectionIndexes.enumerate(_:) { (section, stop) in
             let sectionMinX = calendarContentMinX + sectionWidth * CGFloat(section)
-            
-            (attributes, columnHeaderAttributes) =
-                layoutAttributesForSupplemantaryView(at: IndexPath(item: 0, section: section),
-                                                     ofKind: SupplementaryViewKinds.columnHeader,
-                                                     withItemCache: columnHeaderAttributes)
-            attributes.frame = CGRect(x: sectionMinX, y: columnHeaderMinY,
-                                      width: sectionWidth, height: columnHeaderHeight)
+            (attributes, columnHeaderAttributes) = layoutAttributesForSupplemantaryView(at: IndexPath(item: 0, section: section),
+                                                                                        ofKind: SupplementaryViewKinds.columnHeader,
+                                                                                        withItemCache: columnHeaderAttributes)
+            attributes.frame = CGRect(x: sectionMinX, y: columnHeaderMinY, width: sectionWidth, height: columnHeaderHeight)
             attributes.zIndex = zIndexForElementKind(SupplementaryViewKinds.columnHeader)
             
             layoutVerticalGridLinesAttributes(section: section, sectionX: sectionMinX, calendarGridMinY: calendarGridMinY, sectionHeight: sectionHeight)
-            
             layoutItemsAttributes(section: section, sectionX: sectionMinX, calendarStartY: calendarGridMinY)
         }
         
         layoutHorizontalGridLinesAttributes(calendarStartX: calendarContentMinX, calendarStartY: calendarContentMinY)
-        
     }
     
     // MARK: - Layout Attributes
@@ -277,15 +259,13 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         
         for item in 0..<collectionView!.numberOfItems(inSection: section) {
             let itemIndexPath = IndexPath(item: item, section: section)
-            (attributes, itemAttributes) =
-                layoutAttributesForCell(at: itemIndexPath, withItemCache: itemAttributes)
+            (attributes, itemAttributes) = layoutAttributesForCell(at: itemIndexPath, withItemCache: itemAttributes)
             
             let itemStartTime = startTimeForIndexPath(itemIndexPath)
             let itemEndTime = endTimeForIndexPath(itemIndexPath)
             let startHourY = CGFloat(itemStartTime.hour!) * hourHeight
             let startMinuteY = CGFloat(itemStartTime.minute!) * minuteHeight
-            
-            var endHourY: CGFloat
+            let endHourY: CGFloat
             let endMinuteY = CGFloat(itemEndTime.minute!) * minuteHeight
             
             if itemEndTime.day! != itemStartTime.day! {
@@ -299,9 +279,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
             let itemMaxX = nearbyint(itemMinX + (sectionWidth - (itemMargin.left + itemMargin.right)))
             let itemMaxY = nearbyint(endHourY + endMinuteY + calendarStartY - itemMargin.bottom)
             
-            attributes.frame = CGRect(x: itemMinX, y: itemMinY,
-                                      width: itemMaxX - itemMinX,
-                                      height: itemMaxY - itemMinY)
+            attributes.frame = CGRect(x: itemMinX, y: itemMinY, width: itemMaxX - itemMinX, height: itemMaxY - itemMinY)
             attributes.zIndex = zIndexForElementKind(SupplementaryViewKinds.baseEventCell)
             sectionItemAttributes.append(attributes)
         }
@@ -313,14 +291,11 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
     func layoutVerticalGridLinesAttributes(section: Int, sectionX: CGFloat, calendarGridMinY: CGFloat, sectionHeight: CGFloat) {
         var attributes = UICollectionViewLayoutAttributes()
         
-        (attributes, verticalGridlineAttributes) =
-            layoutAttributesForDecorationView(at: IndexPath(item: 0, section: section),
-                                              ofKind: DecorationViewKinds.verticalGridline,
-                                              withItemCache: verticalGridlineAttributes)
-        attributes.frame = CGRect(x: nearbyint(sectionX - defaultGridThickness / 2.0),
-                                  y: calendarGridMinY,
-                                  width: defaultGridThickness,
-                                  height: sectionHeight)
+        (attributes, verticalGridlineAttributes) = layoutAttributesForDecorationView(at: IndexPath(item: 0, section: section),
+                                                                                     ofKind: DecorationViewKinds.verticalGridline,
+                                                                                     withItemCache: verticalGridlineAttributes)
+        attributes.frame = CGRect(x: nearbyint(sectionX - defaultGridThickness / 2.0), y: calendarGridMinY,
+                                  width: defaultGridThickness, height: sectionHeight)
         attributes.zIndex = zIndexForElementKind(DecorationViewKinds.verticalGridline)
     }
     
@@ -330,19 +305,16 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         var attributes = UICollectionViewLayoutAttributes()
         
         for hour in 0...24 {
-            (attributes, horizontalGridlineAttributes) =
-                layoutAttributesForDecorationView(at: IndexPath(item: horizontalGridlineIndex, section: 0),
-                                                  ofKind: DecorationViewKinds.horizontalGridline,
-                                                  withItemCache: horizontalGridlineAttributes)
+            (attributes, horizontalGridlineAttributes) = layoutAttributesForDecorationView(at: IndexPath(item: horizontalGridlineIndex, section: 0),
+                                                                                           ofKind: DecorationViewKinds.horizontalGridline,
+                                                                                           withItemCache: horizontalGridlineAttributes)
             let horizontalGridlineXOffset = calendarStartX + sectionMargin.left
             let horizontalGridlineMinX = fmax(horizontalGridlineXOffset, collectionView!.contentOffset.x + horizontalGridlineXOffset)
             let horizontalGridlineMinY = nearbyint(calendarStartY + (hourHeight * CGFloat(hour))) - (defaultGridThickness / 2.0)
             let horizontalGridlineWidth = fmin(calendarGridWidth, collectionView!.frame.width)
             
-            attributes.frame = CGRect(x: horizontalGridlineMinX,
-                                      y: horizontalGridlineMinY,
-                                      width: horizontalGridlineWidth,
-                                      height: defaultGridThickness)
+            attributes.frame = CGRect(x: horizontalGridlineMinX, y: horizontalGridlineMinY,
+                                      width: horizontalGridlineWidth, height: defaultGridThickness)
             attributes.zIndex = zIndexForElementKind(DecorationViewKinds.horizontalGridline)
             horizontalGridlineIndex += 1
             
@@ -380,9 +352,8 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
     }
     
     override open var collectionViewContentSize: CGSize {
-        let size = CGSize(width: rowHeaderWidth + sectionWidth * CGFloat(collectionView!.numberOfSections),
-                          height: maxSectionHeight)
-        return size
+        return CGSize(width: rowHeaderWidth + sectionWidth * CGFloat(collectionView!.numberOfSections),
+                      height: maxSectionHeight)
     }
     
     // MARK: - Layout
@@ -449,7 +420,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         }
     }
     
-    func layoutAttributesForSupplemantaryView(at indexPath: IndexPath,
+    private func layoutAttributesForSupplemantaryView(at indexPath: IndexPath,
                                               ofKind kind: String,
                                               withItemCache itemCache: AttDic) -> (UICollectionViewLayoutAttributes, AttDic) {
         var layoutAttributes = itemCache[indexPath]
@@ -464,7 +435,8 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         }
     }
     
-    func adjustItemsForOverlap(_ sectionItemAttributes: [UICollectionViewLayoutAttributes], inSection: Int, sectionMinX: CGFloat, currentSectionZ: Int) {
+    /// Adjust items size when overlapping at same period
+    open func adjustItemsForOverlap(_ sectionItemAttributes: [UICollectionViewLayoutAttributes], inSection: Int, sectionMinX: CGFloat, currentSectionZ: Int) {
         var adjustedAttributes = Set<UICollectionViewLayoutAttributes>()
         
         var sectionZ = currentSectionZ
@@ -541,7 +513,6 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
                                 adjustments += 1
                             }
                         }
-                        
                         // Stacking (lower items stack above higher items, since the title is at the top)
                         divisionAttributes.zIndex = sectionZ
                         sectionZ += 1
@@ -573,14 +544,9 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         allAttributes.removeAll()
     }
     
-    //Not used now
-    func invalidateItemsCache() {
-        itemAttributes.removeAll()
-    }
-    
     override open func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         let visibleSections = NSMutableIndexSet()
-        NSIndexSet.init(indexesIn: NSRange.init(location: 0, length: collectionView!.numberOfSections))
+        NSIndexSet.init(indexesIn: NSRange(location: 0, length: collectionView!.numberOfSections))
             .enumerate(_:) { (section: Int, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
                 let sectionRect = rectForSection(section)
                 if rect.intersects(sectionRect) {
@@ -599,10 +565,8 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
     
     // MARK: - Section sizing
     func rectForSection(_ section: Int) -> CGRect {
-        return CGRect(x: rowHeaderWidth + sectionWidth * CGFloat(section),
-                      y: 0,
-                      width: sectionWidth,
-                      height: collectionViewContentSize.height)
+        return CGRect(x: rowHeaderWidth + sectionWidth * CGFloat(section), y: 0,
+                      width: sectionWidth, height: collectionViewContentSize.height)
     }
     
     // MARK: - Delegate Wrapper
@@ -655,9 +619,7 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         collectionView!.delegate = tempDelegate
     }
     
-    
-    // MARK: - Dates
-    func dateForTimeRowHeader(at indexPath: IndexPath) -> Date {
+    public func dateForTimeRowHeader(at indexPath: IndexPath) -> Date {
         var components = daysForSection(indexPath.section)
         components.hour = indexPath.item
         return Calendar.current.date(from: components)!
@@ -667,15 +629,10 @@ open class WeekViewFlowLayout: UICollectionViewFlowLayout {
         let day = delegate?.collectionView(collectionView!, layout: self, dayForSection: indexPath.section)
         return Calendar.current.startOfDay(for: day!)
     }
-    
-    func hourIndexForDate(_ date: Date) -> Int {
-        return Calendar.current.component(.hour, from: date)
-    }
-    
+   
     // MARK: - z index
-    func zIndexForElementKind(_ kind: String) -> Int {
+    open func zIndexForElementKind(_ kind: String) -> Int {
         switch kind {
-            
         case SupplementaryViewKinds.cornerHeader:
             return minOverlayZ + 9
         case SupplementaryViewKinds.rowHeader:

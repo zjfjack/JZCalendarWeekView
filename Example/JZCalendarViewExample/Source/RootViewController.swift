@@ -33,8 +33,7 @@ class RootViewController: UIViewController {
     }
     
     private func setupCalendarView() {
-        
-        calendarView.setupCalendar(numOfDays: 7, setDate: Date(), allEvents: viewModel.eventsByDate)
+        calendarView.setupCalendar(numOfDays: 3, setDate: Date(), allEvents: viewModel.eventsByDate)
     }
     
     private func setupNaviBar() {
@@ -59,11 +58,11 @@ class RootViewController: UIViewController {
     
     private func getSelectedData() -> OptionsSelectedData {
         let numOfDays = calendarView.numOfDays!
-        let dayOfWeek = numOfDays == 7 ? calendarView.firstDayOfWeek : nil
+        let firstDayOfWeek = numOfDays == 7 ? calendarView.firstDayOfWeek : nil
         return OptionsSelectedData(date: calendarView.initDate.add(component: .day, value: numOfDays),
                                    numOfDays: numOfDays,
                                    scrollType: calendarView.scrollType,
-                                   firstDayOfWeek: dayOfWeek)
+                                   firstDayOfWeek: firstDayOfWeek)
     }
 
     override func didReceiveMemoryWarning() {
@@ -75,14 +74,14 @@ class RootViewController: UIViewController {
 extension RootViewController: OptionsViewDelegate {
     
     func finishUpdate(selectedData: OptionsSelectedData) {
-        //Update numOfDays Only
+        // Update numOfDays Only
         calendarView.numOfDays = selectedData.numOfDays
         calendarView.forceReload()
-        //Update Date Only
+        // Update Date Only
         calendarView.updateWeekView(to: selectedData.date)
-        //Update Scroll Type Only
+        // Update Scroll Type Only
         calendarView.scrollType = selectedData.scrollType
-        //Update FirstDayOfWeek
+        // Update FirstDayOfWeek
         calendarView.updateFirstDayOfWeek(setDate: selectedData.date, firstDayOfWeek: selectedData.firstDayOfWeek)
     }
 }
