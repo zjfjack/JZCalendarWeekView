@@ -1,4 +1,8 @@
 # JZCalendarWeekView
+
+[![CocoaPods](https://img.shields.io/cocoapods/v/JZCalendarWeekView.svg)](https://github.com/zjfjack/JZCalendarWeekView)
+[![Platform](https://img.shields.io/cocoapods/p/JZCalendarWeekView.svg?style=flat)](https://github.com/zjfjack/JZCalendarWeekView)
+
 iOS Calendar Week/Day View in Swift
 
 Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
@@ -33,7 +37,12 @@ This is a new repository and it is my first time to write a library. If you have
 
 ## Installation
 
-Will support CocoaPods soon.
+### Cocoapods
+JZCalendarWeekView can be added to your project by adding the following line to your `Podfile`:
+
+```ruby
+pod 'JZCalendarWeekView', '~> 0.0'
+```
 
 
 ## Usage
