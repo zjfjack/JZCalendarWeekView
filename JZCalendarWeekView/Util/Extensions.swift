@@ -1,16 +1,39 @@
 //
-//  UIViewExtensions.swift
+//  Extensions.swift
 //  JZCalendarWeekView
 //
-//  Created by Jeff Zhang on 29/3/18.
+//  Created by Jeff Zhang on 16/4/18.
 //  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
+extension NSObject {
+    static var className: String {
+        return String(describing: self)
+    }
+}
+
+
+extension UICollectionView {
+    func registerSupplimentaryViews(_ viewClasses: [UICollectionReusableView.Type]) {
+        viewClasses.forEach {
+            self.register($0, forSupplementaryViewOfKind: $0.className, withReuseIdentifier: $0.className)
+        }
+    }
+}
+
+extension UICollectionViewFlowLayout {
+    func registerDecorationViews(_ viewClasses: [UICollectionReusableView.Type]) {
+        viewClasses.forEach {
+            self.register($0, forDecorationViewOfKind: $0.className)
+        }
+    }
+}
+
+// Anchor Constraints
 extension UIView {
     
-    //MARK: - Anchor Constranits
     func setAnchorConstraintsEqualTo(widthAnchor: CGFloat?=nil, heightAnchor: CGFloat?=nil, centerXAnchor: NSLayoutXAxisAnchor?=nil, centerYAnchor: NSLayoutYAxisAnchor?=nil) {
         
         self.translatesAutoresizingMaskIntoConstraints = false
@@ -97,10 +120,51 @@ extension UIView {
         self.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding).isActive = true
         self.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding).isActive = true
     }
-    //MARK: - General functions
     
-    public func addSubviews(_ views: [UIView]) {
+    func addSubviews(_ views: [UIView]) {
         views.forEach({ self.addSubview($0)})
     }
+}
+
+extension Date {
     
+    var isToday: Bool {
+        return Calendar.current.isDateInToday(self)
+    }
+    
+    var isYesterday: Bool {
+        return Calendar.current.isDateInYesterday(self)
+    }
+    
+    var isTomorrow: Bool {
+        return Calendar.current.isDateInTomorrow(self)
+    }
+    
+    func add(component: Calendar.Component, value: Int) -> Date {
+        return Calendar.current.date(byAdding: component, value: value, to: self)!
+    }
+    
+    var startOfDay: Date {
+        return Calendar.current.startOfDay(for: self)
+    }
+    
+    var endOfDay: Date {
+        return Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: self)!
+    }
+    
+    func getDayOfWeek() -> DayOfWeek {
+        let weekDayNum = Calendar.current.component(.weekday, from: self)
+        let weekDay = DayOfWeek(rawValue: weekDayNum)!
+        return weekDay
+    }
+    
+    func getTimeIgnoreSecondsFormat() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: self)
+    }
+    
+    static func daysBetween(start: Date, end: Date) -> Int {
+        return Calendar.current.dateComponents([.day], from: start, to: end).day!
+    }
 }

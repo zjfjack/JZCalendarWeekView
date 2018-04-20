@@ -147,10 +147,11 @@
 				8E5BB4012073226100FA853F /* RootViewModel.swift */,
 				8E5BB3D32072F4A000FA853F /* RootViewController.swift */,
 				8E7263E22074B73300ECF7CD /* JZWeekView.swift */,
+				8E5BB403207322BA00FA853F /* JZEvent.swift */,
 				8E7263DC2074B55300ECF7CD /* SoloEventCell.swift */,
 				8E7263DD2074B55300ECF7CD /* SoloEventCell.xib */,
 				8E048ED1207EF5FC00A532BA /* OptionsView */,
-				8E7263E12074B6F100ECF7CD /* Helper & Custom */,
+				8E5BB406207325AB00FA853F /* Extensions.swift */,
 				8E5BB3D12072F4A000FA853F /* AppDelegate.swift */,
 				8E5BB3D52072F4A000FA853F /* Main.storyboard */,
 			);
@@ -172,15 +173,6 @@
 			children = (
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		8E7263E12074B6F100ECF7CD /* Helper & Custom */ = {
-			isa = PBXGroup;
-			children = (
-				8E5BB403207322BA00FA853F /* JZEvent.swift */,
-				8E5BB406207325AB00FA853F /* Extensions.swift */,
-			);
-			path = "Helper & Custom";
 			sourceTree = "<group>";
 		};
 		8EE28FB620882D7900C69A77 /* Products */ = {

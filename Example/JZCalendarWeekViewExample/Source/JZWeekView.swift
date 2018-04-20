@@ -17,7 +17,6 @@ class JZWeekView: BaseWeekView {
         self.collectionView.register(UINib(nibName: "SoloEventCell", bundle: nil), forCellWithReuseIdentifier: "SoloEventCell")
     }
     
-    
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let date = flowLayout.dateForColumnHeader(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SoloEventCell", for: indexPath) as! SoloEventCell

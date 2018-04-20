@@ -1,5 +1,5 @@
 //
-//  CornerHeaderBackground.swift
+//  GridLine.swift
 //  JZCalendarWeekView
 //
 //  Created by Jeff Zhang on 28/3/18.
@@ -8,15 +8,14 @@
 
 import UIKit
 
-class CornerHeaderBackground: UICollectionReusableView {
+open class GridLine: UICollectionReusableView {
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.blue
-        
+        backgroundColor = WeekViewColors.gridLine
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     

@@ -1,5 +1,5 @@
 //
-//  ColumnHeaderBackground.swift
+//  CornerHeaderView.swift
 //  JZCalendarWeekView
 //
 //  Created by Jeff Zhang on 28/3/18.
@@ -8,11 +8,12 @@
 
 import UIKit
 
-open class ColumnHeaderBackground: UICollectionReusableView {
+open class CornerHeader: UICollectionReusableView {
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = UIColor.white
+    public override init(frame: CGRect) {
+        super.init(frame: .zero)
+        
+        self.backgroundColor = .white
     }
     
     required public init?(coder aDecoder: NSCoder) {

@@ -91,7 +91,7 @@ open class WeekViewHelper {
                 let copiedEvent = event.copy() as! T
                 treatedEvents[startDateStartDay]!.append(copiedEvent)
             } else {
-                //Crossing day
+                // Crossing day
                 for day in 0...daysBetween {
                     let currentStartDate = startDateStartDay.add(component: .day, value: day)
                     if treatedEvents[currentStartDate] == nil {

@@ -63,6 +63,7 @@ open class BaseWeekView: UIView {
         registerViewClasses()
     }
     
+    /// Override this function to customise items, supplimentaryViews and decorationViews
     open func registerViewClasses() {
         
         //supplementary

@@ -13,7 +13,6 @@ open class RowHeader: UICollectionReusableView {
     public var lblTime = UILabel()
     public var dateFormatter = DateFormatter()
     
-    
     public override init(frame: CGRect) {
         super.init(frame: .zero)
         addSubview(lblTime)
