@@ -1,6 +1,6 @@
 # JZCalendarWeekView
 
-[![Build Status](https://travis-ci.org/zjfjack/JZCalendarWeekView.svg?branch=master](https://travis-ci.org/zjfjack/JZCalendarWeekView)
+[![Build Status](https://travis-ci.org/zjfjack/JZCalendarWeekView.svg?branch=master)](https://travis-ci.org/zjfjack/JZCalendarWeekView)
 [![CocoaPods](https://img.shields.io/cocoapods/v/JZCalendarWeekView.svg)](https://cocoapods.org/pods/JZCalendarWeekView)
 [![Platform](https://img.shields.io/cocoapods/p/JZCalendarWeekView.svg?style=flat)](https://github.com/zjfjack/JZCalendarWeekView)
 
