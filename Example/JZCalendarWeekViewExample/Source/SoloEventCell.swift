@@ -33,7 +33,7 @@ class SoloEventCell: UICollectionViewCell {
         borderView.backgroundColor = UIColor(hex: 0x0899FF)
     }
     
-    func updateView(event: JZEvent) {
+    func updateView(event: Event) {
         locationLabel.text = event.location
         titleLabel.text = event.title
     }

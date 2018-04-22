@@ -8,6 +8,7 @@
 
 import UIKit
 
+// No Need to subclass, used only for identifier now, will refactor in the future
 open class BaseEventCell: UICollectionViewCell {
     
 }

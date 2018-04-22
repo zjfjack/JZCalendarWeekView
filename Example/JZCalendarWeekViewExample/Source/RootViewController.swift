@@ -11,7 +11,7 @@ import JZCalendarWeekView
 
 class RootViewController: UIViewController {
     
-    @IBOutlet weak var calendarView: JZWeekView!
+    @IBOutlet weak var calendarView: WeekView!
     
     let viewModel = RootViewModel()
     

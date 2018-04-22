@@ -1,5 +1,5 @@
 //
-//  BaseEvent.swift
+//  JZBaseEvent.swift
 //  JZCalendarWeekView
 //
 //  Created by Jeff Zhang on 29/3/18.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class BaseEvent: NSObject, NSCopying {
+open class JZBaseEvent: NSObject, NSCopying {
     
     open var startDate: Date
     open var endDate: Date
@@ -27,6 +27,6 @@ open class BaseEvent: NSObject, NSCopying {
     
     //Must be overrided
     open func copy(with zone: NSZone? = nil) -> Any {
-        return BaseEvent.init(startDate: startDate, endDate: endDate)
+        return JZBaseEvent.init(startDate: startDate, endDate: endDate)
     }
 }

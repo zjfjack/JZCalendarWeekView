@@ -1,5 +1,5 @@
 //
-//  WeekViewHelper.swift
+//  JZWeekViewHelper.swift
 //  JZCalendarWeekView
 //
 //  Created by Jeff Zhang on 28/3/18.
@@ -68,18 +68,18 @@ public enum CalendarViewScrollType: String {
     //TODO: - infiniteScroll
 }
 
-public typealias EventsByDate = [Date:[BaseEvent]]
+public typealias EventsByDate = [Date:[JZBaseEvent]]
 
-open class WeekViewHelper {
+open class JZWeekViewHelper {
     
     /**
      Get calculated events dictionary with intraStartTime and intraEndTime
      - Parameters:
         - originalEvents: A list of original Events (subclassed from BaseEvent)
      - Returns:
-        A dictionary used by BaseWeekView. Key is a day Date, value is all the events in that day
+        A dictionary used by JZBaseWeekView. Key is a day Date, value is all the events in that day
      */
-    open class func getIntraEventsByDate<T: BaseEvent>(originalEvents: [T]) -> [Date: [T]] {
+    open class func getIntraEventsByDate<T: JZBaseEvent>(originalEvents: [T]) -> [Date: [T]] {
         var treatedEvents = [Date: [T]]()
         for event in originalEvents {
             let startDateStartDay = event.startDate.startOfDay

@@ -1,5 +1,5 @@
 //
-//  JZEvent.swift
+//  Event.swift
 //  JZCalendarViewExample
 //
 //  Created by Jeff Zhang on 3/4/18.
@@ -9,7 +9,7 @@
 import UIKit
 import JZCalendarWeekView
 
-class JZEvent: BaseEvent {
+class Event: JZBaseEvent {
     
     var location: String
     var eventType: Int
@@ -23,7 +23,7 @@ class JZEvent: BaseEvent {
     }
     
     override func copy(with zone: NSZone?) -> Any {
-        return JZEvent(title: title, startDate: startDate, endDate: endDate, location: location, eventType: eventType)
+        return Event(title: title, startDate: startDate, endDate: endDate, location: location, eventType: eventType)
     }
     
     

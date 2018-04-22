@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Simply subclass this class to change some basic color, will improve this part in the future
 open class WeekViewColors {
     
     open class var columnHeaderWeekday: UIColor { return UIColor(hex: 0x757575) }

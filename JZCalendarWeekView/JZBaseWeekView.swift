@@ -1,15 +1,15 @@
 //
-//  BaseWeekView.swift
+//  JZBaseWeekView.swift
 //  JZCalendarWeekView
 //
 //  Created by Jeff Zhang on 28/3/18.
 //  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
-open class BaseWeekView: UIView {
+open class JZBaseWeekView: UIView {
     
     public var collectionView: UICollectionView!
-    public var flowLayout: WeekViewFlowLayout!
+    public var flowLayout: JZWeekViewFlowLayout!
     
     public var initDate: Date!
     public var numOfDays: Int!
@@ -46,7 +46,7 @@ open class BaseWeekView: UIView {
         
     open func setup() {
         
-        flowLayout = WeekViewFlowLayout()
+        flowLayout = JZWeekViewFlowLayout()
         flowLayout.delegate = self
         
         collectionView = UICollectionView(frame: bounds, collectionViewLayout: flowLayout)
@@ -88,7 +88,7 @@ open class BaseWeekView: UIView {
      - Parameters:
         - numOfDays: number of days in a page
         - setDate: the initial set date
-        - allEvents: The dictionary of all the events for present. WeekViewHelper.getIntraEventsByDate can help transform the data
+        - allEvents: The dictionary of all the events for present. JZWeekViewHelper.getIntraEventsByDate can help transform the data
         - firstDayOfWeek: First day of a week, only works when numberOfDays is 7. Default value is nil, and the first day shown is the setDate
         - scrollType: The horizontal scroll type for this view. Default value is pageScroll
     */
@@ -122,7 +122,7 @@ open class BaseWeekView: UIView {
     /// Reload the collectionView and flowLayout
     /// - Parameters:
     ///   - reloadEvents: If provided new events, current events will be reloaded. Default value is nil.
-    public func forceReload(reloadEvents: [Date: [BaseEvent]]? = nil) {
+    public func forceReload(reloadEvents: [Date: [JZBaseEvent]]? = nil) {
         if let events = reloadEvents {
             self.allEventsBySection = events
         }
@@ -250,7 +250,7 @@ open class BaseWeekView: UIView {
 }
 
 
-extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
+extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     
     // In order to keep efficiency, only 3 pages exist at the same time, previous-current-next
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -418,14 +418,14 @@ extension BaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 }
 
-extension BaseWeekView: WeekViewFlowLayoutDelegate {
+extension JZBaseWeekView: WeekViewFlowLayoutDelegate {
     
-    public func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, dayForSection section: Int) -> Date {
+    public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, dayForSection section: Int) -> Date {
         let date = Calendar.current.date(byAdding: .day, value: section, to: initDate)
         return date!
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, startTimeForItemAtIndexPath indexPath: IndexPath) -> Date {
+    public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, startTimeForItemAtIndexPath indexPath: IndexPath) -> Date {
         let date = flowLayout.dateForColumnHeader(at: indexPath)
         
         if let events = allEventsBySection[date] {
@@ -436,7 +436,7 @@ extension BaseWeekView: WeekViewFlowLayoutDelegate {
         }
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, endTimeForItemAtIndexPath indexPath: IndexPath) -> Date {
+    public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, endTimeForItemAtIndexPath indexPath: IndexPath) -> Date {
         let date = flowLayout.dateForColumnHeader(at: indexPath)
         
         if let events = allEventsBySection[date] {
@@ -448,13 +448,13 @@ extension BaseWeekView: WeekViewFlowLayoutDelegate {
     }
     
     //TODO: Only used when multiple cell types are used and need different overlap rules => layoutItemsAttributes
-    public func collectionView(_ collectionView: UICollectionView, layout: WeekViewFlowLayout, cellTypeForItemAtIndexPath indexPath: IndexPath) -> String {
+    public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, cellTypeForItemAtIndexPath indexPath: IndexPath) -> String {
         return BaseEventCell.className
     }
 }
 
 //Long press Gesture methods
-extension BaseWeekView {
+extension JZBaseWeekView {
     
     
     @objc func getTopMarginY() -> CGFloat{
