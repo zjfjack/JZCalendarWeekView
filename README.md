@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/zjfjack/JZCalendarWeekView.svg?branch=master)](https://travis-ci.org/zjfjack/JZCalendarWeekView)
 [![CocoaPods](https://img.shields.io/cocoapods/v/JZCalendarWeekView.svg)](https://cocoapods.org/pods/JZCalendarWeekView)
 [![Platform](https://img.shields.io/cocoapods/p/JZCalendarWeekView.svg?style=flat)](https://github.com/zjfjack/JZCalendarWeekView)
+[![Swift 4.1](https://img.shields.io/badge/Swift-4.1-orange.svg?style=flat)](https://developer.apple.com/swift/)
+[![license MIT](https://img.shields.io/cocoapods/l/JZCalendarWeekView.svg)](http://opensource.org/licenses/MIT)
 
 iOS Calendar Week/Day View in Swift
 
@@ -17,6 +19,8 @@ If you have any questions and suggestions, feel free to contact me. Jeff Zhang: 
 - [x] Two Scroll types: One-Day scroll (scroll a section) or Page scroll
 - [x] Events display on calendar view (supports events with conflict time and events cross few days)
 - [x] Current time line display
+
+<img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/numOfDays.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType-page.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType-section.gif" width="285"/>
 
 ## Usage
 
