@@ -1,5 +1,5 @@
 //
-//  WeekView.swift
+//  DefaultWeekView.swift
 //  JZCalendarViewExample
 //
 //  Created by Jeff Zhang on 4/4/18.
@@ -9,20 +9,18 @@
 import UIKit
 import JZCalendarWeekView
 
-class WeekView: JZBaseWeekView {
+class DefaultWeekView: JZBaseWeekView {
     
     override func registerViewClasses() {
         super.registerViewClasses()
         
-        self.collectionView.register(UINib(nibName: "SoloEventCell", bundle: nil), forCellWithReuseIdentifier: "SoloEventCell")
+        self.collectionView.register(UINib(nibName: EventCell.className, bundle: nil), forCellWithReuseIdentifier: EventCell.className)
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let date = flowLayout.dateForColumnHeader(at: indexPath)
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SoloEventCell", for: indexPath) as! SoloEventCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EventCell.className, for: indexPath) as! EventCell
         cell.updateView(event: allEventsBySection[date]![indexPath.row] as! Event)
         return cell
     }
-    
-
 }

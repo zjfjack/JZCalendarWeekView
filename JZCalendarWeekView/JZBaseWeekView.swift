@@ -67,12 +67,12 @@ open class JZBaseWeekView: UIView {
     open func registerViewClasses() {
         
         //supplementary
-        collectionView.registerSupplimentaryViews([ColumnHeader.self, CornerHeader.self, RowHeader.self])
+        collectionView.registerSupplimentaryViews([JZColumnHeader.self, JZCornerHeader.self, JZRowHeader.self])
         
         //decoration
-        flowLayout.registerDecorationViews([ColumnHeaderBackground.self, RowHeaderBackground.self, CurrentTimeIndicator.self])
-        flowLayout.register(GridLine.self, forDecorationViewOfKind: DecorationViewKinds.verticalGridline)
-        flowLayout.register(GridLine.self, forDecorationViewOfKind: DecorationViewKinds.horizontalGridline)
+        flowLayout.registerDecorationViews([JZColumnHeaderBackground.self, JZRowHeaderBackground.self, JZCurrentTimeIndicator.self])
+        flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.verticalGridline)
+        flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.horizontalGridline)
     }
    
     open override func layoutSubviews() {
@@ -272,23 +272,23 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     
-    public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let view: UICollectionReusableView
         
         switch kind {
             
-        case SupplementaryViewKinds.columnHeader:
-            let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! ColumnHeader
-            columnHeader.updateCell(date: flowLayout.dateForColumnHeader(at: indexPath))
+        case JZSupplementaryViewKinds.columnHeader:
+            let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZColumnHeader
+            columnHeader.updateView(date: flowLayout.dateForColumnHeader(at: indexPath))
             view = columnHeader
             
-        case SupplementaryViewKinds.rowHeader:
-            let rowHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! RowHeader
-            rowHeader.updateCell(date: flowLayout.dateForTimeRowHeader(at: indexPath))
+        case JZSupplementaryViewKinds.rowHeader:
+            let rowHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZRowHeader
+            rowHeader.updateView(date: flowLayout.dateForTimeRowHeader(at: indexPath))
             view = rowHeader
             
-        case SupplementaryViewKinds.cornerHeader:
-            let cornerHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! CornerHeader
+        case JZSupplementaryViewKinds.cornerHeader:
+            let cornerHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZCornerHeader
             view = cornerHeader
             
         default:
@@ -449,7 +449,7 @@ extension JZBaseWeekView: WeekViewFlowLayoutDelegate {
     
     //TODO: Only used when multiple cell types are used and need different overlap rules => layoutItemsAttributes
     public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, cellTypeForItemAtIndexPath indexPath: IndexPath) -> String {
-        return BaseEventCell.className
+        return JZBaseEventCell.className
     }
 }
 

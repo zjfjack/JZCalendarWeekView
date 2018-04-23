@@ -1,5 +1,5 @@
 //
-//  WeekViewColors.swift
+//  JZWeekViewColors.swift
 //  JZCalendarWeekView
 //
 //  Created by Jeff Zhang on 29/3/18.
@@ -9,7 +9,7 @@
 import Foundation
 
 /// Simply subclass this class to change some basic color, will improve this part in the future
-open class WeekViewColors {
+open class JZWeekViewColors {
     
     open class var columnHeaderWeekday: UIColor { return UIColor(hex: 0x757575) }
     open class var columnHeaderDay: UIColor { return UIColor(hex: 0x757575) }

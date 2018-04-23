@@ -11,6 +11,9 @@
 		8E048ED6207EF83300A532BA /* ExpandableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E048ED5207EF83300A532BA /* ExpandableHeaderView.swift */; };
 		8E048ED9207F26F500A532BA /* OptionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E048ED7207F26F500A532BA /* OptionsTableViewCell.swift */; };
 		8E048EDA207F26F500A532BA /* OptionsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E048ED8207F26F500A532BA /* OptionsTableViewCell.xib */; };
+		8E2E6567208D5F3600FB2CE4 /* BlackGridLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2E6566208D5F3600FB2CE4 /* BlackGridLine.swift */; };
+		8E54D53B208D6997007DD5FE /* CustomWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E54D53A208D6997007DD5FE /* CustomWeekView.swift */; };
+		8E54D53E208D6A2B007DD5FE /* HourRowHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E54D53C208D6A2B007DD5FE /* HourRowHeader.swift */; };
 		8E5BB3D22072F4A000FA853F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB3D12072F4A000FA853F /* AppDelegate.swift */; };
 		8E5BB3D42072F4A000FA853F /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB3D32072F4A000FA853F /* RootViewController.swift */; };
 		8E5BB3D72072F4A000FA853F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E5BB3D52072F4A000FA853F /* Main.storyboard */; };
@@ -20,9 +23,9 @@
 		8E5BB404207322BA00FA853F /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB403207322BA00FA853F /* Event.swift */; };
 		8E5BB407207325AB00FA853F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB406207325AB00FA853F /* Extensions.swift */; };
 		8E5EE63D20857A6500150FD3 /* ExpandableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E5EE63C20857A6500150FD3 /* ExpandableHeaderView.xib */; };
-		8E7263DF2074B55300ECF7CD /* SoloEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7263DC2074B55300ECF7CD /* SoloEventCell.swift */; };
-		8E7263E02074B55300ECF7CD /* SoloEventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E7263DD2074B55300ECF7CD /* SoloEventCell.xib */; };
-		8E7263E32074B73300ECF7CD /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7263E22074B73300ECF7CD /* WeekView.swift */; };
+		8E7263DF2074B55300ECF7CD /* EventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7263DC2074B55300ECF7CD /* EventCell.swift */; };
+		8E7263E02074B55300ECF7CD /* EventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E7263DD2074B55300ECF7CD /* EventCell.xib */; };
+		8E7263E32074B73300ECF7CD /* DefaultWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7263E22074B73300ECF7CD /* DefaultWeekView.swift */; };
 		8E9AE75B20773F3500B7004E /* OptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9AE75A20773F3500B7004E /* OptionsViewController.swift */; };
 		8EE28FBF20882DE900C69A77 /* JZCalendarWeekView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EE28FBB20882D7A00C69A77 /* JZCalendarWeekView.framework */; };
 		8EE28FC020882DE900C69A77 /* JZCalendarWeekView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8EE28FBB20882D7A00C69A77 /* JZCalendarWeekView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -71,6 +74,9 @@
 		8E048ED5207EF83300A532BA /* ExpandableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableHeaderView.swift; sourceTree = "<group>"; };
 		8E048ED7207F26F500A532BA /* OptionsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsTableViewCell.swift; sourceTree = "<group>"; };
 		8E048ED8207F26F500A532BA /* OptionsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OptionsTableViewCell.xib; sourceTree = "<group>"; };
+		8E2E6566208D5F3600FB2CE4 /* BlackGridLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackGridLine.swift; sourceTree = "<group>"; };
+		8E54D53A208D6997007DD5FE /* CustomWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWeekView.swift; sourceTree = "<group>"; };
+		8E54D53C208D6A2B007DD5FE /* HourRowHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourRowHeader.swift; sourceTree = "<group>"; };
 		8E5BB3CE2072F4A000FA853F /* JZCalendarWeekViewExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JZCalendarWeekViewExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E5BB3D12072F4A000FA853F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E5BB3D32072F4A000FA853F /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
@@ -82,9 +88,9 @@
 		8E5BB403207322BA00FA853F /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		8E5BB406207325AB00FA853F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8E5EE63C20857A6500150FD3 /* ExpandableHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExpandableHeaderView.xib; sourceTree = "<group>"; };
-		8E7263DC2074B55300ECF7CD /* SoloEventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoloEventCell.swift; sourceTree = "<group>"; };
-		8E7263DD2074B55300ECF7CD /* SoloEventCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SoloEventCell.xib; sourceTree = "<group>"; };
-		8E7263E22074B73300ECF7CD /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekView.swift; sourceTree = "<group>"; };
+		8E7263DC2074B55300ECF7CD /* EventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
+		8E7263DD2074B55300ECF7CD /* EventCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventCell.xib; sourceTree = "<group>"; };
+		8E7263E22074B73300ECF7CD /* DefaultWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultWeekView.swift; sourceTree = "<group>"; };
 		8E9AE75A20773F3500B7004E /* OptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsViewController.swift; sourceTree = "<group>"; };
 		8EE28FB520882D7900C69A77 /* JZCalendarWeekView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JZCalendarWeekView.xcodeproj; path = ../JZCalendarWeekView.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -112,6 +118,16 @@
 				8E048ED8207F26F500A532BA /* OptionsTableViewCell.xib */,
 			);
 			path = OptionsView;
+			sourceTree = "<group>";
+		};
+		8E54D536208D6883007DD5FE /* CustomViews */ = {
+			isa = PBXGroup;
+			children = (
+				8E54D53A208D6997007DD5FE /* CustomWeekView.swift */,
+				8E2E6566208D5F3600FB2CE4 /* BlackGridLine.swift */,
+				8E54D53C208D6A2B007DD5FE /* HourRowHeader.swift */,
+			);
+			path = CustomViews;
 			sourceTree = "<group>";
 		};
 		8E5BB3C52072F4A000FA853F = {
@@ -146,10 +162,11 @@
 			children = (
 				8E5BB4012073226100FA853F /* RootViewModel.swift */,
 				8E5BB3D32072F4A000FA853F /* RootViewController.swift */,
-				8E7263E22074B73300ECF7CD /* WeekView.swift */,
+				8E7263E22074B73300ECF7CD /* DefaultWeekView.swift */,
 				8E5BB403207322BA00FA853F /* Event.swift */,
-				8E7263DC2074B55300ECF7CD /* SoloEventCell.swift */,
-				8E7263DD2074B55300ECF7CD /* SoloEventCell.xib */,
+				8E7263DC2074B55300ECF7CD /* EventCell.swift */,
+				8E7263DD2074B55300ECF7CD /* EventCell.xib */,
+				8E54D536208D6883007DD5FE /* CustomViews */,
 				8E048ED1207EF5FC00A532BA /* OptionsView */,
 				8E5BB406207325AB00FA853F /* Extensions.swift */,
 				8E5BB3D12072F4A000FA853F /* AppDelegate.swift */,
@@ -270,7 +287,7 @@
 			files = (
 				8E5BB3DC2072F4A000FA853F /* LaunchScreen.storyboard in Resources */,
 				8E5EE63D20857A6500150FD3 /* ExpandableHeaderView.xib in Resources */,
-				8E7263E02074B55300ECF7CD /* SoloEventCell.xib in Resources */,
+				8E7263E02074B55300ECF7CD /* EventCell.xib in Resources */,
 				8E048EDA207F26F500A532BA /* OptionsTableViewCell.xib in Resources */,
 				8E5BB3D92072F4A000FA853F /* Assets.xcassets in Resources */,
 				8E5BB3D72072F4A000FA853F /* Main.storyboard in Resources */,
@@ -287,10 +304,13 @@
 				8E5BB407207325AB00FA853F /* Extensions.swift in Sources */,
 				8E5BB3D42072F4A000FA853F /* RootViewController.swift in Sources */,
 				8E5BB4022073226100FA853F /* RootViewModel.swift in Sources */,
+				8E2E6567208D5F3600FB2CE4 /* BlackGridLine.swift in Sources */,
 				8E5BB404207322BA00FA853F /* Event.swift in Sources */,
 				8E048ED9207F26F500A532BA /* OptionsTableViewCell.swift in Sources */,
-				8E7263DF2074B55300ECF7CD /* SoloEventCell.swift in Sources */,
-				8E7263E32074B73300ECF7CD /* WeekView.swift in Sources */,
+				8E7263DF2074B55300ECF7CD /* EventCell.swift in Sources */,
+				8E54D53E208D6A2B007DD5FE /* HourRowHeader.swift in Sources */,
+				8E54D53B208D6997007DD5FE /* CustomWeekView.swift in Sources */,
+				8E7263E32074B73300ECF7CD /* DefaultWeekView.swift in Sources */,
 				8E5BB3D22072F4A000FA853F /* AppDelegate.swift in Sources */,
 				8E048ED6207EF83300A532BA /* ExpandableHeaderView.swift in Sources */,
 				8E048ED4207EF65000A532BA /* OptionsViewModel.swift in Sources */,

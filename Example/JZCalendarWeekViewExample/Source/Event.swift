@@ -12,6 +12,7 @@ import JZCalendarWeekView
 class Event: JZBaseEvent {
     
     var location: String
+    /// Not used for now
     var eventType: Int
     var title: String
     

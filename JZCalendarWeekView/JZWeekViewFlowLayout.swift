@@ -187,10 +187,10 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
                 let sectionMinX = calendarContentMinX + sectionWidth * CGFloat(section)
                 let currentTimeHorizontalGridlineMinY = timeY - nearbyint(defaultGridThickness / 2.0) - defaultCurrentTimeLineHeight/2
                 (attributes, currentTimeLineAttributes) = layoutAttributesForDecorationView(at: IndexPath(item: 0, section: section),
-                                                                                            ofKind: DecorationViewKinds.currentTimeGridline,
+                                                                                            ofKind: JZDecorationViewKinds.currentTimeGridline,
                                                                                             withItemCache: currentTimeLineAttributes)
                 attributes.frame = CGRect(x: sectionMinX, y: currentTimeHorizontalGridlineMinY, width: sectionWidth, height: defaultCurrentTimeLineHeight)
-                attributes.zIndex = zIndexForElementKind(DecorationViewKinds.currentTimeGridline)
+                attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.currentTimeGridline)
                 //Remove some reused sections attributes
                 currentTimeLineAttributes.removeAll()
                 currentTimeLineAttributes[indexPath] = attributes
@@ -202,35 +202,35 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     
         // Corner Header
         (attributes, cornerHeaderAttributes) = layoutAttributesForSupplemantaryView(at: IndexPath(row: 0, section: 0),
-                                                                                    ofKind: SupplementaryViewKinds.cornerHeader,
+                                                                                    ofKind: JZSupplementaryViewKinds.cornerHeader,
                                                                                     withItemCache: cornerHeaderAttributes)
         attributes.frame = CGRect(origin: collectionView!.contentOffset, size: CGSize(width: rowHeaderWidth, height: columnHeaderHeight))
-        attributes.zIndex = zIndexForElementKind(SupplementaryViewKinds.cornerHeader)
+        attributes.zIndex = zIndexForElementKind(JZSupplementaryViewKinds.cornerHeader)
         
         // Row Header Background
         (attributes, rowHeaderBackgroundAttributes) = layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
-                                                                                        ofKind: RowHeaderBackground.className,
+                                                                                        ofKind: JZRowHeaderBackground.className,
                                                                                         withItemCache: rowHeaderBackgroundAttributes)
         attributes.frame = CGRect(x: rowHeaderMinX, y: collectionView!.contentOffset.y, width: rowHeaderWidth, height: collectionView!.frame.height)
-        attributes.zIndex = zIndexForElementKind(DecorationViewKinds.rowHeaderBackground)
+        attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.rowHeaderBackground)
         
         // Row header
         for rowHeaderIndex in 0...24 {
             (attributes, rowHeaderAttributes) = layoutAttributesForSupplemantaryView(at: IndexPath(item: rowHeaderIndex, section: 0),
-                                                                                     ofKind: SupplementaryViewKinds.rowHeader,
+                                                                                     ofKind: JZSupplementaryViewKinds.rowHeader,
                                                                                      withItemCache: rowHeaderAttributes)
             let rowHeaderMinY = calendarContentMinY + hourHeight * CGFloat(rowHeaderIndex) - nearbyint(hourHeight / 2.0)
             attributes.frame = CGRect(x: rowHeaderMinX, y: rowHeaderMinY, width: rowHeaderWidth, height: hourHeight)
-            attributes.zIndex = zIndexForElementKind(SupplementaryViewKinds.rowHeader)
+            attributes.zIndex = zIndexForElementKind(JZSupplementaryViewKinds.rowHeader)
         }
         
         // column header background
         (attributes, columnHeaderBackgroundAttributes) = layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
-                                                                                           ofKind: DecorationViewKinds.columnHeaderBackground,
+                                                                                           ofKind: JZDecorationViewKinds.columnHeaderBackground,
                                                                                            withItemCache: columnHeaderBackgroundAttributes)
         let attributesHeight = columnHeaderHeight + (collectionView!.contentOffset.y < 0 ? abs(collectionView!.contentOffset.y) : 0 )
         attributes.frame = CGRect(origin: collectionView!.contentOffset, size: CGSize(width: collectionView!.frame.width, height: attributesHeight))
-        attributes.zIndex = zIndexForElementKind(DecorationViewKinds.columnHeaderBackground)
+        attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.columnHeaderBackground)
         
         // Column Header
         let columnHeaderMinY = fmax(collectionView!.contentOffset.y, 0.0)
@@ -238,10 +238,10 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         sectionIndexes.enumerate(_:) { (section, stop) in
             let sectionMinX = calendarContentMinX + sectionWidth * CGFloat(section)
             (attributes, columnHeaderAttributes) = layoutAttributesForSupplemantaryView(at: IndexPath(item: 0, section: section),
-                                                                                        ofKind: SupplementaryViewKinds.columnHeader,
+                                                                                        ofKind: JZSupplementaryViewKinds.columnHeader,
                                                                                         withItemCache: columnHeaderAttributes)
             attributes.frame = CGRect(x: sectionMinX, y: columnHeaderMinY, width: sectionWidth, height: columnHeaderHeight)
-            attributes.zIndex = zIndexForElementKind(SupplementaryViewKinds.columnHeader)
+            attributes.zIndex = zIndexForElementKind(JZSupplementaryViewKinds.columnHeader)
             
             layoutVerticalGridLinesAttributes(section: section, sectionX: sectionMinX, calendarGridMinY: calendarGridMinY, sectionHeight: sectionHeight)
             layoutItemsAttributes(section: section, sectionX: sectionMinX, calendarStartY: calendarGridMinY)
@@ -278,23 +278,23 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             let itemMaxY = nearbyint(endHourY + endMinuteY + calendarStartY - itemMargin.bottom)
             
             attributes.frame = CGRect(x: itemMinX, y: itemMinY, width: itemMaxX - itemMinX, height: itemMaxY - itemMinY)
-            attributes.zIndex = zIndexForElementKind(SupplementaryViewKinds.baseEventCell)
+            attributes.zIndex = zIndexForElementKind(JZSupplementaryViewKinds.baseEventCell)
             sectionItemAttributes.append(attributes)
         }
         
         adjustItemsForOverlap(sectionItemAttributes, inSection: section, sectionMinX: sectionX,
-                              currentSectionZ: zIndexForElementKind(SupplementaryViewKinds.baseEventCell))
+                              currentSectionZ: zIndexForElementKind(JZSupplementaryViewKinds.baseEventCell))
     }
     
     func layoutVerticalGridLinesAttributes(section: Int, sectionX: CGFloat, calendarGridMinY: CGFloat, sectionHeight: CGFloat) {
         var attributes = UICollectionViewLayoutAttributes()
         
         (attributes, verticalGridlineAttributes) = layoutAttributesForDecorationView(at: IndexPath(item: 0, section: section),
-                                                                                     ofKind: DecorationViewKinds.verticalGridline,
+                                                                                     ofKind: JZDecorationViewKinds.verticalGridline,
                                                                                      withItemCache: verticalGridlineAttributes)
         attributes.frame = CGRect(x: nearbyint(sectionX - defaultGridThickness / 2.0), y: calendarGridMinY,
                                   width: defaultGridThickness, height: sectionHeight)
-        attributes.zIndex = zIndexForElementKind(DecorationViewKinds.verticalGridline)
+        attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.verticalGridline)
     }
     
     func layoutHorizontalGridLinesAttributes(calendarStartX: CGFloat, calendarStartY: CGFloat) {
@@ -304,7 +304,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         
         for hour in 0...24 {
             (attributes, horizontalGridlineAttributes) = layoutAttributesForDecorationView(at: IndexPath(item: horizontalGridlineIndex, section: 0),
-                                                                                           ofKind: DecorationViewKinds.horizontalGridline,
+                                                                                           ofKind: JZDecorationViewKinds.horizontalGridline,
                                                                                            withItemCache: horizontalGridlineAttributes)
             let horizontalGridlineXOffset = calendarStartX + sectionMargin.left
             let horizontalGridlineMinX = fmax(horizontalGridlineXOffset, collectionView!.contentOffset.x + horizontalGridlineXOffset)
@@ -313,7 +313,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             
             attributes.frame = CGRect(x: horizontalGridlineMinX, y: horizontalGridlineMinY,
                                       width: horizontalGridlineWidth, height: defaultGridThickness)
-            attributes.zIndex = zIndexForElementKind(DecorationViewKinds.horizontalGridline)
+            attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.horizontalGridline)
             horizontalGridlineIndex += 1
             
             if hourGridDivision.rawValue > 0 {
@@ -336,12 +336,12 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             let horizontalGridlineIndexPath = IndexPath(item: _gridlineIndex, section: 0)
             
             (attributes, horizontalGridlineAttributes) = layoutAttributesForDecorationView(at: horizontalGridlineIndexPath,
-                                                                                           ofKind: DecorationViewKinds.horizontalGridline,
+                                                                                           ofKind: JZDecorationViewKinds.horizontalGridline,
                                                                                            withItemCache: horizontalGridlineAttributes)
             let horizontalGridlineMinY = nearbyint(calendarStartY + (divisionHeight * CGFloat(division)) - (defaultGridThickness / 2.0))
             attributes.frame = CGRect(x: calendarStartX, y: horizontalGridlineMinY, width: gridlineWidth, height: defaultGridThickness)
             attributes.alpha = 0.3
-            attributes.zIndex = zIndexForElementKind(DecorationViewKinds.horizontalGridline)
+            attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.horizontalGridline)
             
             _gridlineIndex += 1
             
@@ -361,11 +361,11 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     
     override open func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         switch elementKind {
-        case SupplementaryViewKinds.columnHeader:
+        case JZSupplementaryViewKinds.columnHeader:
             return columnHeaderAttributes[indexPath]
-        case SupplementaryViewKinds.rowHeader:
+        case JZSupplementaryViewKinds.rowHeader:
             return rowHeaderAttributes[indexPath]
-        case SupplementaryViewKinds.cornerHeader:
+        case JZSupplementaryViewKinds.cornerHeader:
             return cornerHeaderAttributes[indexPath]
             
         default:
@@ -375,13 +375,13 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     
     override open func layoutAttributesForDecorationView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         switch elementKind {
-        case DecorationViewKinds.verticalGridline:
+        case JZDecorationViewKinds.verticalGridline:
             return verticalGridlineAttributes[indexPath]
-        case DecorationViewKinds.horizontalGridline:
+        case JZDecorationViewKinds.horizontalGridline:
             return horizontalGridlineAttributes[indexPath]
-        case DecorationViewKinds.rowHeaderBackground:
+        case JZDecorationViewKinds.rowHeaderBackground:
             return rowHeaderBackgroundAttributes[indexPath]
-        case DecorationViewKinds.columnHeaderBackground:
+        case JZDecorationViewKinds.columnHeaderBackground:
             return columnHeaderBackgroundAttributes[indexPath]
             
         default:
@@ -631,21 +631,21 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     // MARK: - z index
     open func zIndexForElementKind(_ kind: String) -> Int {
         switch kind {
-        case SupplementaryViewKinds.cornerHeader:
+        case JZSupplementaryViewKinds.cornerHeader:
             return minOverlayZ + 9
-        case SupplementaryViewKinds.rowHeader:
+        case JZSupplementaryViewKinds.rowHeader:
             return minOverlayZ + 8
-        case DecorationViewKinds.rowHeaderBackground:
+        case JZDecorationViewKinds.rowHeaderBackground:
             return minOverlayZ + 7
-        case SupplementaryViewKinds.columnHeader:
+        case JZSupplementaryViewKinds.columnHeader:
             return minOverlayZ + 6
-        case DecorationViewKinds.columnHeaderBackground:
+        case JZDecorationViewKinds.columnHeaderBackground:
             return minOverlayZ + 5
-        case DecorationViewKinds.currentTimeGridline:
+        case JZDecorationViewKinds.currentTimeGridline:
             return minOverlayZ + 4
-        case DecorationViewKinds.horizontalGridline:
+        case JZDecorationViewKinds.horizontalGridline:
             return minBackgroundZ + 3
-        case DecorationViewKinds.verticalGridline:
+        case JZDecorationViewKinds.verticalGridline:
             return minBackgroundZ + 2
         default:
             return minCellZ

@@ -11,7 +11,7 @@ import JZCalendarWeekView
 
 class RootViewController: UIViewController {
     
-    @IBOutlet weak var calendarView: WeekView!
+    @IBOutlet weak var calendarWeekView: DefaultWeekView!
     
     let viewModel = RootViewModel()
     
@@ -29,11 +29,14 @@ class RootViewController: UIViewController {
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        calendarView.refreshWeekView()
+        calendarWeekView.refreshWeekView()
     }
     
     private func setupCalendarView() {
-        calendarView.setupCalendar(numOfDays: 3, setDate: Date(), allEvents: viewModel.eventsByDate)
+        calendarWeekView.setupCalendar(numOfDays: 3,
+                                       setDate: Date(),
+                                       allEvents: viewModel.eventsByDate,
+                                       scrollType: .pageScroll)
     }
     
     private func setupNaviBar() {
@@ -57,11 +60,11 @@ class RootViewController: UIViewController {
     }
     
     private func getSelectedData() -> OptionsSelectedData {
-        let numOfDays = calendarView.numOfDays!
-        let firstDayOfWeek = numOfDays == 7 ? calendarView.firstDayOfWeek : nil
-        return OptionsSelectedData(date: calendarView.initDate.add(component: .day, value: numOfDays),
+        let numOfDays = calendarWeekView.numOfDays!
+        let firstDayOfWeek = numOfDays == 7 ? calendarWeekView.firstDayOfWeek : nil
+        return OptionsSelectedData(date: calendarWeekView.initDate.add(component: .day, value: numOfDays),
                                    numOfDays: numOfDays,
-                                   scrollType: calendarView.scrollType,
+                                   scrollType: calendarWeekView.scrollType,
                                    firstDayOfWeek: firstDayOfWeek)
     }
 
@@ -75,14 +78,14 @@ extension RootViewController: OptionsViewDelegate {
     
     func finishUpdate(selectedData: OptionsSelectedData) {
         // Update numOfDays Only
-        calendarView.numOfDays = selectedData.numOfDays
-        calendarView.forceReload()
+        calendarWeekView.numOfDays = selectedData.numOfDays
+        calendarWeekView.forceReload()
         // Update Date Only
-        calendarView.updateWeekView(to: selectedData.date)
+        calendarWeekView.updateWeekView(to: selectedData.date)
         // Update Scroll Type Only
-        calendarView.scrollType = selectedData.scrollType
+        calendarWeekView.scrollType = selectedData.scrollType
         // Update FirstDayOfWeek
-        calendarView.updateFirstDayOfWeek(setDate: selectedData.date, firstDayOfWeek: selectedData.firstDayOfWeek)
+        calendarWeekView.updateFirstDayOfWeek(setDate: selectedData.date, firstDayOfWeek: selectedData.firstDayOfWeek)
     }
 }
 

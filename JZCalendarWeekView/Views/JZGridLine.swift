@@ -1,5 +1,5 @@
 //
-//  ColumnHeaderBackground.swift
+//  JZGridLine.swift
 //  JZCalendarWeekView
 //
 //  Created by Jeff Zhang on 28/3/18.
@@ -8,11 +8,11 @@
 
 import UIKit
 
-open class ColumnHeaderBackground: UICollectionReusableView {
+open class JZGridLine: UICollectionReusableView {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.white
+        backgroundColor = JZWeekViewColors.gridLine
     }
     
     required public init?(coder aDecoder: NSCoder) {

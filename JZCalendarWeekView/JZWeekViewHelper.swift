@@ -6,20 +6,20 @@
 //  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
-enum SupplementaryViewKinds {
-    static let columnHeader = ColumnHeader.className
-    static let rowHeader = RowHeader.className
-    static let cornerHeader = CornerHeader.className
-    static let baseEventCell = BaseEventCell.className
+public enum JZSupplementaryViewKinds {
+    public static let columnHeader = JZColumnHeader.className
+    public static let rowHeader = JZRowHeader.className
+    public static let cornerHeader = JZCornerHeader.className
+    public static let baseEventCell = JZBaseEventCell.className
 }
 
-enum DecorationViewKinds {
-    static let columnHeaderBackground = ColumnHeaderBackground.className
-    static let rowHeaderBackground = RowHeaderBackground.className
-    static let cornerHeaderBackground = CornerHeaderBackground.className
-    static let verticalGridline = "VerticalGridline"
-    static let horizontalGridline = "HorizontalGridline"
-    static let currentTimeGridline = CurrentTimeIndicator.className
+public enum JZDecorationViewKinds {
+    public static let columnHeaderBackground = JZColumnHeaderBackground.className
+    public static let rowHeaderBackground = JZRowHeaderBackground.className
+    public static let cornerHeaderBackground = JZCornerHeaderBackground.className
+    public static let verticalGridline = "VerticalGridline"
+    public static let horizontalGridline = "HorizontalGridline"
+    public static let currentTimeGridline = JZCurrentTimeIndicator.className
 }
 
 enum ScrollDirection {

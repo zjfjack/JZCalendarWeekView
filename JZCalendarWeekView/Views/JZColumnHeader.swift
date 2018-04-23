@@ -1,5 +1,5 @@
 //
-//  ColumnHeader.swift
+//  JZColumnHeader.swift
 //  JZCalendarWeekView
 //
 //  Created by Jeff Zhang on 28/3/18.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-open class ColumnHeader: UICollectionReusableView {
+open class JZColumnHeader: UICollectionReusableView {
     
     public var lblDay = UILabel()
     public var lblWeekday = UILabel()
@@ -36,18 +36,18 @@ open class ColumnHeader: UICollectionReusableView {
         lblWeekday.font = UIFont.systemFont(ofSize: 12)
     }
     
-    public func updateCell(date: Date) {
+    public func updateView(date: Date) {
         let weekday = calendarCurrent.component(.weekday, from: date) - 1
         
         lblDay.text = String(calendarCurrent.component(.day, from: date))
         lblWeekday.text = dateFormatter.shortWeekdaySymbols[weekday].uppercased()
         
         if date.isToday {
-            lblDay.textColor = WeekViewColors.today
-            lblWeekday.textColor = WeekViewColors.today
+            lblDay.textColor = JZWeekViewColors.today
+            lblWeekday.textColor = JZWeekViewColors.today
         } else {
-            lblDay.textColor = WeekViewColors.columnHeaderDay
-            lblWeekday.textColor = WeekViewColors.columnHeaderDay
+            lblDay.textColor = JZWeekViewColors.columnHeaderDay
+            lblWeekday.textColor = JZWeekViewColors.columnHeaderDay
         }
         //set this to avoid columnheader hiding the botline in columnheaderbackground
         backgroundColor = UIColor.clear

@@ -1,5 +1,5 @@
 //
-//  SoloEventCell.swift
+//  EventCell.swift
 //  timegenii
 //
 //  Created by Jeff Zhang on 14/9/17.
@@ -9,7 +9,7 @@
 import UIKit
 import JZCalendarWeekView
 
-class SoloEventCell: UICollectionViewCell {
+class EventCell: UICollectionViewCell {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!

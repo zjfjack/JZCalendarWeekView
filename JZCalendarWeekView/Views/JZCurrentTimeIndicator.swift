@@ -1,5 +1,5 @@
 //
-//  CurrentTimeIndicator.swift
+//  JZCurrentTimeIndicator.swift
 //  JZCalendarWeekView
 //
 //  Created by Jeff Zhang on 28/3/18.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class CurrentTimeIndicator: UICollectionReusableView {
+open class JZCurrentTimeIndicator: UICollectionReusableView {
     
     var halfBallView = UIView()
     var lineView = UIView()
@@ -25,9 +25,9 @@ open class CurrentTimeIndicator: UICollectionReusableView {
         halfBallView.setAnchorCenterVerticallyTo(view: self, widthAnchor: halfBallSize, heightAnchor: halfBallSize, leadingAnchor: (leadingAnchor, -5))
         lineView.setAnchorCenterVerticallyTo(view: self, heightAnchor: 1, leadingAnchor: (halfBallView.trailingAnchor, 0), trailingAnchor: (trailingAnchor, 0))
         
-        halfBallView.backgroundColor = WeekViewColors.today
+        halfBallView.backgroundColor = JZWeekViewColors.today
         halfBallView.layer.cornerRadius = halfBallSize/2
-        lineView.backgroundColor = WeekViewColors.today
+        lineView.backgroundColor = JZWeekViewColors.today
         self.clipsToBounds = true
     }
     

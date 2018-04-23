@@ -1,5 +1,5 @@
 //
-//  BaseEventCell.swift
+//  JZBaseEventCell.swift
 //  JZCalendarWeekView
 //
 //  Created by Jeff Zhang on 28/3/18.
@@ -9,6 +9,6 @@
 import UIKit
 
 // No Need to subclass, used only for identifier now, will refactor in the future
-open class BaseEventCell: UICollectionViewCell {
+open class JZBaseEventCell: UICollectionViewCell {
     
 }
