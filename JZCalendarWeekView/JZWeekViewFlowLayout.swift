@@ -70,6 +70,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     var verticalGridlineAttributes = AttDic()
     var horizontalGridlineAttributes = AttDic()
     var cornerHeaderAttributes = AttDic()
+    var cornerHeaderBackgroundAttributes = AttDic()
     var currentTimeLineAttributes = AttDic()
     
     weak var delegate: WeekViewFlowLayoutDelegate?
@@ -159,6 +160,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             allAttributes.append(contentsOf: verticalGridlineAttributes.values)
             allAttributes.append(contentsOf: horizontalGridlineAttributes.values)
             allAttributes.append(contentsOf: cornerHeaderAttributes.values)
+            allAttributes.append(contentsOf: cornerHeaderBackgroundAttributes.values)
             allAttributes.append(contentsOf: currentTimeLineAttributes.values)
             allAttributes.append(contentsOf: itemAttributes.values)
         }
@@ -207,9 +209,16 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         attributes.frame = CGRect(origin: collectionView!.contentOffset, size: CGSize(width: rowHeaderWidth, height: columnHeaderHeight))
         attributes.zIndex = zIndexForElementKind(JZSupplementaryViewKinds.cornerHeader)
         
+        // Corner Header Background
+        (attributes, cornerHeaderBackgroundAttributes) = layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
+                                                                                        ofKind: JZDecorationViewKinds.cornerHeaderBackground,
+                                                                                        withItemCache: cornerHeaderBackgroundAttributes)
+        attributes.frame = CGRect(origin: collectionView!.contentOffset, size: CGSize(width: rowHeaderWidth, height: columnHeaderHeight))
+        attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.cornerHeaderBackground)
+        
         // Row Header Background
         (attributes, rowHeaderBackgroundAttributes) = layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
-                                                                                        ofKind: JZRowHeaderBackground.className,
+                                                                                        ofKind: JZDecorationViewKinds.rowHeaderBackground,
                                                                                         withItemCache: rowHeaderBackgroundAttributes)
         attributes.frame = CGRect(x: rowHeaderMinX, y: collectionView!.contentOffset.y, width: rowHeaderWidth, height: collectionView!.frame.height)
         attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.rowHeaderBackground)
@@ -383,7 +392,8 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             return rowHeaderBackgroundAttributes[indexPath]
         case JZDecorationViewKinds.columnHeaderBackground:
             return columnHeaderBackgroundAttributes[indexPath]
-            
+        case JZDecorationViewKinds.cornerHeaderBackground:
+            return cornerHeaderBackgroundAttributes[indexPath]
         default:
             return nil
         }
@@ -538,6 +548,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         rowHeaderAttributes.removeAll()
         rowHeaderBackgroundAttributes.removeAll()
         cornerHeaderAttributes.removeAll()
+        cornerHeaderBackgroundAttributes.removeAll()
         itemAttributes.removeAll()
         allAttributes.removeAll()
     }
@@ -633,20 +644,22 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         switch kind {
         case JZSupplementaryViewKinds.cornerHeader:
             return minOverlayZ + 9
+        case JZDecorationViewKinds.cornerHeaderBackground:
+            return minOverlayZ + 16
         case JZSupplementaryViewKinds.rowHeader:
-            return minOverlayZ + 8
-        case JZDecorationViewKinds.rowHeaderBackground:
             return minOverlayZ + 7
-        case JZSupplementaryViewKinds.columnHeader:
+        case JZDecorationViewKinds.rowHeaderBackground:
             return minOverlayZ + 6
-        case JZDecorationViewKinds.columnHeaderBackground:
+        case JZSupplementaryViewKinds.columnHeader:
             return minOverlayZ + 5
-        case JZDecorationViewKinds.currentTimeGridline:
+        case JZDecorationViewKinds.columnHeaderBackground:
             return minOverlayZ + 4
+        case JZDecorationViewKinds.currentTimeGridline:
+            return minOverlayZ + 3
         case JZDecorationViewKinds.horizontalGridline:
-            return minBackgroundZ + 3
-        case JZDecorationViewKinds.verticalGridline:
             return minBackgroundZ + 2
+        case JZDecorationViewKinds.verticalGridline:
+            return minBackgroundZ + 1
         default:
             return minCellZ
         }
