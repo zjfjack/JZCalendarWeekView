@@ -33,7 +33,7 @@ enum ScrollDirection {
     case vertical
 }
 
-public enum HourGridDivision: Int {
+public enum JZHourGridDivision: Int {
     case noneDiv = 0
     case minutes_5 = 5
     case minutes_10 = 10
@@ -44,25 +44,9 @@ public enum HourGridDivision: Int {
 
 public enum DayOfWeek: Int {
     case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
-    
-    public func getDayName() -> String {
-        switch self {
-        case .sunday: return "Sunday"
-        case .monday: return "Monday"
-        case .tuesday: return "Tuesday"
-        case .wednesday: return "Wednesday"
-        case .thursday: return "Thursday"
-        case .friday: return "Friday"
-        case .saturday: return "Saturday"
-        }
-    }
-    
-    public static func getDayOfWeekList() -> [DayOfWeek] {
-        return [.sunday, .monday, .tuesday, .wednesday, .thursday, .friday, .saturday]
-    }
 }
 
-public enum CalendarViewScrollType: String {
+public enum JZScrollType {
     case pageScroll
     case sectionScroll
     //TODO: - infiniteScroll

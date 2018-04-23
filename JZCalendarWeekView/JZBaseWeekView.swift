@@ -11,9 +11,12 @@ open class JZBaseWeekView: UIView {
     public var collectionView: UICollectionView!
     public var flowLayout: JZWeekViewFlowLayout!
     
+    /// The initial date of current collectionView. When page is not scrolling, the inital date is always
+    /// the numOfDays days eariler than current page first date, which means the start of the collectionView.
+    /// The core structure of JZCalendarWeekView is 3 pages, previous-current-next
     public var initDate: Date!
     public var numOfDays: Int!
-    public var scrollType: CalendarViewScrollType!
+    public var scrollType: JZScrollType!
     public var firstDayOfWeek: DayOfWeek?
     public var allEventsBySection: EventsByDate!
     
@@ -87,15 +90,15 @@ open class JZBaseWeekView: UIView {
      
      - Parameters:
         - numOfDays: number of days in a page
-        - setDate: the initial set date
+        - setDate: the initial set date, the first date in current page except WeekView (numOfDays = 7)
         - allEvents: The dictionary of all the events for present. JZWeekViewHelper.getIntraEventsByDate can help transform the data
-        - firstDayOfWeek: First day of a week, only works when numberOfDays is 7. Default value is nil, and the first day shown is the setDate
+        - firstDayOfWeek: First day of a week, **only works when numOfDays is 7**. Default value is Sunday
         - scrollType: The horizontal scroll type for this view. Default value is pageScroll
     */
     open func setupCalendar(numOfDays:Int,
                             setDate:Date,
                             allEvents: EventsByDate,
-                            scrollType: CalendarViewScrollType = .pageScroll,
+                            scrollType: JZScrollType = .pageScroll,
                             firstDayOfWeek:DayOfWeek? = nil) {
         
         self.numOfDays = numOfDays
@@ -117,6 +120,17 @@ open class JZBaseWeekView: UIView {
                 self.flowLayout.scrollCollectionViewToCurrentTime()
             }
         }
+    }
+    
+    /// Update collectionViewLayout with custom flowLayout. For some other values like gridThickness and contentsMargin, please inherit from JZWeekViewFlowLayout to change the default value
+    /// - Parameter flowLayout: Custom CalendarWeekView flowLayout
+    open func updateFlowLayout(_ flowLayout: JZWeekViewFlowLayout) {
+        self.flowLayout.hourHeight = flowLayout.hourHeight
+        self.flowLayout.rowHeaderWidth = flowLayout.rowHeaderWidth
+        self.flowLayout.columnHeaderHeight = flowLayout.columnHeaderHeight
+        self.flowLayout.hourGridDivision = flowLayout.hourGridDivision
+        self.flowLayout.invalidateLayoutCache()
+        self.flowLayout.invalidateLayout()
     }
     
     /// Reload the collectionView and flowLayout

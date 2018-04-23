@@ -22,4 +22,5 @@ class RootViewModel: NSObject {
     
     lazy var eventsByDate: EventsByDate = JZWeekViewHelper.getIntraEventsByDate(originalEvents: events)
     
+    var currentSelectedData: OptionsSelectedData!
 }

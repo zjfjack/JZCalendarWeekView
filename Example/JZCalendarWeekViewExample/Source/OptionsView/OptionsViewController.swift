@@ -48,20 +48,24 @@ class OptionsViewController: UIViewController {
     }
 
     @objc func onBtnDoneTapped() {
-        var scrollType: CalendarViewScrollType
+        let scrollType: JZScrollType
+        let hourGridDivision: JZHourGridDivision
         var firstDayOfWeek: DayOfWeek? = nil
         let dataList = viewModel.optionsData
         if dataList[1].selectedValue as! Int == 7 {
             firstDayOfWeek = dataList[2].selectedValue as? DayOfWeek
-            scrollType = dataList[3].selectedValue as! CalendarViewScrollType
+            scrollType = dataList[3].selectedValue as! JZScrollType
+            hourGridDivision = dataList[4].selectedValue as! JZHourGridDivision
         } else {
-            scrollType = dataList[2].selectedValue as! CalendarViewScrollType
+            scrollType = dataList[2].selectedValue as! JZScrollType
+            hourGridDivision = dataList[3].selectedValue as! JZHourGridDivision
         }
         
         delegate?.finishUpdate(selectedData: OptionsSelectedData(date: dataList[0].selectedValue as! Date,
                                                                  numOfDays: dataList[1].selectedValue as! Int,
                                                                  scrollType: scrollType,
-                                                                 firstDayOfWeek: firstDayOfWeek))
+                                                                 firstDayOfWeek: firstDayOfWeek,
+                                                                 hourGridDivision: hourGridDivision))
         self.dismiss(animated: true, completion: nil)
     }
 }

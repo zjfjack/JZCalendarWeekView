@@ -37,11 +37,13 @@ class RootViewController: UIViewController {
                                        setDate: Date(),
                                        allEvents: viewModel.eventsByDate,
                                        scrollType: .pageScroll)
+        // Optional
+        calendarWeekView.updateFlowLayout(JZWeekViewFlowLayout(hourGridDivision: JZHourGridDivision.noneDiv))
     }
     
     private func setupNaviBar() {
         
-        self.navigationItem.title = "Day View"
+        updateNaviBarTitle(calendarWeekView.numOfDays)
         let optionsButton = UIButton(type: .system)
         optionsButton.setImage(#imageLiteral(resourceName: "icon_options"), for: .normal)
         optionsButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
@@ -62,10 +64,12 @@ class RootViewController: UIViewController {
     private func getSelectedData() -> OptionsSelectedData {
         let numOfDays = calendarWeekView.numOfDays!
         let firstDayOfWeek = numOfDays == 7 ? calendarWeekView.firstDayOfWeek : nil
-        return OptionsSelectedData(date: calendarWeekView.initDate.add(component: .day, value: numOfDays),
-                                   numOfDays: numOfDays,
-                                   scrollType: calendarWeekView.scrollType,
-                                   firstDayOfWeek: firstDayOfWeek)
+        viewModel.currentSelectedData = OptionsSelectedData(date: calendarWeekView.initDate.add(component: .day, value: numOfDays),
+                                                            numOfDays: numOfDays,
+                                                            scrollType: calendarWeekView.scrollType,
+                                                            firstDayOfWeek: firstDayOfWeek,
+                                                            hourGridDivision: calendarWeekView.flowLayout.hourGridDivision)
+        return viewModel.currentSelectedData
     }
 
     override func didReceiveMemoryWarning() {
@@ -77,15 +81,40 @@ class RootViewController: UIViewController {
 extension RootViewController: OptionsViewDelegate {
     
     func finishUpdate(selectedData: OptionsSelectedData) {
-        // Update numOfDays Only
-        calendarWeekView.numOfDays = selectedData.numOfDays
-        calendarWeekView.forceReload()
-        // Update Date Only
-        calendarWeekView.updateWeekView(to: selectedData.date)
-        // Update Scroll Type Only
-        calendarWeekView.scrollType = selectedData.scrollType
+        // Update numOfDays
+        if selectedData.numOfDays != viewModel.currentSelectedData.numOfDays {
+            calendarWeekView.numOfDays = selectedData.numOfDays
+            calendarWeekView.refreshWeekView()
+            updateNaviBarTitle(selectedData.numOfDays)
+        }
+        // Update Date
+        if selectedData.date != viewModel.currentSelectedData.date {
+            calendarWeekView.updateWeekView(to: selectedData.date)
+        }
+        // Update Scroll Type
+        if selectedData.scrollType != viewModel.currentSelectedData.scrollType {
+            calendarWeekView.scrollType = selectedData.scrollType
+        }
         // Update FirstDayOfWeek
-        calendarWeekView.updateFirstDayOfWeek(setDate: selectedData.date, firstDayOfWeek: selectedData.firstDayOfWeek)
+        if selectedData.firstDayOfWeek != viewModel.currentSelectedData.firstDayOfWeek {
+            calendarWeekView.updateFirstDayOfWeek(setDate: selectedData.date, firstDayOfWeek: selectedData.firstDayOfWeek)
+        }
+        // Update hourGridDivision
+        if selectedData.hourGridDivision != viewModel.currentSelectedData.hourGridDivision {
+            calendarWeekView.updateFlowLayout(JZWeekViewFlowLayout(hourGridDivision: selectedData.hourGridDivision))
+        }
+    }
+    
+    func updateNaviBarTitle(_ numOfDays: Int) {
+        let title: String
+        if numOfDays == 1 {
+            title = "Day View"
+        } else if numOfDays == 7 {
+            title = "Week View"
+        } else {
+            title = "\(numOfDays)-Day View"
+        }
+        self.navigationItem.title = title
     }
 }
 

@@ -24,13 +24,13 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     var rowHeaderWidth: CGFloat!
     var columnHeaderHeight: CGFloat!
     var sectionWidth: CGFloat!
-    var hourGridDivision: HourGridDivision!
+    public var hourGridDivision: JZHourGridDivision!
     var minuteHeight: CGFloat { return hourHeight / 60 }
     
     open var defaultHourHeight: CGFloat = 50
     open var defaultRowHeaderWidth: CGFloat = 42
     open var defaultColumnHeaderHeight: CGFloat = 44
-    open var defaultHourGridDivision = HourGridDivision.noneDiv
+    open var defaultHourGridDivision = JZHourGridDivision.noneDiv
     //If you want to change following constants, subclass the WeekViewFlowLayout, and override them
     open var defaultGridThickness: CGFloat = 0.5
     open var defaultCurrentTimeLineHeight: CGFloat = 10
@@ -84,7 +84,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     }
     
     // Custom UI parameters Initializer
-    init(hourHeight:CGFloat?=nil, rowHeaderWidth:CGFloat?=nil, columnHeaderHeight:CGFloat?=nil, hourGridDivision:HourGridDivision?=nil) {
+    public init(hourHeight:CGFloat?=nil, rowHeaderWidth:CGFloat?=nil, columnHeaderHeight:CGFloat?=nil, hourGridDivision:JZHourGridDivision?=nil) {
         super.init()
         
         setupUIParams(hourHeight: hourHeight, rowHeaderWidth: rowHeaderWidth, columnHeaderHeight: columnHeaderHeight, hourGridDivision: hourGridDivision)
@@ -99,7 +99,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         minuteTimer?.invalidate()
     }
     
-    private func setupUIParams(hourHeight:CGFloat?=nil, rowHeaderWidth:CGFloat?=nil, columnHeaderHeight:CGFloat?=nil, hourGridDivision:HourGridDivision?=nil) {
+    private func setupUIParams(hourHeight:CGFloat?=nil, rowHeaderWidth:CGFloat?=nil, columnHeaderHeight:CGFloat?=nil, hourGridDivision:JZHourGridDivision?=nil) {
         self.hourHeight = hourHeight ?? defaultHourHeight
         self.rowHeaderWidth = rowHeaderWidth ?? defaultRowHeaderWidth
         self.columnHeaderHeight = columnHeaderHeight ?? defaultColumnHeaderHeight

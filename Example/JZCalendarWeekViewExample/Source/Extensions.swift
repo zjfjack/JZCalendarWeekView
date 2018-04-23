@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import JZCalendarWeekView
 
 extension Date {
     
@@ -40,5 +41,44 @@ extension NSObject {
     
     class var className: String {
         return String(describing: self)
+    }
+}
+
+extension JZHourGridDivision {
+    var displayText: String {
+        switch self {
+        case .noneDiv: return "No Division"
+        default:
+            return self.rawValue.description + " mins"
+        }
+    }
+}
+
+extension DayOfWeek {
+    var dayName: String {
+        switch self {
+        case .sunday: return "Sunday"
+        case .monday: return "Monday"
+        case .tuesday: return "Tuesday"
+        case .wednesday: return "Wednesday"
+        case .thursday: return "Thursday"
+        case .friday: return "Friday"
+        case .saturday: return "Saturday"
+        }
+    }
+    
+    static var dayOfWeekList: [DayOfWeek] {
+        return [.sunday, .monday, .tuesday, .wednesday, .thursday, .friday, .saturday]
+    }
+}
+
+extension JZScrollType {
+    var displayText: String {
+        switch self {
+        case .pageScroll:
+            return "Page Scroll"
+        case .sectionScroll:
+            return "Section Scroll"
+        }
     }
 }

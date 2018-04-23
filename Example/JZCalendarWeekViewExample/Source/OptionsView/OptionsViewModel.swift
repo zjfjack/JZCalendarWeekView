@@ -22,8 +22,9 @@ class ExpandableData {
             guard let cate = categories else { fatalError() }
             switch subject {
             case .numOfDays: return cate.index(where: {$0 as! Int == selectedValue as! Int})!
-            case .scrollType: return cate.index(where: {$0 as! CalendarViewScrollType == selectedValue as! CalendarViewScrollType})!
+            case .scrollType: return cate.index(where: {$0 as! JZScrollType == selectedValue as! JZScrollType})!
             case .firstDayOfWeek: return cate.index(where: {$0 as! DayOfWeek == selectedValue as! DayOfWeek})!
+            case .hourGridDivision: return cate.index(where: {$0 as! JZHourGridDivision == selectedValue as! JZHourGridDivision})!
             default:
                 return 0
             }
@@ -39,8 +40,9 @@ class ExpandableData {
         guard let cate = categories else { return [] }
         switch subject {
         case .numOfDays: return cate.map { ($0 as! Int).description }
-        case .scrollType: return cate.map { ($0 as! CalendarViewScrollType).rawValue }
-        case .firstDayOfWeek: return cate.map { ($0 as! DayOfWeek).getDayName() }
+        case .scrollType: return cate.map { ($0 as! JZScrollType).displayText }
+        case .firstDayOfWeek: return cate.map { ($0 as! DayOfWeek).dayName }
+        case .hourGridDivision: return cate.map { ($0 as! JZHourGridDivision).displayText }
         default:
             return []
         }
@@ -52,41 +54,49 @@ enum OptionSectionType: String {
     case numOfDays = "Number Of Days"
     case scrollType = "Scroll Type"
     case firstDayOfWeek = "First Day Of Week"
+    case hourGridDivision = "Hour Grid Division"
 }
 
 struct OptionsSelectedData {
     
     var date: Date
     var numOfDays: Int
-    var scrollType: CalendarViewScrollType
+    var scrollType: JZScrollType
     var firstDayOfWeek: DayOfWeek?
+    var hourGridDivision: JZHourGridDivision
     
-    init(date: Date, numOfDays: Int, scrollType: CalendarViewScrollType, firstDayOfWeek: DayOfWeek?) {
+    init(date: Date, numOfDays: Int, scrollType: JZScrollType, firstDayOfWeek: DayOfWeek?, hourGridDivision: JZHourGridDivision) {
         self.date = date
         self.numOfDays = numOfDays
         self.scrollType = scrollType
         self.firstDayOfWeek = firstDayOfWeek
+        self.hourGridDivision = hourGridDivision
     }
 }
 
 class OptionsViewModel: NSObject {
     
     let dateFormatter = DateFormatter()
-    var optionsData: [ExpandableData] = [
-        ExpandableData(subject: .currentDate),
-        ExpandableData(subject: .numOfDays, categories: Array(1...10)),
-        ExpandableData(subject: .scrollType, categories: [CalendarViewScrollType.pageScroll, CalendarViewScrollType.sectionScroll])
-    ]
+    var optionsData: [ExpandableData] = {
+        let hourDivisionCategories: [JZHourGridDivision] = [.noneDiv, .minutes_5, .minutes_10, .minutes_15, .minutes_20, .minutes_30]
+        return [
+            ExpandableData(subject: .currentDate),
+            ExpandableData(subject: .numOfDays, categories: Array(1...10)),
+            ExpandableData(subject: .scrollType, categories: [JZScrollType.pageScroll, JZScrollType.sectionScroll]),
+            ExpandableData(subject: .hourGridDivision, categories: hourDivisionCategories)
+        ]
+    }()
     
     init(selectedData: OptionsSelectedData) {
         super.init()
         optionsData[0].selectedValue = selectedData.date
         optionsData[1].selectedValue = selectedData.numOfDays
         optionsData[2].selectedValue = selectedData.scrollType
+        optionsData[3].selectedValue = selectedData.hourGridDivision
         if let selectedDayOfWeek = selectedData.firstDayOfWeek {
             self.insertDayOfWeekToData(firstDayOfWeek: selectedDayOfWeek)
         }
-         dateFormatter.dateFormat = "YYYY-MM-dd"
+        dateFormatter.dateFormat = "YYYY-MM-dd"
     }
     
     func getHeaderViewSubtitle(_ section: Int) -> String {
@@ -98,14 +108,16 @@ class OptionsViewModel: NSObject {
         case .numOfDays:
             return (data.selectedValue! as! Int).description
         case .scrollType:
-            return (data.selectedValue! as! CalendarViewScrollType).rawValue
+            return (data.selectedValue! as! JZScrollType).displayText
         case .firstDayOfWeek:
-            return (data.selectedValue! as! DayOfWeek).getDayName()
+            return (data.selectedValue! as! DayOfWeek).dayName
+        case .hourGridDivision:
+            return (data.selectedValue! as! JZHourGridDivision).displayText
         }
     }
     
     func insertDayOfWeekToData(firstDayOfWeek: DayOfWeek) {
-        let dayOfWeekData = ExpandableData(subject: .firstDayOfWeek, categories: DayOfWeek.getDayOfWeekList())
+        let dayOfWeekData = ExpandableData(subject: .firstDayOfWeek, categories: DayOfWeek.dayOfWeekList)
         dayOfWeekData.selectedValue = firstDayOfWeek
         optionsData.insert(dayOfWeekData, at: 2)
     }

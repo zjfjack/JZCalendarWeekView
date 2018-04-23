@@ -9,7 +9,7 @@ iOS Calendar Week/Day View in Swift
 Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
 
 This is a new repository and it is my first time to write a library. <br />
-If you have any question and suggestion, feel free to contact me. Jeff Zhang: zekejeff@gmail.com
+If you have any questions and suggestions, feel free to contact me. Jeff Zhang: zekejeff@gmail.com
 
 ## Features
 
@@ -22,9 +22,9 @@ If you have any question and suggestion, feel free to contact me. Jeff Zhang: ze
 
 ### ViewController
 
-In your viewController, you only need do two things.
+In your viewController, you only need do few things.
 
-1. Setup your own custom calendarWeekView
+1. Setup your own custom calendarWeekView in 'viewDidLoad'
 ```swift
 calendarWeekView.setupCalendar(numOfDays: 7,
                                setDate: Date(),
@@ -32,8 +32,12 @@ calendarWeekView.setupCalendar(numOfDays: 7,
                                scrollType: .pageScroll,
                                firstDayOfWeek: .Monday)
 ```
+2. Setup your own custom flowLayout style in 'viewDidLoad' (optional)
+```swift
+calendarWeekView.updateFlowLayout(JZWeekViewFlowLayout(hourHeight: 50, rowHeaderWidth: 50, columnHeaderHeight: 50, hourGridDivision: JZHourGridDivision.noneDiv))
+```
 
-2. Override `viewWillTransition` to allow device rotation and iPad split view (Not support iPhone X Landscape yet)
+3. Override `viewWillTransition` to allow device rotation and iPad split view (Not support iPhone X Landscape yet)
 ```swift
 override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     calendarWeekView.refreshWeekView()
@@ -94,7 +98,7 @@ open class func getIntraEventsByDate<T: JZBaseEvent>(originalEvents: [T]) -> [Da
 ```
 In order to call this function, you should create a subclass of `JZBaseEvent` and also implement the `NSCopying` protocol. <br />
 For the `intraStartDate` and `intraEndDate` in `JZBaseEvent`, it means that if a event crosses two days, it should be devided into two events but with different intraStartDate and intraEndDate. <br />
-eg. startDate = 180329 14:00 endDate = 180330 03:00, then two events should be generated: 1. 180329 14:00 - 23:59(IntraEnd) 2. 180330 00:00(IntraStart) - 03:00
+eg. startDate = 180329 14:00, endDate = 180330 03:00, then two events should be generated: 1. 180329 14:00(IntraStart) - 23:59(IntraEnd) 2. 180330 00:00(IntraStart) - 03:00(IntraEnd)
 
 
 For futher usage, you can also check the example project, some comments in code or just email me.<br />
