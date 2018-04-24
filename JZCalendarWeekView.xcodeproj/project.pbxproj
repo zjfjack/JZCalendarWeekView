@@ -118,20 +118,20 @@
 				8E023C83206C732300C523BE /* JZBaseEvent.swift */,
 				8E1BA969206B5350007BE13C /* JZWeekViewHelper.swift */,
 				8E1BA95C206B4AD9007BE13C /* Views */,
-				8E1BA955206B4687007BE13C /* Util */,
+				8E1BA955206B4687007BE13C /* Utils */,
 				8E1BA94D206B4329007BE13C /* JZCalendarWeekView.h */,
 				8E1BA94E206B4329007BE13C /* Info.plist */,
 			);
 			path = JZCalendarWeekView;
 			sourceTree = "<group>";
 		};
-		8E1BA955206B4687007BE13C /* Util */ = {
+		8E1BA955206B4687007BE13C /* Utils */ = {
 			isa = PBXGroup;
 			children = (
 				8E023C85206C956F00C523BE /* JZWeekViewColors.swift */,
 				8E478FA220846A8000668F05 /* Extensions.swift */,
 			);
-			path = Util;
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		8E1BA95C206B4AD9007BE13C /* Views */ = {

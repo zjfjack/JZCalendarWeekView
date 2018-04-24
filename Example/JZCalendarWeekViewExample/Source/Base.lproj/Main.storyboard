@@ -30,7 +30,7 @@
         <scene sceneID="9Fo-rc-AyO">
             <objects>
                 <viewController id="fP8-zy-06q" customClass="RootViewController" customModule="JZCalendarWeekViewExample" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="gcE-oJ-Vcm">
+                    <view key="view" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="gcE-oJ-Vcm">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -41,21 +41,22 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="Ahy-zm-E7y" firstAttribute="leading" secondItem="gZt-RK-qpM" secondAttribute="leading" id="3II-Zm-xaA"/>
-                            <constraint firstItem="gZt-RK-qpM" firstAttribute="bottom" secondItem="Ahy-zm-E7y" secondAttribute="bottom" id="KeM-14-x3k"/>
-                            <constraint firstItem="gZt-RK-qpM" firstAttribute="trailing" secondItem="Ahy-zm-E7y" secondAttribute="trailing" id="O8l-uE-Ycl"/>
-                            <constraint firstItem="Ahy-zm-E7y" firstAttribute="top" secondItem="gZt-RK-qpM" secondAttribute="top" id="gd2-IO-gfE"/>
+                            <constraint firstItem="Ahy-zm-E7y" firstAttribute="leading" secondItem="gcE-oJ-Vcm" secondAttribute="leading" id="HXm-Ob-3H3"/>
+                            <constraint firstAttribute="bottom" secondItem="Ahy-zm-E7y" secondAttribute="bottom" id="h90-Lo-mkU"/>
+                            <constraint firstAttribute="trailing" secondItem="Ahy-zm-E7y" secondAttribute="trailing" id="ira-NX-NpI"/>
+                            <constraint firstItem="Ahy-zm-E7y" firstAttribute="top" secondItem="WG3-mp-vuy" secondAttribute="top" id="sEK-hP-Ube"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="gZt-RK-qpM"/>
+                        <viewLayoutGuide key="safeArea" id="WG3-mp-vuy"/>
                     </view>
                     <navigationItem key="navigationItem" id="61I-Uy-e3s"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="calendarWeekView" destination="Ahy-zm-E7y" id="zCz-co-pkP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q9E-bu-glC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="753" y="123"/>
+            <point key="canvasLocation" x="752.79999999999995" y="122.78860569715144"/>
         </scene>
         <!--Options View Controller-->
         <scene sceneID="A1o-p0-qFd">

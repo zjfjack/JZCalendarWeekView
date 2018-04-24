@@ -31,7 +31,7 @@ extension UICollectionViewFlowLayout {
     }
 }
 
-// Anchor Constraints
+// Anchor Constraints from JZiOSFramework
 extension UIView {
     
     func setAnchorConstraintsEqualTo(widthAnchor: CGFloat?=nil, heightAnchor: CGFloat?=nil, centerXAnchor: NSLayoutXAxisAnchor?=nil, centerYAnchor: NSLayoutYAxisAnchor?=nil) {

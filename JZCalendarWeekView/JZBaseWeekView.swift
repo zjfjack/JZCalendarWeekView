@@ -160,6 +160,14 @@ open class JZBaseWeekView: UIView {
         }
     }
     
+    /// Get current event with item indexPath
+    ///
+    /// - Parameter indexPath: The indexPath of an item in collectionView
+    open func getCurrentEvent(with indexPath: IndexPath) -> JZBaseEvent? {
+        let date = flowLayout.dateForColumnHeader(at: indexPath)
+        return allEventsBySection[date]?[indexPath.row]
+    }
+    
     /**
         Used to Refresh the weekView when viewWillTransition
      

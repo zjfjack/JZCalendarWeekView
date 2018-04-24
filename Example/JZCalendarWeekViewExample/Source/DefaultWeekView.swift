@@ -18,9 +18,14 @@ class DefaultWeekView: JZBaseWeekView {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let date = flowLayout.dateForColumnHeader(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EventCell.className, for: indexPath) as! EventCell
-        cell.updateView(event: allEventsBySection[date]![indexPath.row] as! Event)
+        cell.updateView(event: getCurrentEvent(with: indexPath) as! Event)
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedEvent = getCurrentEvent(with: indexPath) as! Event
+//        ToastUtil.toastMessageInTheMiddle(message: selectedEvent.title)
+        ToastUtil.toastMessageFromTopOrBottom(message: selectedEvent.title, toastPosition: .top)
     }
 }

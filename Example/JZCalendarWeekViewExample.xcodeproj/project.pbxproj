@@ -11,6 +11,7 @@
 		8E048ED6207EF83300A532BA /* ExpandableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E048ED5207EF83300A532BA /* ExpandableHeaderView.swift */; };
 		8E048ED9207F26F500A532BA /* OptionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E048ED7207F26F500A532BA /* OptionsTableViewCell.swift */; };
 		8E048EDA207F26F500A532BA /* OptionsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E048ED8207F26F500A532BA /* OptionsTableViewCell.xib */; };
+		8E0D30B1208EBB0F00B7FC59 /* ToastUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0D30B0208EBB0F00B7FC59 /* ToastUtil.swift */; };
 		8E2E6567208D5F3600FB2CE4 /* BlackGridLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2E6566208D5F3600FB2CE4 /* BlackGridLine.swift */; };
 		8E54D53B208D6997007DD5FE /* CustomWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E54D53A208D6997007DD5FE /* CustomWeekView.swift */; };
 		8E54D53E208D6A2B007DD5FE /* HourRowHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E54D53C208D6A2B007DD5FE /* HourRowHeader.swift */; };
@@ -74,6 +75,7 @@
 		8E048ED5207EF83300A532BA /* ExpandableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableHeaderView.swift; sourceTree = "<group>"; };
 		8E048ED7207F26F500A532BA /* OptionsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsTableViewCell.swift; sourceTree = "<group>"; };
 		8E048ED8207F26F500A532BA /* OptionsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OptionsTableViewCell.xib; sourceTree = "<group>"; };
+		8E0D30B0208EBB0F00B7FC59 /* ToastUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastUtil.swift; sourceTree = "<group>"; };
 		8E2E6566208D5F3600FB2CE4 /* BlackGridLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackGridLine.swift; sourceTree = "<group>"; };
 		8E54D53A208D6997007DD5FE /* CustomWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWeekView.swift; sourceTree = "<group>"; };
 		8E54D53C208D6A2B007DD5FE /* HourRowHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourRowHeader.swift; sourceTree = "<group>"; };
@@ -118,6 +120,15 @@
 				8E048ED8207F26F500A532BA /* OptionsTableViewCell.xib */,
 			);
 			path = OptionsView;
+			sourceTree = "<group>";
+		};
+		8E0D30AE208EBAE400B7FC59 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				8E5BB406207325AB00FA853F /* Extensions.swift */,
+				8E0D30B0208EBB0F00B7FC59 /* ToastUtil.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		8E54D536208D6883007DD5FE /* CustomViews */ = {
@@ -168,7 +179,7 @@
 				8E7263DD2074B55300ECF7CD /* EventCell.xib */,
 				8E54D536208D6883007DD5FE /* CustomViews */,
 				8E048ED1207EF5FC00A532BA /* OptionsView */,
-				8E5BB406207325AB00FA853F /* Extensions.swift */,
+				8E0D30AE208EBAE400B7FC59 /* Utils */,
 				8E5BB3D12072F4A000FA853F /* AppDelegate.swift */,
 				8E5BB3D52072F4A000FA853F /* Main.storyboard */,
 			);
@@ -313,6 +324,7 @@
 				8E7263E32074B73300ECF7CD /* DefaultWeekView.swift in Sources */,
 				8E5BB3D22072F4A000FA853F /* AppDelegate.swift in Sources */,
 				8E048ED6207EF83300A532BA /* ExpandableHeaderView.swift in Sources */,
+				8E0D30B1208EBB0F00B7FC59 /* ToastUtil.swift in Sources */,
 				8E048ED4207EF65000A532BA /* OptionsViewModel.swift in Sources */,
 				8E9AE75B20773F3500B7004E /* OptionsViewController.swift in Sources */,
 			);
