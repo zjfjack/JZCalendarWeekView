@@ -25,7 +25,7 @@ open class JZBaseEvent: NSObject, NSCopying {
         self.intraEndDate = endDate
     }
     
-    //Must be overrided
+    // Must be overrided
     open func copy(with zone: NSZone? = nil) -> Any {
         return JZBaseEvent(startDate: startDate, endDate: endDate)
     }

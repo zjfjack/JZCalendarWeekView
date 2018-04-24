@@ -23,8 +23,8 @@ class WeekViewHelperTest: XCTestCase {
     
     func testGetIntraEventsByDateSameDateEvents() {
         let testDate = Date().startOfDay
-        let sameDayEvent = BaseEvent(startDate: testDate, endDate: testDate.add(component: .hour, value: 3))
-        let sameDateResults = WeekViewHelper.getIntraEventsByDate(originalEvents: [sameDayEvent])
+        let sameDayEvent = JZBaseEvent(startDate: testDate, endDate: testDate.add(component: .hour, value: 3))
+        let sameDateResults = JZWeekViewHelper.getIntraEventsByDate(originalEvents: [sameDayEvent])
         XCTAssertTrue(sameDateResults.keys.count == 1, "Result should be only one date")
         
         if let testDateEvents = sameDateResults[testDate], testDateEvents.count == 1 {
@@ -37,13 +37,15 @@ class WeekViewHelperTest: XCTestCase {
     }
     
     func testGetIntraEventsByDateCrossingDateEvents() {
-        let testStartDate = Date()
+        let testStartDate = Calendar.current.date(bySettingHour: 22, minute: 00, second: 00, of: Date())!
         let testSecondDate = testStartDate.add(component: .day, value: 1)
         let testThirdDate = testStartDate.add(component: .day, value: 2)
+        // Cross within 24 hours will still count as 2 days
+        let testFourthDate = testStartDate.add(component: .hour, value: 3)
         
-        let crossTwoDayEvent = BaseEvent(startDate: testStartDate, endDate: testThirdDate)
-        let twoDayResults = WeekViewHelper.getIntraEventsByDate(originalEvents: [crossTwoDayEvent])
-        XCTAssertTrue(twoDayResults.keys.count == 3, "Result should be two dates")
+        let crossTwoDayEvent = JZBaseEvent(startDate: testStartDate, endDate: testThirdDate)
+        let twoDayResults = JZWeekViewHelper.getIntraEventsByDate(originalEvents: [crossTwoDayEvent])
+        XCTAssertEqual(twoDayResults.keys.count, 3, "Result should be three dates")
         
         if let firstDayEvents = twoDayResults[testStartDate.startOfDay], firstDayEvents.count == 1 {
             let event = firstDayEvents[0]
@@ -64,8 +66,8 @@ class WeekViewHelperTest: XCTestCase {
             XCTFail()
         }
         
-        if let threeDayEvents = twoDayResults[testThirdDate.startOfDay], threeDayEvents.count == 1 {
-            let event = threeDayEvents[0]
+        if let thirdDayEvents = twoDayResults[testThirdDate.startOfDay], thirdDayEvents.count == 1 {
+            let event = thirdDayEvents[0]
             XCTAssertNotEqual(event.intraStartDate, crossTwoDayEvent.intraStartDate, "Copy problem")
             XCTAssertEqual(event.intraStartDate, testThirdDate.startOfDay)
             XCTAssertEqual(event.intraEndDate, crossTwoDayEvent.intraEndDate)
@@ -73,6 +75,30 @@ class WeekViewHelperTest: XCTestCase {
             XCTFail()
         }
         
+        // Within 24 hours
+        
+        let crossThreeHourEvent = JZBaseEvent(startDate: testStartDate, endDate: testFourthDate)
+        let threeHourResults = JZWeekViewHelper.getIntraEventsByDate(originalEvents: [crossThreeHourEvent])
+        
+        XCTAssertEqual(threeHourResults.keys.count, 2, "Result should be two dates")
+        
+        if let firstDayEvents = threeHourResults[testStartDate.startOfDay], firstDayEvents.count == 1 {
+            let event = firstDayEvents[0]
+            XCTAssertEqual(event.intraStartDate, crossTwoDayEvent.intraStartDate)
+            XCTAssertEqual(event.intraEndDate, testStartDate.endOfDay)
+            XCTAssertNotEqual(event.intraEndDate, crossTwoDayEvent.intraEndDate, "Copy problem")
+        } else {
+            XCTFail()
+        }
+        
+        if let secondDayEvents = threeHourResults[testFourthDate.startOfDay], secondDayEvents.count == 1 {
+            let event = secondDayEvents[0]
+            XCTAssertNotEqual(event.intraStartDate, crossThreeHourEvent.intraStartDate, "Copy problem")
+            XCTAssertEqual(event.intraStartDate, testFourthDate.startOfDay)
+            XCTAssertEqual(event.intraEndDate, crossThreeHourEvent.intraEndDate)
+        } else {
+            XCTFail()
+        }
     }
     
 }

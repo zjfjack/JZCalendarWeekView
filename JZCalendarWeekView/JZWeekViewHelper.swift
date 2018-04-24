@@ -64,22 +64,23 @@ open class JZWeekViewHelper {
         A dictionary used by JZBaseWeekView. Key is a day Date, value is all the events in that day
      */
     open class func getIntraEventsByDate<T: JZBaseEvent>(originalEvents: [T]) -> [Date: [T]] {
-        var treatedEvents = [Date: [T]]()
+        var resultEvents = [Date: [T]]()
         for event in originalEvents {
             let startDateStartDay = event.startDate.startOfDay
-            let daysBetween = Date.daysBetween(start: event.startDate, end: event.endDate)
+            // get days from both startOfDay, otherwise 22:00 - 01:00 case will get 0 daysBetween result
+            let daysBetween = Date.daysBetween(start: startDateStartDay, end: event.endDate.startOfDay)
             if daysBetween == 0 {
-                if treatedEvents[startDateStartDay] == nil {
-                    treatedEvents[startDateStartDay] = [T]()
+                if resultEvents[startDateStartDay] == nil {
+                    resultEvents[startDateStartDay] = [T]()
                 }
                 let copiedEvent = event.copy() as! T
-                treatedEvents[startDateStartDay]!.append(copiedEvent)
+                resultEvents[startDateStartDay]!.append(copiedEvent)
             } else {
                 // Crossing day
                 for day in 0...daysBetween {
                     let currentStartDate = startDateStartDay.add(component: .day, value: day)
-                    if treatedEvents[currentStartDate] == nil {
-                        treatedEvents[currentStartDate] = [T]()
+                    if resultEvents[currentStartDate] == nil {
+                        resultEvents[currentStartDate] = [T]()
                     }
                     let newEvent = event.copy() as! T
                     if day == 0 {
@@ -90,10 +91,10 @@ open class JZWeekViewHelper {
                         newEvent.intraStartDate = currentStartDate.startOfDay
                         newEvent.intraEndDate = currentStartDate.endOfDay
                     }
-                    treatedEvents[currentStartDate]!.append(newEvent)
+                    resultEvents[currentStartDate]!.append(newEvent)
                 }
             }
         }
-        return treatedEvents
+        return resultEvents
     }
 }

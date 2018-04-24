@@ -30,7 +30,7 @@ extension UIColor {
             alpha: a
         )
     }
-    //Get UIColor by hex
+    // Get UIColor by hex
     fileprivate convenience init(hex: Int, a: CGFloat = 1.0) {
         self.init(
             red: (hex >> 16) & 0xFF,

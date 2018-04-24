@@ -31,14 +31,14 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     open var defaultRowHeaderWidth: CGFloat = 42
     open var defaultColumnHeaderHeight: CGFloat = 44
     open var defaultHourGridDivision = JZHourGridDivision.noneDiv
-    //If you want to change following constants, subclass the WeekViewFlowLayout, and override them
+    // If you want to change following constants, subclass the WeekViewFlowLayout, and override them
     open var defaultGridThickness: CGFloat = 0.5
     open var defaultCurrentTimeLineHeight: CGFloat = 10
     open var contentsMargin = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0) //Margin for the flowLayout in collectionView
     open var sectionMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     open var itemMargin = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
-    
-    private var maxSectionHeight: CGFloat { return columnHeaderHeight + hourHeight * 24 + contentsMargin.top + contentsMargin.bottom } //weekview contentSize height
+    /// weekview contentSize height
+    private var maxSectionHeight: CGFloat { return columnHeaderHeight + hourHeight * 24 + contentsMargin.top + contentsMargin.bottom }
     
     let minOverlayZ = 1000  // Allows for 900 items in a section without z overlap issues
     let minCellZ = 100      // Allows for 100 items in a section's background
