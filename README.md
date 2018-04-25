@@ -94,9 +94,9 @@ override func collectionView(_ collectionView: UICollectionView, cellForItemAt i
 
 ### JZBaseEvent
 
-In JZCalendarWeekView, the data model is using `[Date:Event]` dictionary because for each day (a section in collectionView), there are many events.<br />
+In JZCalendarWeekView, the data model is using `[Date: [Event]]` dictionary because for each day (a section in collectionView), there might be some events. <br />
 
-A static function called `getIntraEventsByDate` provided in `JZWeekViewHelper` allow you to tranform your event list into `[Date:Event]` dictionary.
+A static function called `getIntraEventsByDate` provided in `JZWeekViewHelper` allow you to tranform your events list into `[Date: [Event]]` dictionary.
 ```swift 
 open class func getIntraEventsByDate<T: JZBaseEvent>(originalEvents: [T]) -> [Date: [T]]
 ```
