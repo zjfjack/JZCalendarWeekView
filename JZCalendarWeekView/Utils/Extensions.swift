@@ -124,6 +124,25 @@ extension UIView {
     func addSubviews(_ views: [UIView]) {
         views.forEach({ self.addSubview($0)})
     }
+    
+    var snapshot: UIImage? {
+        UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.main.scale)
+        drawHierarchy(in: bounds, afterScreenUpdates: true)
+        let result = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return result
+    }
+}
+
+extension UILabel {
+    class func getLabelWidth(_ height:CGFloat, font:UIFont, text:String) -> CGFloat{
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: .greatestFiniteMagnitude, height: height))
+        label.font = font
+        label.numberOfLines = 0
+        label.text = text
+        label.sizeToFit()
+        return label.frame.width
+    }
 }
 
 extension Date {

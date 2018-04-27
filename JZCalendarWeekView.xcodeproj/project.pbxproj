@@ -24,6 +24,7 @@
 		8E1BA96E206B5B55007BE13C /* JZRowHeaderBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA96D206B5B55007BE13C /* JZRowHeaderBackground.swift */; };
 		8E1BA970206B6051007BE13C /* JZCornerHeaderBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA96F206B6051007BE13C /* JZCornerHeaderBackground.swift */; };
 		8E1BA972206B61B7007BE13C /* JZBaseEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA971206B61B7007BE13C /* JZBaseEventCell.swift */; };
+		8E21E8B020916A96002D72D0 /* JZLongPressWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E21E8AF20916A96002D72D0 /* JZLongPressWeekView.swift */; };
 		8E478FA320846A8000668F05 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E478FA220846A8000668F05 /* Extensions.swift */; };
 		8E5BB3FB2073154F00FA853F /* WeekViewHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */; };
 /* End PBXBuildFile section */
@@ -59,6 +60,7 @@
 		8E1BA96D206B5B55007BE13C /* JZRowHeaderBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZRowHeaderBackground.swift; sourceTree = "<group>"; };
 		8E1BA96F206B6051007BE13C /* JZCornerHeaderBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZCornerHeaderBackground.swift; sourceTree = "<group>"; };
 		8E1BA971206B61B7007BE13C /* JZBaseEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZBaseEventCell.swift; sourceTree = "<group>"; };
+		8E21E8AF20916A96002D72D0 /* JZLongPressWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZLongPressWeekView.swift; sourceTree = "<group>"; };
 		8E478FA220846A8000668F05 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekViewHelperTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -114,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				8E1BA956206B47DA007BE13C /* JZBaseWeekView.swift */,
+				8E21E8AF20916A96002D72D0 /* JZLongPressWeekView.swift */,
 				8E1BA95A206B4826007BE13C /* JZWeekViewFlowLayout.swift */,
 				8E023C83206C732300C523BE /* JZBaseEvent.swift */,
 				8E1BA969206B5350007BE13C /* JZWeekViewHelper.swift */,
@@ -282,6 +285,7 @@
 				8E1BA972206B61B7007BE13C /* JZBaseEventCell.swift in Sources */,
 				8E1BA966206B4F0B007BE13C /* JZGridLine.swift in Sources */,
 				8E1BA957206B47DA007BE13C /* JZBaseWeekView.swift in Sources */,
+				8E21E8B020916A96002D72D0 /* JZLongPressWeekView.swift in Sources */,
 				8E023C86206C956F00C523BE /* JZWeekViewColors.swift in Sources */,
 				8E1BA96A206B5350007BE13C /* JZWeekViewHelper.swift in Sources */,
 				8E1BA962206B4B99007BE13C /* JZRowHeader.swift in Sources */,
