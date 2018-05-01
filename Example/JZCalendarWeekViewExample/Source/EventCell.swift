@@ -14,6 +14,7 @@ class EventCell: UICollectionViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var borderView: UIView!
+    var event: Event!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -34,6 +35,7 @@ class EventCell: UICollectionViewCell {
     }
     
     func updateView(event: Event) {
+        self.event = event
         locationLabel.text = event.location
         titleLabel.text = event.title
     }

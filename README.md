@@ -10,15 +10,13 @@ iOS Calendar Week/Day View in Swift
 
 Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
 
-This is a new repository and it is my first time to write a library. <br />
-If you have any questions and suggestions, feel free to contact me. Jeff Zhang: zekejeff@gmail.com
-
 ## Features
 
 - [x] X-Day per Page (Day view: 1-day, 3-day view, weekview: 7-day)
 - [x] Two Scroll types: One-Day scroll (scroll a section) or Page scroll
-- [x] Events display on calendar view (supports events with conflict time and events cross few days)
-- [x] Current time line display
+- [x] Events display on calendar view (supports events with conflict time and events crossing few days)
+- [x] Current time line
+- [x] Two Types of Long Press Gestures: Add a new event & Move an existing event
 
 <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/numOfDays.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType-page.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType-section.gif" width="285"/>
 
@@ -50,16 +48,16 @@ override func viewWillTransition(to size: CGSize, with coordinator: UIViewContro
 
 ### JZBaseWeekView
 
-Create your own WeekView class inherit from `JZBaseWeekView`, and you should override the following functions.
+Create your own WeekView class inheriting from `JZBaseWeekView`, and you should override the following functions.
 
-- Register function: Register your own CollectionViewCell, SupplementaryView or  DecorationView here
+1. Register function: Register your own CollectionViewCell, SupplementaryView or  DecorationView here
 
 ```swift
 override func registerViewClasses() {
     super.registerViewClasses()
 
     // Register CollectionViewCell
-    self.collectionView.register(UINib(nibName: EventCell.className, bundle: nil), forCellWithReuseIdentifier: EventCell.className)
+    self.collectionView.register(UINib(nibName: "EventCell", bundle: nil), forCellWithReuseIdentifier: "EventCell")
 
     // Register DecorationView: must provide corresponding JZDecorationViewKinds
     self.flowLayout.register(BlackGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.verticalGridline)
@@ -72,16 +70,9 @@ override func registerViewClasses() {
 If you want to use your own supplementryView, you should register it and override the following function
 
 ```swift
-override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-    if kind == JZSupplementaryViewKinds.rowHeader {
-        let rowHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HourRowHeader.className, for: indexPath) as! HourRowHeader
-        rowHeader.updateView(date: flowLayout.dateForTimeRowHeader(at: indexPath))
-        return rowHeader
-    }
-    return super.collectionView(collectionView, viewForSupplementaryElementOfKind: kind, at: indexPath)
-}
+override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
 ```
-- CollectionView `cellForItemAt`: Use your custom collectionViewCell
+2. CollectionView `cellForItemAt`: Use your custom collectionViewCell
 
 ```swift
 override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -90,6 +81,40 @@ override func collectionView(_ collectionView: UICollectionView, cellForItemAt i
     cell.updateView(event: allEventsBySection[date]![indexPath.row] as! Event)
     return cell
 }
+```
+
+### JZLongPressView
+
+This view is inheriated from JZBaseWeekView and implements the long press gestures. You can simply follow the setup rules of JZBaseWeekView. <br />
+In order to achieve the long press gestures, you should implement the `JZLongPressViewDelegate` and `JZLongPressViewDataSource` in your ViewController.
+
+```swift
+public protocol JZLongPressViewDelegate: class {
+    /// When addNew long press gesture ends, this function will be called.
+    func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date)
+    /// When Move long press gesture ends, this function will be called.
+    func weekView(_ weekView: JZLongPressWeekView, movingCell: UICollectionViewCell, didEndMoveLongPressAt startDate: Date)
+    /// Sometimes the longPress will be cancelled because some curtain reason.
+    func weekView(_ weekView: JZLongPressWeekView, longPressType: JZLongPressWeekView.LongPressType, didCancelLongPressAt startDate: Date)
+}
+
+public protocol JZLongPressViewDataSource: class {
+    /// Implement this function to customise your own AddNew longPressView
+    func weekView(_ weekView: JZLongPressWeekView, viewForAddNewLongPressAt startDate: Date) -> UIView
+    /// Implement this function to customise your own Move longPressView
+    func weekView(_ weekView: JZLongPressWeekView, movingCell: UICollectionViewCell, viewForMoveLongPressAt startDate: Date) -> UIView
+}
+```
+Also, you should provide the long press types and there are some other properties you can change.
+
+```swift 
+calendarWeekView.longPressDelegate = self
+calendarWeekView.longPressDataSource = self
+calendarWeekView.longPressTypes = [.addNew, .move]
+
+// Optional
+calendarWeekView.addNewDurationMins = 120
+calendarWeekView.moveTimeMinInterval = 15
 ```
 
 ### JZBaseEvent
@@ -120,17 +145,21 @@ I will improve the usage description as soon as possible.
 JZCalendarWeekView can be added to your project by adding the following line to your `Podfile`:
 
 ```ruby
-pod 'JZCalendarWeekView', '~> 0.1'
+pod 'JZCalendarWeekView', '~> 0.2'
 ```
 
 ## Todo
 
-- [ ] Gestures: Tap to select & Long press to drag
-- [ ] Supports all devices including iPad and iPhone X and all orientations
+- [ ] Support all devices including iPad and iPhone X and all orientations
+- [ ] Theme implementation
 - [ ] New scroll type: Infinite scroll
-- [ ] Supports different types of events
-- [ ] Supports Top custom decoration/supplementry view
+- [ ] Support different types of event arrangment rules
+- [ ] Support custom decoration/supplementry view added
 
+## Author
+
+Jeff Zhang, zekejeff@gmail.com </br>
+If you have any questions and suggestions, feel free to contact me.
 
 ## License
 

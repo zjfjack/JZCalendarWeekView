@@ -15,8 +15,10 @@ class Event: JZBaseEvent {
     /// Not used for now
     var eventType: Int
     var title: String
+    var id: String
     
-    init(title: String, startDate: Date, endDate: Date, location: String, eventType: Int) {
+    init(id: String, title: String, startDate: Date, endDate: Date, location: String, eventType: Int) {
+        self.id = id
         self.location = location
         self.eventType = eventType
         self.title = title
@@ -24,7 +26,7 @@ class Event: JZBaseEvent {
     }
     
     override func copy(with zone: NSZone?) -> Any {
-        return Event(title: title, startDate: startDate, endDate: endDate, location: location, eventType: eventType)
+        return Event(id: id, title: title, startDate: startDate, endDate: endDate, location: location, eventType: eventType)
     }
     
     

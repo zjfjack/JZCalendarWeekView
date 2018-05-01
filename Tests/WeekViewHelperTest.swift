@@ -37,7 +37,7 @@ class WeekViewHelperTest: XCTestCase {
     }
     
     func testGetIntraEventsByDateCrossingDateEvents() {
-        let testStartDate = Calendar.current.date(bySettingHour: 22, minute: 00, second: 00, of: Date())!
+        let testStartDate = Date().set(hour: 22, minute: 0, second: 0)
         let testSecondDate = testStartDate.add(component: .day, value: 1)
         let testThirdDate = testStartDate.add(component: .day, value: 2)
         // Cross within 24 hours will still count as 2 days

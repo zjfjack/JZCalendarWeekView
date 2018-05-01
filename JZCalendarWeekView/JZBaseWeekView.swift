@@ -6,6 +6,21 @@
 //  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
+public protocol JZBaseViewDelegate: class {
+    
+    /// When initDate changed, this function will be called. You can get the current date by adding numOfDays on initDate
+    ///
+    /// - Parameters:
+    ///   - weekView: current JZBaseWeekView
+    ///   - initDate: the new value of initDate
+    func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date)
+}
+
+extension JZBaseViewDelegate {
+    // Keep it optional
+    func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {}
+}
+
 open class JZBaseWeekView: UIView {
     
     public var collectionView: UICollectionView!
@@ -14,11 +29,16 @@ open class JZBaseWeekView: UIView {
     /// The initial date of current collectionView. When page is not scrolling, the inital date is always
     /// the numOfDays days eariler than current page first date, which means the start of the collectionView.
     /// The core structure of JZCalendarWeekView is 3 pages, previous-current-next
-    public var initDate: Date!
+    public var initDate: Date! {
+        didSet {
+            baseDelegate?.initDateDidChange(self, initDate: initDate)
+        }
+    }
     public var numOfDays: Int!
     public var scrollType: JZScrollType!
     public var firstDayOfWeek: DayOfWeek?
     public var allEventsBySection: EventsByDate!
+    public weak var baseDelegate: JZBaseViewDelegate?
     
     private var isFirstAppear: Bool = true
     internal var initialContentOffset = CGPoint.zero
@@ -176,6 +196,7 @@ open class JZBaseWeekView: UIView {
         if diff < 0 { diff = 7 - abs(diff) }
         self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays - diff)
         self.firstDayOfWeek = firstDayOfWeek
+        self.forceReload()
     }
 
     
@@ -219,7 +240,7 @@ open class JZBaseWeekView: UIView {
         let yearMonthDay = getDateForX(xCollectionView: pointCollectionView.x, xSelfView: pointSelfView.x)
         let hourMinute = getDateForY(yCollectionView: pointCollectionView.y)
         
-        return Calendar.current.date(bySettingHour: hourMinute.0, minute: hourMinute.1, second: 0, of: yearMonthDay)!
+        return yearMonthDay.set(hour: hourMinute.0, minute: hourMinute.1, second: 0)
     }
     
     /// Get weekview scroll direction (directionalLockEnabled)

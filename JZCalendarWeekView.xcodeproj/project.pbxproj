@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8E023C78206C6E4B00C523BE /* BaseWeekViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E023C77206C6E4B00C523BE /* BaseWeekViewTest.swift */; };
+		8E023C78206C6E4B00C523BE /* JZWeekViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E023C77206C6E4B00C523BE /* JZWeekViewTest.swift */; };
 		8E023C7A206C6E4B00C523BE /* JZCalendarWeekView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1BA94A206B4329007BE13C /* JZCalendarWeekView.framework */; };
 		8E023C84206C732300C523BE /* JZBaseEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E023C83206C732300C523BE /* JZBaseEvent.swift */; };
 		8E023C86206C956F00C523BE /* JZWeekViewColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E023C85206C956F00C523BE /* JZWeekViewColors.swift */; };
@@ -41,7 +41,7 @@
 
 /* Begin PBXFileReference section */
 		8E023C75206C6E4B00C523BE /* JZCalendarWeekViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JZCalendarWeekViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8E023C77206C6E4B00C523BE /* BaseWeekViewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseWeekViewTest.swift; sourceTree = "<group>"; };
+		8E023C77206C6E4B00C523BE /* JZWeekViewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZWeekViewTest.swift; sourceTree = "<group>"; };
 		8E023C79206C6E4B00C523BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8E023C83206C732300C523BE /* JZBaseEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZBaseEvent.swift; sourceTree = "<group>"; };
 		8E023C85206C956F00C523BE /* JZWeekViewColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZWeekViewColors.swift; sourceTree = "<group>"; };
@@ -87,7 +87,7 @@
 		8E023C76206C6E4B00C523BE /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				8E023C77206C6E4B00C523BE /* BaseWeekViewTest.swift */,
+				8E023C77206C6E4B00C523BE /* JZWeekViewTest.swift */,
 				8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */,
 				8E023C79206C6E4B00C523BE /* Info.plist */,
 			);
@@ -120,7 +120,7 @@
 				8E1BA95A206B4826007BE13C /* JZWeekViewFlowLayout.swift */,
 				8E023C83206C732300C523BE /* JZBaseEvent.swift */,
 				8E1BA969206B5350007BE13C /* JZWeekViewHelper.swift */,
-				8E1BA95C206B4AD9007BE13C /* Views */,
+				8E1BA95C206B4AD9007BE13C /* ReusableViews */,
 				8E1BA955206B4687007BE13C /* Utils */,
 				8E1BA94D206B4329007BE13C /* JZCalendarWeekView.h */,
 				8E1BA94E206B4329007BE13C /* Info.plist */,
@@ -137,7 +137,7 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		8E1BA95C206B4AD9007BE13C /* Views */ = {
+		8E1BA95C206B4AD9007BE13C /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
 				8E1BA971206B61B7007BE13C /* JZBaseEventCell.swift */,
@@ -150,7 +150,7 @@
 				8E1BA96D206B5B55007BE13C /* JZRowHeaderBackground.swift */,
 				8E1BA96F206B6051007BE13C /* JZCornerHeaderBackground.swift */,
 			);
-			path = Views;
+			path = ReusableViews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -265,7 +265,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E5BB3FB2073154F00FA853F /* WeekViewHelperTest.swift in Sources */,
-				8E023C78206C6E4B00C523BE /* BaseWeekViewTest.swift in Sources */,
+				8E023C78206C6E4B00C523BE /* JZWeekViewTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
