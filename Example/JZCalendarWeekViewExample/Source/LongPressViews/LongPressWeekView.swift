@@ -1,15 +1,15 @@
 //
-//  DefaultWeekView.swift
-//  JZCalendarViewExample
+//  LongPressWeekView.swift
+//  JZCalendarWeekViewExample
 //
-//  Created by Jeff Zhang on 4/4/18.
+//  Created by Jeff Zhang on 30/4/18.
 //  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
 import UIKit
 import JZCalendarWeekView
 
-class DefaultWeekView: JZBaseWeekView {
+class LongPressWeekView: JZLongPressWeekView {
     
     override func registerViewClasses() {
         super.registerViewClasses()

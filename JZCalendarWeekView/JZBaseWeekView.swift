@@ -6,6 +6,21 @@
 //  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
+public protocol JZBaseViewDelegate: class {
+    
+    /// When initDate changed, this function will be called. You can get the current date by adding numOfDays on initDate
+    ///
+    /// - Parameters:
+    ///   - weekView: current JZBaseWeekView
+    ///   - initDate: the new value of initDate
+    func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date)
+}
+
+extension JZBaseViewDelegate {
+    // Keep it optional
+    func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date) {}
+}
+
 open class JZBaseWeekView: UIView {
     
     public var collectionView: UICollectionView!
@@ -14,28 +29,25 @@ open class JZBaseWeekView: UIView {
     /// The initial date of current collectionView. When page is not scrolling, the inital date is always
     /// the numOfDays days eariler than current page first date, which means the start of the collectionView.
     /// The core structure of JZCalendarWeekView is 3 pages, previous-current-next
-    public var initDate: Date!
+    public var initDate: Date! {
+        didSet {
+            baseDelegate?.initDateDidChange(self, initDate: initDate)
+        }
+    }
     public var numOfDays: Int!
     public var scrollType: JZScrollType!
     public var firstDayOfWeek: DayOfWeek?
     public var allEventsBySection: EventsByDate!
+    public weak var baseDelegate: JZBaseViewDelegate?
     
     private var isFirstAppear: Bool = true
-    private var initialContentOffset = CGPoint.zero
-    private var scrollSections:CGFloat!
+    internal var initialContentOffset = CGPoint.zero
+    internal var scrollSections:CGFloat!
     
-    var longPressType: LongPressType = .none
-//    var longPressView: LongPressCellView! TODO
-    var longPressView = UIView()
-    private var isScrolling: Bool = false
+    internal var isScrolling: Bool = false
     private var isDirectionLocked = false
     private var lockedDirection: ScrollDirection!
     
-    enum LongPressType {
-        case none
-        case addNew
-        case move
-    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -160,6 +172,14 @@ open class JZBaseWeekView: UIView {
         }
     }
     
+    /// Get current event with item indexPath
+    ///
+    /// - Parameter indexPath: The indexPath of an item in collectionView
+    open func getCurrentEvent(with indexPath: IndexPath) -> JZBaseEvent? {
+        let date = flowLayout.dateForColumnHeader(at: indexPath)
+        return allEventsBySection[date]?[indexPath.row]
+    }
+    
     /**
         Used to Refresh the weekView when viewWillTransition
      
@@ -176,6 +196,7 @@ open class JZBaseWeekView: UIView {
         if diff < 0 { diff = 7 - abs(diff) }
         self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays - diff)
         self.firstDayOfWeek = firstDayOfWeek
+        self.forceReload()
     }
 
     
@@ -185,14 +206,12 @@ open class JZBaseWeekView: UIView {
             - xCollectionView: x position in collectionView
             - xSelfView: x position in current view (self)
      */
-    private func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
-        
+    public func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
         let section = Int((xCollectionView - flowLayout.rowHeaderWidth) / flowLayout.sectionWidth)
-        
         let date = Calendar.current.date(from: flowLayout.daysForSection(section))!
         
         //when isScrolling equals true, means it will scroll to previous date
-        if xSelfView < flowLayout.rowHeaderWidth && isScrolling == false{
+        if xSelfView < flowLayout.rowHeaderWidth && isScrolling == false {
             return date.add(component: .day, value: 1)
         }else{
             return date
@@ -203,7 +222,7 @@ open class JZBaseWeekView: UIView {
     /// Get time from point y position
     /// - Parameters:
     ///    - yCollectionView: y position in collectionView
-    private func getDateForY(yCollectionView: CGFloat) -> (Int, Int) {
+    public func getDateForY(yCollectionView: CGFloat) -> (Int, Int) {
         let adjustedY = yCollectionView - flowLayout.columnHeaderHeight - flowLayout.contentsMargin.top - flowLayout.sectionMargin.top
         let hour = Int(adjustedY / flowLayout.hourHeight)
         let minute = Int((adjustedY / flowLayout.hourHeight - CGFloat(hour)) * 60)
@@ -221,7 +240,7 @@ open class JZBaseWeekView: UIView {
         let yearMonthDay = getDateForX(xCollectionView: pointCollectionView.x, xSelfView: pointSelfView.x)
         let hourMinute = getDateForY(yCollectionView: pointCollectionView.y)
         
-        return Calendar.current.date(bySettingHour: hourMinute.0, minute: hourMinute.1, second: 0, of: yearMonthDay)!
+        return yearMonthDay.set(hour: hourMinute.0, minute: hourMinute.1, second: 0)
     }
     
     /// Get weekview scroll direction (directionalLockEnabled)
@@ -466,142 +485,3 @@ extension JZBaseWeekView: WeekViewFlowLayoutDelegate {
         return JZBaseEventCell.className
     }
 }
-
-//Long press Gesture methods
-extension JZBaseWeekView {
-    
-    
-    @objc func getTopMarginY() -> CGFloat{
-        
-        preconditionFailure("This method must be overridden if using long press gesuture")
-    }
-    
-    @objc func getBotMarginY() -> CGFloat{
-        
-        preconditionFailure("This method must be overridden if using long press gesuture")
-    }
-    
-    
-    func updateTimeLabel(time: Date, point: CGPoint) {
-        
-        let timeLabel = UILabel(frame: .zero)
-//        let timeLabel = longPressView.timeLabel! TODO
-        timeLabel.text = time.getTimeIgnoreSecondsFormat()
-        
-        if point.x - longPressView.frame.width/2 < flowLayout.rowHeaderWidth{
-            timeLabel.textAlignment = .right
-        }else{
-            timeLabel.textAlignment = .left
-        }
-        
-        let labelHeight = timeLabel.frame.height
-        let minOriginY = getTopMarginY()
-        
-        if point.y - labelHeight < minOriginY{
-            
-            let rect = CGRect(x: 0, y: longPressView.frame.height, width: timeLabel.frame.width, height: labelHeight)
-            
-            if timeLabel.frame != rect{
-                timeLabel.frame = rect
-            }
-            
-        }else{
-            
-            let rect = CGRect(x: 0, y: -labelHeight, width: timeLabel.frame.width, height: labelHeight)
-            
-            if timeLabel.frame != rect{
-                timeLabel.frame = rect
-            }
-        }
-    }
-    
-    
-    
-    
-    func updateScroll(point: CGPoint) {
-        
-        //vertical
-        if point.y < getTopMarginY() + 10 && !isScrolling{
-            isScrolling = true
-            scrollingTo(direction: .up)
-        }else if point.y > getBotMarginY() - 10 && !isScrolling{
-            isScrolling = true
-            scrollingTo(direction: .down)
-        }
-        
-        //horizontal
-        if point.x < flowLayout.rowHeaderWidth && !isScrolling{
-            isScrolling = true
-            scrollingTo(direction: .right)
-            
-        }else if frame.width - point.x < 20 && !isScrolling{
-            isScrolling = true
-            scrollingTo(direction: .left)
-        }
-    }
-    
-    //TimeMinInterval is to identify the minimum time interval(Minute) when scrolling (minimum value is 1)
-    func getLongpressStartTime(date: Date, dateInSection: Date, timeMinInterval: Int) -> Date {
-        
-        let startDate: Date
-        if Date.daysBetween(start: dateInSection, end: date) == 1 {
-            //Below the bottom set as the following day
-            startDate = date.startOfDay
-        } else if Date.daysBetween(start: dateInSection, end: date) == -1 {
-             //Beyond the top set as the current day
-            startDate = dateInSection.startOfDay
-        } else {
-            let currentMin = Calendar.current.component(.minute, from: date)
-            //Choose previous time interval (currentMin/timeMinInterval = Int)
-            startDate = Calendar.current.date(bySetting: .minute, value: currentMin/timeMinInterval*timeMinInterval, of: date)!
-        }
-        
-        return startDate
-    }
-    
-    
-    func scrollingTo(direction: ScrollDirection) {
-        
-        let currentOffset = collectionView.contentOffset
-        let maxOffsetY = collectionView.contentSize.height - collectionView.bounds.height + collectionView.contentInset.bottom
-        
-        if direction == .up || direction == .down {
-            
-            var yOffset = CGFloat()
-            
-            //TODO: NOT SURE WHY NEED THIS LINE
-            if scrollType == .sectionScroll {
-                scrollSections = 0
-            }
-            
-            if direction == .up {
-                yOffset = max(0,currentOffset.y - 50)
-                collectionView.setContentOffset(CGPoint(x: currentOffset.x,y: yOffset) , animated: true)
-            } else {
-                yOffset = min(maxOffsetY,currentOffset.y + 50)
-                collectionView.setContentOffset(CGPoint(x: currentOffset.x,y: yOffset) , animated: true)
-            }
-            //scrollview didEndAnimation will not set isScrolling, should set by ourselves
-            if yOffset == 0 || yOffset == maxOffsetY {
-                isScrolling = false
-            }
-            
-        } else {
-            switch scrollType! {
-            case .sectionScroll:
-                let sectionWidth = flowLayout.sectionWidth!
-                scrollSections = direction == .left ? -1 : 1
-                collectionView.setContentOffset(CGPoint(x: currentOffset.x - sectionWidth * scrollSections, y: currentOffset.y), animated: true)
-            case .pageScroll:
-                let contentViewWidth = frame.width - flowLayout.rowHeaderWidth
-                let contentOffsetX = direction == .left ? contentViewWidth * 2 : 0
-                collectionView.setContentOffset(CGPoint(x: contentOffsetX, y: currentOffset.y), animated: true)
-            }
-        }
-        //must set initial contentoffset because willBeginDragging will not be called
-        initialContentOffset = collectionView.contentOffset
-    }
-    
-}
-
-

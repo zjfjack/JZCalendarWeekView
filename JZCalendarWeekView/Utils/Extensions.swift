@@ -31,7 +31,7 @@ extension UICollectionViewFlowLayout {
     }
 }
 
-// Anchor Constraints
+// Anchor Constraints from JZiOSFramework
 extension UIView {
     
     func setAnchorConstraintsEqualTo(widthAnchor: CGFloat?=nil, heightAnchor: CGFloat?=nil, centerXAnchor: NSLayoutXAxisAnchor?=nil, centerYAnchor: NSLayoutYAxisAnchor?=nil) {
@@ -124,6 +124,25 @@ extension UIView {
     func addSubviews(_ views: [UIView]) {
         views.forEach({ self.addSubview($0)})
     }
+    
+    var snapshot: UIImage? {
+        UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.main.scale)
+        drawHierarchy(in: bounds, afterScreenUpdates: true)
+        let result = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return result
+    }
+}
+
+extension UILabel {
+    class func getLabelWidth(_ height:CGFloat, font:UIFont, text:String) -> CGFloat{
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: .greatestFiniteMagnitude, height: height))
+        label.font = font
+        label.numberOfLines = 0
+        label.text = text
+        label.sizeToFit()
+        return label.frame.width
+    }
 }
 
 extension Date {
@@ -149,7 +168,7 @@ extension Date {
     }
     
     var endOfDay: Date {
-        return Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: self)!
+        return self.set(hour: 23, minute: 59, second: 59)
     }
     
     func getDayOfWeek() -> DayOfWeek {
@@ -164,7 +183,36 @@ extension Date {
         return formatter.string(from: self)
     }
     
-    static func daysBetween(start: Date, end: Date) -> Int {
-        return Calendar.current.dateComponents([.day], from: start, to: end).day!
+    static func daysBetween(start: Date, end: Date, ignoreHours: Bool) -> Int {
+        let startDate = ignoreHours ? start.startOfDay : start
+        let endDate = ignoreHours ? end.startOfDay : end
+        return Calendar.current.dateComponents([.day], from: startDate, to: endDate).day!
+    }
+    
+    static let components: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute, .second, .weekday]
+    private var dateComponents: DateComponents {
+        return  Calendar.current.dateComponents(Date.components, from: self)
+    }
+    
+    var year: Int { return dateComponents.year! }
+    var month: Int    { return dateComponents.month! }
+    var day: Int { return dateComponents.day! }
+    var hour: Int { return dateComponents.hour! }
+    var minute: Int    { return dateComponents.minute! }
+    var second: Int    { return dateComponents.second! }
+    
+    var weekday: Int { return dateComponents.weekday! }
+    
+    func set(year: Int?=nil, month: Int?=nil, day: Int?=nil, hour: Int?=nil, minute: Int?=nil, second: Int?=nil, tz: String?=nil) -> Date {
+        let timeZone = Calendar.current.timeZone
+        let year = year ?? self.year
+        let month = month ?? self.month
+        let day = day ?? self.day
+        let hour = hour ?? self.hour
+        let minute = minute ?? self.minute
+        let second = second ?? self.second
+        let dateComponents = DateComponents(timeZone:timeZone, year:year, month:month, day:day, hour:hour, minute:minute, second:second)
+        let date = Calendar.current.date(from: dateComponents)
+        return date!
     }
 }

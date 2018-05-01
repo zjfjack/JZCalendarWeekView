@@ -68,7 +68,7 @@ open class JZWeekViewHelper {
         for event in originalEvents {
             let startDateStartDay = event.startDate.startOfDay
             // get days from both startOfDay, otherwise 22:00 - 01:00 case will get 0 daysBetween result
-            let daysBetween = Date.daysBetween(start: startDateStartDay, end: event.endDate.startOfDay)
+            let daysBetween = Date.daysBetween(start: startDateStartDay, end: event.endDate, ignoreHours: true)
             if daysBetween == 0 {
                 if resultEvents[startDateStartDay] == nil {
                     resultEvents[startDateStartDay] = [T]()
