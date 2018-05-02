@@ -27,16 +27,17 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     public var hourGridDivision: JZHourGridDivision!
     var minuteHeight: CGFloat { return hourHeight / 60 }
     
-    open var defaultHourHeight: CGFloat = 50
-    open var defaultRowHeaderWidth: CGFloat = 42
-    open var defaultColumnHeaderHeight: CGFloat = 44
-    open var defaultHourGridDivision = JZHourGridDivision.noneDiv
-    // If you want to change following constants, subclass the WeekViewFlowLayout, and override them
-    open var defaultGridThickness: CGFloat = 0.5
-    open var defaultCurrentTimeLineHeight: CGFloat = 10
-    open var contentsMargin = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0) //Margin for the flowLayout in collectionView
-    open var sectionMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-    open var itemMargin = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+    public var defaultHourHeight: CGFloat = 50
+    public var defaultRowHeaderWidth: CGFloat = 42
+    public var defaultColumnHeaderHeight: CGFloat = 44
+    public var defaultHourGridDivision = JZHourGridDivision.noneDiv
+    // You can change following constants
+    public var defaultGridThickness: CGFloat = 0.5
+    public var defaultCurrentTimeLineHeight: CGFloat = 10
+    /// Margin for the flowLayout in collectionView
+    public var contentsMargin = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
+    public var sectionMargin = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    public var itemMargin = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
     /// weekview contentSize height
     private var maxSectionHeight: CGFloat { return columnHeaderHeight + hourHeight * 24 + contentsMargin.top + contentsMargin.bottom }
     

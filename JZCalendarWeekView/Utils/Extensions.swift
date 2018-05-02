@@ -132,6 +132,14 @@ extension UIView {
         UIGraphicsEndImageContext()
         return result
     }
+    
+    func setDefaultShadow() {
+        self.layer.shadowColor = UIColor.black.cgColor
+        self.layer.shadowOpacity = 0.05
+        self.layer.shadowOffset = CGSize.zero
+        self.layer.shadowRadius = 4
+        self.layer.masksToBounds = false
+    }
 }
 
 extension UILabel {

@@ -119,6 +119,7 @@
 				8E21E8AF20916A96002D72D0 /* JZLongPressWeekView.swift */,
 				8E1BA95A206B4826007BE13C /* JZWeekViewFlowLayout.swift */,
 				8E023C83206C732300C523BE /* JZBaseEvent.swift */,
+				8E1BA971206B61B7007BE13C /* JZBaseEventCell.swift */,
 				8E1BA969206B5350007BE13C /* JZWeekViewHelper.swift */,
 				8E1BA95C206B4AD9007BE13C /* ReusableViews */,
 				8E1BA955206B4687007BE13C /* Utils */,
@@ -140,7 +141,6 @@
 		8E1BA95C206B4AD9007BE13C /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
-				8E1BA971206B61B7007BE13C /* JZBaseEventCell.swift */,
 				8E1BA95F206B4B84007BE13C /* JZColumnHeader.swift */,
 				8E1BA961206B4B99007BE13C /* JZRowHeader.swift */,
 				8E1BA963206B4E82007BE13C /* JZCornerHeader.swift */,

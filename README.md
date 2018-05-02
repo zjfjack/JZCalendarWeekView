@@ -14,9 +14,9 @@ Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
 
 - [x] X-Day per Page (Day view: 1-day, 3-day view, weekview: 7-day)
 - [x] Two Scroll types: One-Day scroll (scroll a section) or Page scroll
+- [x] Two Types of Long Press Gestures: Add a new event & Move an existing event
 - [x] Events display on calendar view (supports events with conflict time and events crossing few days)
 - [x] Current time line
-- [x] Two Types of Long Press Gestures: Add a new event & Move an existing event
 
 <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/numOfDays.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType-page.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType-section.gif" width="285"/>
 
@@ -50,7 +50,7 @@ override func viewWillTransition(to size: CGSize, with coordinator: UIViewContro
 
 Create your own WeekView class inheriting from `JZBaseWeekView`, and you should override the following functions.
 
-1. Register function: Register your own CollectionViewCell, SupplementaryView or  DecorationView here
+1. Register function: Register your own  `UICollectionReusableView` here. (CollectionViewCell, SupplementaryView or  DecorationView)
 
 ```swift
 override func registerViewClasses() {
@@ -85,7 +85,7 @@ override func collectionView(_ collectionView: UICollectionView, cellForItemAt i
 
 ### JZLongPressView
 
-This view is inheriated from JZBaseWeekView and implements the long press gestures. You can simply follow the setup rules of JZBaseWeekView. <br />
+This view is inheriated from `JZBaseWeekView` and implements the long press gestures. You can simply follow the setup rules of `JZBaseWeekView`. <br />
 In order to achieve the long press gestures, you should implement the `JZLongPressViewDelegate` and `JZLongPressViewDataSource` in your ViewController.
 
 ```swift
@@ -93,7 +93,7 @@ public protocol JZLongPressViewDelegate: class {
     /// When addNew long press gesture ends, this function will be called.
     func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date)
     /// When Move long press gesture ends, this function will be called.
-    func weekView(_ weekView: JZLongPressWeekView, movingCell: UICollectionViewCell, didEndMoveLongPressAt startDate: Date)
+    func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date)
     /// Sometimes the longPress will be cancelled because some curtain reason.
     func weekView(_ weekView: JZLongPressWeekView, longPressType: JZLongPressWeekView.LongPressType, didCancelLongPressAt startDate: Date)
 }
@@ -116,6 +116,7 @@ calendarWeekView.longPressTypes = [.addNew, .move]
 calendarWeekView.addNewDurationMins = 120
 calendarWeekView.moveTimeMinInterval = 15
 ```
+If you want to use the `move` type long press, you have to inherit your `UICollectionViewCell` from `JZBaseEventCell` to allow retrieving editing `JZBaseEvent` because of `UICollectionView` reuse problem.
 
 ### JZBaseEvent
 

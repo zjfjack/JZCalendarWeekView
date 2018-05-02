@@ -8,7 +8,10 @@
 
 import UIKit
 
-// No Need to subclass, used only for identifier now, will refactor in the future
+// If you want to use Move Type LongPressWeekView, you have to subclass this class
 open class JZBaseEventCell: UICollectionViewCell {
+    
+    public var event: JZBaseEvent!
+    
     
 }

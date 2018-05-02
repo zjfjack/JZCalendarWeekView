@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "JZCalendarWeekView"
-  s.version      = "0.2.0"
+  s.version      = "0.2.1"
   s.summary      = "Calendar Week & Day View in iOS Swift"
   s.homepage = "https://github.com/zjfjack/JZCalendarWeekView"
   s.license      = { :type => "MIT", :file => "LICENSE" }

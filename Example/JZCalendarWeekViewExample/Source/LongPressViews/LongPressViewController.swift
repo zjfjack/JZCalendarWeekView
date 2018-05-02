@@ -92,8 +92,8 @@ extension LongPressViewController: JZLongPressViewDelegate, JZLongPressViewDataS
         weekView.forceReload(reloadEvents: viewModel.eventsByDate)
     }
     
-    func weekView(_ weekView: JZLongPressWeekView, movingCell: UICollectionViewCell, didEndMoveLongPressAt startDate: Date) {
-        let event = (movingCell as! EventCell).event!
+    func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
+        let event = editingEvent as! Event
         let duration = Calendar.current.dateComponents([.minute], from: event.startDate, to: event.endDate).minute!
         let selectedIndex = viewModel.events.index(where: { $0.id == event.id })!
         viewModel.events[selectedIndex].startDate = startDate

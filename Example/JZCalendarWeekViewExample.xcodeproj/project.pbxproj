@@ -31,6 +31,8 @@
 		8E9A7DF520969919009AEB6E /* LongPressWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9A7DF420969919009AEB6E /* LongPressWeekView.swift */; };
 		8E9AE75B20773F3500B7004E /* ExampleOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9AE75A20773F3500B7004E /* ExampleOptionsViewController.swift */; };
 		8EBD62EA2096F8AD00520E58 /* LongPressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBD62E92096F8AD00520E58 /* LongPressViewController.swift */; };
+		8EC8A46B209999A2002C7634 /* LongPressEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EC8A469209999A2002C7634 /* LongPressEventCell.swift */; };
+		8EC8A46C209999A2002C7634 /* LongPressEventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8EC8A46A209999A2002C7634 /* LongPressEventCell.xib */; };
 		8EE28FBF20882DE900C69A77 /* JZCalendarWeekView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8EE28FBB20882D7A00C69A77 /* JZCalendarWeekView.framework */; };
 		8EE28FC020882DE900C69A77 /* JZCalendarWeekView.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8EE28FBB20882D7A00C69A77 /* JZCalendarWeekView.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -100,6 +102,8 @@
 		8E9A7DF420969919009AEB6E /* LongPressWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressWeekView.swift; sourceTree = "<group>"; };
 		8E9AE75A20773F3500B7004E /* ExampleOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleOptionsViewController.swift; sourceTree = "<group>"; };
 		8EBD62E92096F8AD00520E58 /* LongPressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressViewController.swift; sourceTree = "<group>"; };
+		8EC8A469209999A2002C7634 /* LongPressEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressEventCell.swift; sourceTree = "<group>"; };
+		8EC8A46A209999A2002C7634 /* LongPressEventCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LongPressEventCell.xib; sourceTree = "<group>"; };
 		8EE28FB520882D7900C69A77 /* JZCalendarWeekView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JZCalendarWeekView.xcodeproj; path = ../JZCalendarWeekView.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -216,6 +220,8 @@
 			children = (
 				8EBD62E92096F8AD00520E58 /* LongPressViewController.swift */,
 				8E9A7DF420969919009AEB6E /* LongPressWeekView.swift */,
+				8EC8A469209999A2002C7634 /* LongPressEventCell.swift */,
+				8EC8A46A209999A2002C7634 /* LongPressEventCell.xib */,
 			);
 			path = LongPressViews;
 			sourceTree = "<group>";
@@ -313,6 +319,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EC8A46C209999A2002C7634 /* LongPressEventCell.xib in Resources */,
 				8E5BB3DC2072F4A000FA853F /* LaunchScreen.storyboard in Resources */,
 				8E5EE63D20857A6500150FD3 /* ExpandableHeaderView.xib in Resources */,
 				8E7263E02074B55300ECF7CD /* EventCell.xib in Resources */,
@@ -335,6 +342,7 @@
 				8E2E6567208D5F3600FB2CE4 /* BlackGridLine.swift in Sources */,
 				8E5BB404207322BA00FA853F /* Event.swift in Sources */,
 				8EBD62EA2096F8AD00520E58 /* LongPressViewController.swift in Sources */,
+				8EC8A46B209999A2002C7634 /* LongPressEventCell.swift in Sources */,
 				8E048ED9207F26F500A532BA /* OptionsTableViewCell.swift in Sources */,
 				8E9A7DF520969919009AEB6E /* LongPressWeekView.swift in Sources */,
 				8E7263DF2074B55300ECF7CD /* EventCell.swift in Sources */,
