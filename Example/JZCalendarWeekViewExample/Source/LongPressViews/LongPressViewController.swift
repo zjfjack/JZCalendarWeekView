@@ -22,13 +22,9 @@ class LongPressViewController: UIViewController {
         setupNaviBar()
     }
     
-    func setupBasic() {
-        // Add this to fix lower than iOS11 problems
-        self.automaticallyAdjustsScrollViewInsets = false
-    }
-    
+    // Support device orientation change
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        calendarWeekView.refreshWeekView()
+        JZWeekViewHelper.viewTransitionHandler(to: size, weekView: calendarWeekView)
     }
     
     private func setupCalendarView() {
@@ -113,12 +109,20 @@ extension LongPressViewController: JZLongPressViewDelegate, JZLongPressViewDataS
 // For example only
 extension LongPressViewController: OptionsViewDelegate {
     
+    func setupBasic() {
+        // Add this to fix lower than iOS11 problems
+        self.automaticallyAdjustsScrollViewInsets = false
+    }
+    
     private func setupNaviBar() {
         updateNaviBarTitle()
         let optionsButton = UIButton(type: .system)
         optionsButton.setImage(#imageLiteral(resourceName: "icon_options"), for: .normal)
-        optionsButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        optionsButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        optionsButton.frame.size = CGSize(width: 25, height: 25)
+        if #available(iOS 11.0, *) {
+            optionsButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
+            optionsButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        }
         optionsButton.addTarget(self, action: #selector(presentOptionsVC), for: .touchUpInside)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: optionsButton)
     }

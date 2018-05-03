@@ -13,7 +13,7 @@ class BlackGridLine: UICollectionReusableView {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .black
+        backgroundColor = .orange
     }
     
     required public init?(coder aDecoder: NSCoder) {

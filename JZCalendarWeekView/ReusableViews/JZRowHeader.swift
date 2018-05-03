@@ -20,8 +20,11 @@ open class JZRowHeader: UICollectionReusableView {
     }
     
     private func setupLayout() {
-        addSubview(lblTime)
-        lblTime.setAnchorConstraintsEqualTo(centerXAnchor: centerXAnchor, centerYAnchor: centerYAnchor)
+        self.addSubview(lblTime)
+        // This one is used to support iPhone X Landscape state because of notch status bar
+        // If you want to customise the RowHeader, please keep the similar contraints with this one (vertically center and a value to trailing anchor)
+        // If you want to change rowHeaderWidth and font size, you can change the trailing value to make it horizontally center in normal state, but keep the trailing anchor
+        lblTime.setAnchorCenterVerticallyTo(view: self, trailingAnchor: (self.trailingAnchor, -5))
     }
     
     open func setupBasic() {

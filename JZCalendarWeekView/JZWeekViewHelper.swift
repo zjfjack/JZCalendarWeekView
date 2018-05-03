@@ -97,4 +97,31 @@ open class JZWeekViewHelper {
         }
         return resultEvents
     }
+    
+    // Will modify this if more notch screens coming in the future
+    private static let isiPhoneX = (UIScreen.main.nativeBounds.height / UIScreen.main.nativeScale) == 812 && UIDevice.current.userInterfaceIdiom == .phone
+    
+    /// Handle the viewWillTransition in UIViewController, only need call this function in ViewController owning JZWeekView.
+    ///
+    /// Support All orientations (including iPhone X Landscape) and iPad (Slide Over and Split View)
+    /// - Parameters:
+    ///   - size: viewWillTransition to size
+    ///   - weekView: the JZWeekView
+    open class func viewTransitionHandler(to size: CGSize, weekView: JZBaseWeekView) {
+        if isiPhoneX {
+            let flowLayout = weekView.flowLayout!
+            // Not differentiate the left and right because of willTransition cannot get the following UIDeviceOrientation
+            let isLandscape = size.width > size.height
+            flowLayout.rowHeaderWidth = isLandscape ? flowLayout.defaultRowHeaderWidth + CGFloat(30) : flowLayout.defaultRowHeaderWidth
+        }
+        weekView.refreshWeekView()
+    }
 }
+
+
+
+
+
+
+
+
