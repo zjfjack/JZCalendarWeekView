@@ -16,10 +16,10 @@ Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
 - [x] Two Scroll types: One-Day scroll (scroll a section) or Page scroll
 - [x] Two Types of Long Press Gestures: Add a new event & Move an existing event
 - [x] Events display on calendar view (supports events with conflict time and events crossing few days)
-- [x] Support all device-orientations (including iPhone X Landscape) and iPad (Slide Over and Split View)
+- [x] Support all device orientations (including iPhone X Landscape) and iPad (Slide Over and Split View)
 - [x] Current time line displays in today section only
 
-<img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/numOfDays.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType-page.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType-section.gif" width="285"/>
+<img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/numOfDays.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/longPress.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType.gif" width="285"/>
 
 ## Usage
 
@@ -35,7 +35,7 @@ calendarWeekView.setupCalendar(numOfDays: 7,
                                scrollType: .pageScroll,
                                firstDayOfWeek: .Monday)
 ```
-2. Override `viewWillTransition` and simple call `viewTransitionHandler` in `JZWeekViewHelper` to support all device-orientations
+2. Override `viewWillTransition` and call `viewTransitionHandler` in `JZWeekViewHelper` to support all device orientations
 ```swift
 override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     JZWeekViewHelper.viewTransitionHandler(to: size, weekView: calendarWeekView)
