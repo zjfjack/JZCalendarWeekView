@@ -288,12 +288,12 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             let itemMaxY = nearbyint(endHourY + endMinuteY + calendarStartY - itemMargin.bottom)
             
             attributes.frame = CGRect(x: itemMinX, y: itemMinY, width: itemMaxX - itemMinX, height: itemMaxY - itemMinY)
-            attributes.zIndex = zIndexForElementKind(JZSupplementaryViewKinds.baseEventCell)
+            attributes.zIndex = zIndexForElementKind(JZSupplementaryViewKinds.eventCell)
             sectionItemAttributes.append(attributes)
         }
         
         adjustItemsForOverlap(sectionItemAttributes, inSection: section, sectionMinX: sectionX,
-                              currentSectionZ: zIndexForElementKind(JZSupplementaryViewKinds.baseEventCell))
+                              currentSectionZ: zIndexForElementKind(JZSupplementaryViewKinds.eventCell))
     }
     
     func layoutVerticalGridLinesAttributes(section: Int, sectionX: CGFloat, calendarGridMinY: CGFloat, sectionHeight: CGFloat) {
@@ -643,10 +643,10 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     // MARK: - z index
     open func zIndexForElementKind(_ kind: String) -> Int {
         switch kind {
+        case JZDecorationViewKinds.cornerHeaderBackground:
+            return minOverlayZ + 10
         case JZSupplementaryViewKinds.cornerHeader:
             return minOverlayZ + 9
-        case JZDecorationViewKinds.cornerHeaderBackground:
-            return minOverlayZ + 16
         case JZSupplementaryViewKinds.rowHeader:
             return minOverlayZ + 7
         case JZDecorationViewKinds.rowHeaderBackground:

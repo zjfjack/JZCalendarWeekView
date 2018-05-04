@@ -19,7 +19,7 @@ class LongPressWeekView: JZLongPressWeekView {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LongPressEventCell.className, for: indexPath) as! LongPressEventCell
-        cell.updateView(event: getCurrentEvent(with: indexPath) as! Event)
+        cell.configureCell(event: getCurrentEvent(with: indexPath) as! Event)
         return cell
     }
     

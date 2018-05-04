@@ -482,6 +482,6 @@ extension JZBaseWeekView: WeekViewFlowLayoutDelegate {
     
     //TODO: Only used when multiple cell types are used and need different overlap rules => layoutItemsAttributes
     public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, cellTypeForItemAtIndexPath indexPath: IndexPath) -> String {
-        return JZBaseEventCell.className
+        return JZSupplementaryViewKinds.eventCell
     }
 }

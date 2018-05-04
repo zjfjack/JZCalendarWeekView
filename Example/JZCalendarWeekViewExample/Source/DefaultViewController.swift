@@ -87,7 +87,6 @@ extension DefaultViewController: OptionsViewDelegate {
             optionsButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
         }
         optionsButton.addTarget(self, action: #selector(presentOptionsVC), for: .touchUpInside)
-        self.navigationController?.navigationBar.tintColor = JZWeekViewColors.today
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: optionsButton)
     }
     

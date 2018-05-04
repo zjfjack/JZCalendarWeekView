@@ -8,15 +8,15 @@
 
 import Foundation
 
-/// Simply subclass this class to change some basic color, will improve this part in the future
-open class JZWeekViewColors {
+/// cannot change for now, will implement theme in the future
+class JZWeekViewColors {
     
-    open class var columnHeaderWeekday: UIColor { return UIColor(hex: 0x757575) }
-    open class var columnHeaderDay: UIColor { return UIColor(hex: 0x757575) }
-    open class var rowHeaderTime: UIColor { return UIColor(hex: 0x999999) }
-    open class var gridLine: UIColor { return UIColor.lightGray }
+    class var columnHeaderWeekday: UIColor { return UIColor(hex: 0x757575) }
+    class var columnHeaderDay: UIColor { return UIColor(hex: 0x757575) }
+    class var rowHeaderTime: UIColor { return UIColor(hex: 0x999999) }
+    class var gridLine: UIColor { return UIColor.lightGray }
     
-    open class var today: UIColor { return UIColor(hex: 0x0089FF) }
+    class var today: UIColor { return UIColor(hex: 0x0089FF) }
 }
 
 

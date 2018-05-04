@@ -34,7 +34,7 @@ class EventCell: UICollectionViewCell {
         borderView.backgroundColor = UIColor(hex: 0x0899FF)
     }
     
-    func updateView(event: Event) {
+    func configureCell(event: Event) {
         self.event = event
         locationLabel.text = event.location
         titleLabel.text = event.title

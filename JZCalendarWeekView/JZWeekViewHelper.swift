@@ -10,7 +10,7 @@ public enum JZSupplementaryViewKinds {
     public static let columnHeader = JZColumnHeader.className
     public static let rowHeader = JZRowHeader.className
     public static let cornerHeader = JZCornerHeader.className
-    public static let baseEventCell = JZBaseEventCell.className
+    public static let eventCell = "eventCell"
 }
 
 public enum JZDecorationViewKinds {
@@ -76,7 +76,7 @@ open class JZWeekViewHelper {
                 let copiedEvent = event.copy() as! T
                 resultEvents[startDateStartDay]!.append(copiedEvent)
             } else {
-                // Crossing day
+                // Cross days
                 for day in 0...daysBetween {
                     let currentStartDate = startDateStartDay.add(component: .day, value: day)
                     if resultEvents[currentStartDate] == nil {

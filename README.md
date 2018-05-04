@@ -116,7 +116,7 @@ calendarWeekView.longPressTypes = [.addNew, .move]
 calendarWeekView.addNewDurationMins = 120
 calendarWeekView.moveTimeMinInterval = 15
 ```
-If you want to use the `move` type long press, you have to inherit your `UICollectionViewCell` from `JZBaseEventCell` to allow retrieving editing `JZBaseEvent` because of `UICollectionView` reuse problem.
+If you want to use the `move` type long press, you have to inherit your `UICollectionViewCell` from `JZLongPressEventCell` to allow retrieving editing `JZBaseEvent` because of `UICollectionView` reuse problem. Also, remember to set your cell `backgroundColor` in cell `contentView`.
 
 ### JZBaseEvent
 

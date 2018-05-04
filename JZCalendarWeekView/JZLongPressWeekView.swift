@@ -86,8 +86,10 @@ open class JZLongPressWeekView: JZBaseWeekView {
         var event: JZBaseEvent!
         /// The editing cell original size, get it from the long press status began
         var cellSize: CGSize!
-        /// Save current indexPath to check whether a cell is the previous one
+        /// (REPLACED THIS ONE WITH EVENT ID NOW) Save current indexPath to check whether a cell is the previous one ()
         var indexPath: IndexPath!
+        /// Save current all changed opacity cell contentViews to change them back when end or cancel longPress, have to save them because of cell reusage
+        var allOpacityContentViews = [UIView]()
     }
     
     private var isLongPressing: Bool = false
@@ -113,7 +115,9 @@ open class JZLongPressWeekView: JZBaseWeekView {
         label.textColor = UIColor.gray
         return label
     }()
-    public var movingCellAlpha: CGFloat = 0.6
+    /// The moving cell contentView layer opacity (when you move the existing cell, the previous cell will be translucent)
+    /// If your cell background alpha below this value, you should decrease this value as well
+    public var movingCellOpacity: Float = 0.6
     
     /// The most top Y in the collectionView that you want longPress gesture enable.
     /// If you customise some decoration and supplementry views on top, **must** override this variable
@@ -264,23 +268,39 @@ open class JZLongPressWeekView: JZBaseWeekView {
     /// when the previous cell is reused, have to find current one
     open func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard isLongPressing == true && currentLongPressType == .move else { return }
-        cell.contentView.alpha = checkIfTheOriginalMovingCell(indexPath: indexPath, cell: cell) ? movingCellAlpha : 1
-    }
-    
-    /// Use start and end time and indexPath to make sure 100% is the original cell
-    private func checkIfTheOriginalMovingCell(indexPath: IndexPath, cell: UICollectionViewCell) -> Bool {
-        let jzCell = cell as! JZBaseEventCell
-        return indexPath == currentEditingInfo.indexPath && jzCell.event.startDate == currentEditingInfo.event.startDate && jzCell.event.endDate == currentEditingInfo.event.endDate
-    }
-    
-    /// Get the current moving cell and change the contentView alpha back
-    private func getCurrentMovingCell() -> UICollectionViewCell? {
-        for cell in collectionView.visibleCells {
-            if cell.contentView.alpha < 1 {
-                return cell
+        
+        let cellContentView = cell.contentView
+        
+        if isOriginalMovingCell(cell) {
+            cellContentView.layer.opacity = movingCellOpacity
+            if !currentEditingInfo.allOpacityContentViews.contains(cellContentView) {
+                currentEditingInfo.allOpacityContentViews.append(cellContentView)
+            }
+        } else {
+            cellContentView.layer.opacity = 1
+            if let index = currentEditingInfo.allOpacityContentViews.index(where: {$0 == cellContentView}) {
+                currentEditingInfo.allOpacityContentViews.remove(at: index)
             }
         }
-        return nil
+    }
+    
+    /// Use the event id to check the cell item is the original cell
+    private func isOriginalMovingCell(_ cell: UICollectionViewCell) -> Bool {
+        let jzCell = cell as! JZLongPressEventCell
+        return jzCell.event.id == currentEditingInfo.event.id
+    }
+    
+     /*** Because of reusability, we set some cell contentViews to translucent, then when those views are reused, if you don't scroll back
+     the willDisplayCell will not be called, then those reused contentViews will be translucent and cannot be found */
+    /// Get the current moving cells to change to alpha (crossing days will have more than one cells)
+    private func getCurrentMovingCells() -> [UICollectionViewCell] {
+        var movingCells = [UICollectionViewCell]()
+        for cell in collectionView.visibleCells {
+            if isOriginalMovingCell(cell) {
+                movingCells.append(cell)
+            }
+        }
+        return movingCells
     }
 }
 
@@ -322,7 +342,6 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
             if let indexPath = collectionView.indexPathForItem(at: pointInCollectionView) {
                 // Can add some conditions for allowing only few types of cells can be moved
                 currentLongPressType = .move
-                currentEditingInfo.indexPath = indexPath
                 currentMovingCell = collectionView.cellForItem(at: indexPath)
             } else {
                 currentLongPressType = .addNew
@@ -352,8 +371,11 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
             longPressView.center = CGPoint(x: pointInSelfView.x - pressPosition!.xToViewLeft + currentEditingInfo.cellSize.width/2,
                                            y: pointInSelfView.y - pressPosition!.yToViewTop + currentEditingInfo.cellSize.height/2)
             if currentLongPressType == .move {
-                currentMovingCell.contentView.alpha = movingCellAlpha
-                currentEditingInfo.event = (currentMovingCell as! JZBaseEventCell).event
+                currentEditingInfo.event = (currentMovingCell as! JZLongPressEventCell).event
+                getCurrentMovingCells().forEach {
+                    $0.contentView.layer.opacity = movingCellOpacity
+                    currentEditingInfo.allOpacityContentViews.append($0.contentView)
+                }
             }
             
             UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 5, options: .curveEaseOut,
@@ -380,7 +402,6 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
             if currentLongPressType == .addNew {
                 longPressDelegate?.weekView(self, didEndAddNewLongPressAt: longPressViewStartDate)
             } else if currentLongPressType == .move {
-                getCurrentMovingCell()?.contentView.alpha = 1
                 longPressDelegate?.weekView(self, editingEvent: currentEditingInfo.event, didEndMoveLongPressAt: longPressViewStartDate)
             }
         }
@@ -394,11 +415,16 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
             longPressTimeLabel.removeFromSuperview()
             isLongPressing = false
             pressPosition = nil
+            
+            if currentLongPressType == .move {
+                currentEditingInfo.allOpacityContentViews.forEach { $0.layer.opacity = 1 }
+                currentEditingInfo.allOpacityContentViews.removeAll()
+            }
             return
         }
     }
     
-    /// work for handleLongPressGesture only
+    /// used by handleLongPressGesture only
     private func getLongPressViewStartDate(pointInCollectionView: CGPoint, pointInSelfView: CGPoint) -> Date {
         let longPressViewTopDate = getDateForPoint(pointCollectionView: CGPoint(x: pointInCollectionView.x, y: pointInCollectionView.y - pressPosition!.yToViewTop) , pointSelfView: pointInSelfView)
         let longPressViewStartDate = getLongPressStartDate(date: longPressViewTopDate, dateInSection: getDateForX(xCollectionView: pointInCollectionView.x, xSelfView: pointInSelfView.x),
