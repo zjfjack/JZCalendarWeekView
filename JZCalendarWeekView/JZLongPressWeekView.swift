@@ -226,7 +226,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
     
     
     /// Calculate the expected start date with timeMinInterval
-    private func getLongPressStartDate(date: Date, dateInSection: Date, timeMinInterval: Int) -> Date {
+    func getLongPressStartDate(date: Date, dateInSection: Date, timeMinInterval: Int) -> Date {
         let daysBetween = Date.daysBetween(start: dateInSection, end: date, ignoreHours: true)
         let startDate: Date
         

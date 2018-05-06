@@ -23,7 +23,7 @@ class WeekViewHelperTest: XCTestCase {
     
     func testGetIntraEventsByDateSameDateEvents() {
         let testDate = Date().startOfDay
-        let sameDayEvent = JZBaseEvent(startDate: testDate, endDate: testDate.add(component: .hour, value: 3))
+        let sameDayEvent = JZBaseEvent(id: UUID().uuidString, startDate: testDate, endDate: testDate.add(component: .hour, value: 3))
         let sameDateResults = JZWeekViewHelper.getIntraEventsByDate(originalEvents: [sameDayEvent])
         XCTAssertTrue(sameDateResults.keys.count == 1, "Result should be only one date")
         
@@ -43,7 +43,7 @@ class WeekViewHelperTest: XCTestCase {
         // Cross within 24 hours will still count as 2 days
         let testFourthDate = testStartDate.add(component: .hour, value: 3)
         
-        let crossTwoDayEvent = JZBaseEvent(startDate: testStartDate, endDate: testThirdDate)
+        let crossTwoDayEvent = JZBaseEvent(id: UUID().uuidString, startDate: testStartDate, endDate: testThirdDate)
         let twoDayResults = JZWeekViewHelper.getIntraEventsByDate(originalEvents: [crossTwoDayEvent])
         XCTAssertEqual(twoDayResults.keys.count, 3, "Result should be three dates")
         
@@ -77,7 +77,7 @@ class WeekViewHelperTest: XCTestCase {
         
         // Within 24 hours
         
-        let crossThreeHourEvent = JZBaseEvent(startDate: testStartDate, endDate: testFourthDate)
+        let crossThreeHourEvent = JZBaseEvent(id: UUID().uuidString, startDate: testStartDate, endDate: testFourthDate)
         let threeHourResults = JZWeekViewHelper.getIntraEventsByDate(originalEvents: [crossThreeHourEvent])
         
         XCTAssertEqual(threeHourResults.keys.count, 2, "Result should be two dates")

@@ -32,10 +32,10 @@ class JZWeekViewTest: XCTestCase {
         let testDate2 = dateFormatter.date(from: "2018-02-23 00:12")!
         let testDate3 = dateFormatter.date(from: "2018-02-22 22:14")!
         let testDate4 = dateFormatter.date(from: "2018-02-22 22:25")!
-        let answer1 = longPressView.getLongPressStartTime(date: testDate1, dateInSection: dateInSection, timeMinInterval: timeMinInterval)
-        let answer2 = longPressView.getLongPressStartTime(date: testDate2, dateInSection: dateInSection, timeMinInterval: timeMinInterval)
-        let answer3 = longPressView.getLongPressStartTime(date: testDate3, dateInSection: dateInSection, timeMinInterval: timeMinInterval)
-        let answer4 = longPressView.getLongPressStartTime(date: testDate4, dateInSection: dateInSection, timeMinInterval: timeMinInterval)
+        let answer1 = longPressView.getLongPressStartDate(date: testDate1, dateInSection: dateInSection, timeMinInterval: timeMinInterval)
+        let answer2 = longPressView.getLongPressStartDate(date: testDate2, dateInSection: dateInSection, timeMinInterval: timeMinInterval)
+        let answer3 = longPressView.getLongPressStartDate(date: testDate3, dateInSection: dateInSection, timeMinInterval: timeMinInterval)
+        let answer4 = longPressView.getLongPressStartDate(date: testDate4, dateInSection: dateInSection, timeMinInterval: timeMinInterval)
         XCTAssertEqual(answer1, dateFormatter.date(from: "2018-02-22 00:00")!, "yesterday should set as start of current day")
         XCTAssertEqual(answer2, dateFormatter.date(from: "2018-02-23 00:00")!, "the nex day should set as start of the next day")
         XCTAssertEqual(answer3, dateFormatter.date(from: "2018-02-22 22:00")!, "(0,14) => 0")
