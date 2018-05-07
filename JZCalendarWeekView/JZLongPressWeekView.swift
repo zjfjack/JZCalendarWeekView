@@ -91,7 +91,8 @@ open class JZLongPressWeekView: JZBaseWeekView {
         /// Save current all changed opacity cell contentViews to change them back when end or cancel longPress, have to save them because of cell reusage
         var allOpacityContentViews = [UIView]()
     }
-    
+    /// When moving the longPress view, if it causes the collectionView scrolling
+    private var isScrolling: Bool = false
     private var isLongPressing: Bool = false
     private var currentLongPressType: LongPressType!
     private var longPressView: UIView!
@@ -261,6 +262,23 @@ open class JZLongPressWeekView: JZBaseWeekView {
         longPressView.addSubview(longPressTimeLabel)
         longPressView.setDefaultShadow()
         return longPressView
+    }
+    
+    open override func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
+        let section = Int((xCollectionView - flowLayout.rowHeaderWidth) / flowLayout.sectionWidth)
+        let date = Calendar.current.date(from: flowLayout.daysForSection(section))!
+        
+        // when isScrolling equals true, means it will scroll to previous date
+        if xSelfView < flowLayout.rowHeaderWidth && isScrolling == false {
+            return date.add(component: .day, value: 1)
+        }else{
+            return date
+        }
+    }
+    
+    open override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        super.scrollViewDidEndScrollingAnimation(scrollView)
+        isScrolling = false
     }
     
     // Following three functions are used to Handle collectionView items reusued

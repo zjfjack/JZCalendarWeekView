@@ -39,15 +39,14 @@ open class JZBaseWeekView: UIView {
     public var firstDayOfWeek: DayOfWeek?
     public var allEventsBySection: EventsByDate!
     public weak var baseDelegate: JZBaseViewDelegate?
-    
+    open var contentViewWidth: CGFloat {
+        return frame.width - flowLayout.rowHeaderWidth
+    }
     private var isFirstAppear: Bool = true
     internal var initialContentOffset = CGPoint.zero
     internal var scrollSections:CGFloat!
     
-    internal var isScrolling: Bool = false
     private var isDirectionLocked = false
-    private var lockedDirection: ScrollDirection!
-    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -93,7 +92,7 @@ open class JZBaseWeekView: UIView {
     open override func layoutSubviews() {
         super.layoutSubviews()
         
-        flowLayout.sectionWidth = (frame.width - flowLayout.rowHeaderWidth) / CGFloat(numOfDays)
+        flowLayout.sectionWidth = contentViewWidth / CGFloat(numOfDays)
         initialContentOffset = collectionView.contentOffset
     }
     
@@ -154,7 +153,7 @@ open class JZBaseWeekView: UIView {
         }
         
         // initial day is one page before the settle day
-        collectionView.setContentOffset(CGPoint(x:frame.width - flowLayout.rowHeaderWidth, y:collectionView.contentOffset.y), animated: false)
+        collectionView.setContentOffset(CGPoint(x:contentViewWidth, y:collectionView.contentOffset.y), animated: false)
         
         flowLayout.invalidateLayoutCache()
         collectionView.reloadData()
@@ -201,28 +200,21 @@ open class JZBaseWeekView: UIView {
 
     
     /**
-     Get date from points(Long press leftright Margin problem considered region before row header should be the following day)
+     Get date excluding time from points
         - Parameters:
             - xCollectionView: x position in collectionView
             - xSelfView: x position in current view (self)
      */
-    public func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
+    open func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
         let section = Int((xCollectionView - flowLayout.rowHeaderWidth) / flowLayout.sectionWidth)
         let date = Calendar.current.date(from: flowLayout.daysForSection(section))!
-        
-        //when isScrolling equals true, means it will scroll to previous date
-        if xSelfView < flowLayout.rowHeaderWidth && isScrolling == false {
-            return date.add(component: .day, value: 1)
-        }else{
-            return date
-        }
-        
+        return date
     }
     
     /// Get time from point y position
     /// - Parameters:
     ///    - yCollectionView: y position in collectionView
-    public func getDateForY(yCollectionView: CGFloat) -> (Int, Int) {
+    open func getDateForY(yCollectionView: CGFloat) -> (Int, Int) {
         let adjustedY = yCollectionView - flowLayout.columnHeaderHeight - flowLayout.contentsMargin.top - flowLayout.sectionMargin.top
         let hour = Int(adjustedY / flowLayout.hourHeight)
         let minute = Int((adjustedY / flowLayout.hourHeight - CGFloat(hour)) * 60)
@@ -327,58 +319,53 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         default:
             view = UICollectionReusableView()
         }
-        
         return view
     }
     
     
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         initialContentOffset = scrollView.contentOffset
     }
     
-    public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        
-        if scrollDirectionAxis == .vertical {return}
+    open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if scrollDirectionAxis == .vertical { return }
         targetContentOffset.pointee = scrollView.contentOffset
         pagingEffect(scrollView: scrollView, velocity: velocity)
     }
     
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    // end dragging for loading drag to the leftmost and rightmost should load page
+    // If put the checking process in scrollViewWillEndDragging, then it will not work well
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let isDraggedToEdge = scrollView.contentOffset.x == 0 || scrollView.contentOffset.x == contentViewWidth * 2
+        guard scrollDirectionAxis != .vertical && isDraggedToEdge else { return }
+        if !decelerate { isDirectionLocked = false }
+        loadPage(scrollView)
+    }
+    
+    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         //for directionLock
         isDirectionLocked = false
     }
     
-    // end dragging for loading drag to the leftmost and rightmost should load page
-    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        
-        //for directionLock
-        if !decelerate {
-            isDirectionLocked = false
-        }
-        if scrollDirectionAxis == .vertical {return}
-        loadPage(scrollView: scrollView)
-    }
-    
-    //set content offset
-    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        
+    // This function will be called by setting content offset (pagingEffect function)
+    open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         //for directionLock
         isDirectionLocked = false
         
         if scrollType != .sectionScroll {
-            loadPage(scrollView: scrollView)
+            loadPage(scrollView)
         }
-        //changing initial date(loadPage) for one day scroll after paging effect
+        // changing initial date(loadPage) for one day scroll after paging effect
         if scrollType == .sectionScroll && scrollSections != 0 {
             initDate = initDate.add(component: .day, value: -Int(scrollSections))
             self.forceReload()
         }
-        //for long press
-        isScrolling = false
     }
     
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        var lockedDirection: ScrollDirection!
         
         if !isDirectionLocked {
             let isScrollingHorizontally = abs(scrollView.contentOffset.x - initialContentOffset.x) > abs(scrollView.contentOffset.y - initialContentOffset.y)
@@ -394,50 +381,49 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
     }
     
-    ///It is used for scroll paging effect, scrollTypes sectionScroll and pageScroll applied here
+    /// It is used for scroll paging effect, scrollTypes sectionScroll and pageScroll applied here
     private func pagingEffect(scrollView: UIScrollView, velocity: CGPoint) {
         
         let yCurrentOffset = scrollView.contentOffset.y
         let xCurrentOffset = scrollView.contentOffset.x
-        let contentViewWidth = frame.width - flowLayout.rowHeaderWidth
         
         let scrollXDistance = initialContentOffset.x - xCurrentOffset
-        //scroll one section
+        // scroll one section
         if scrollType == .sectionScroll {
             let sectionWidth = flowLayout.sectionWidth!
             scrollSections = (scrollXDistance/sectionWidth).rounded()
             scrollView.setContentOffset(CGPoint(x:initialContentOffset.x-sectionWidth * scrollSections,y:yCurrentOffset), animated: true)
         } else {
-            //Only for pageScroll
+            // Only for pageScroll
             let scrollProportion:CGFloat = 1/5
             let isVelocitySatisfied = abs(velocity.x) > 0.2
-            //scroll a whole page
+            // scroll a whole page
             if scrollXDistance >= 0 {
                 if scrollXDistance >= scrollProportion * contentViewWidth || isVelocitySatisfied {
                     scrollView.setContentOffset(CGPoint(x:initialContentOffset.x-contentViewWidth,y:yCurrentOffset), animated: true)
                 }else{
                     scrollView.setContentOffset(initialContentOffset, animated: true)
                 }
-            }else{
+            } else {
                 if -scrollXDistance >= scrollProportion * contentViewWidth || isVelocitySatisfied {
                     scrollView.setContentOffset(CGPoint(x:initialContentOffset.x+contentViewWidth,y:yCurrentOffset), animated: true)
-                }else{
+                } else {
                     scrollView.setContentOffset(initialContentOffset, animated: true)
                 }
             }
         }
     }
     
-    ///For loading next page or previous page (Only three pages exist)
-    private func loadPage(scrollView: UIScrollView) {
+    /// For loading next page or previous page (Only three pages exist)
+    private func loadPage(_ scrollView: UIScrollView) {
         let maximumOffset = scrollView.contentSize.width - scrollView.frame.width
         let currentOffset = scrollView.contentOffset.x
         
-        if maximumOffset <= currentOffset{
+        if maximumOffset <= currentOffset {
             //load next page
             loadNextOrPrevPage(isNext: true)
         }
-        if currentOffset <= 0{
+        if currentOffset <= 0 {
             //load previous page
             loadNextOrPrevPage(isNext: false)
         }

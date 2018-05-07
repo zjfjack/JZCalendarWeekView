@@ -151,10 +151,10 @@ pod 'JZCalendarWeekView', '~> 0.3'
 
 ## Todo
 
+- [ ] Support custom decoration/supplementry view added (All-Day events and others)
 - [ ] Theme implementation
 - [ ] New scroll type: Infinite scroll
 - [ ] Support different types of event arrangment rules
-- [ ] Support custom decoration/supplementry view added
 
 ## Author
 
