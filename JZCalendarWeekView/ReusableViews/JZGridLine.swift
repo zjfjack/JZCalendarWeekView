@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// The grid line drawed on layout
 open class JZGridLine: UICollectionReusableView {
     
     public override init(frame: CGRect) {

@@ -16,7 +16,6 @@ public enum JZSupplementaryViewKinds {
 public enum JZDecorationViewKinds {
     public static let columnHeaderBackground = JZColumnHeaderBackground.className
     public static let rowHeaderBackground = JZRowHeaderBackground.className
-    public static let cornerHeaderBackground = JZCornerHeaderBackground.className
     public static let verticalGridline = "VerticalGridline"
     public static let horizontalGridline = "HorizontalGridline"
     public static let currentTimeGridline = JZCurrentTimeIndicator.className

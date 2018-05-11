@@ -1,20 +1,30 @@
 //
-//  JZCornerHeaderBackground.swift
+//  JZAllDayCorner.swift
 //  JZCalendarWeekView
 //
-//  Created by Jeff Zhang on 28/3/18.
+//  Created by Jeff Zhang on 11/5/18.
 //  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
 import UIKit
 
-open class JZCornerHeaderBackground: UICollectionReusableView {
+open class JZAllDayCorner: UICollectionReusableView {
+    
+    var lblTitle = UILabel()
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.backgroundColor = .white
+        setupUI()
         setupBottomDivider()
+    }
+    
+    open func setupUI() {
+        self.addSubview(lblTitle)
+        lblTitle.text = "All Day"
+        lblTitle.textColor = JZWeekViewColors.allDayHeader
+        lblTitle.font = UIFont.systemFont(ofSize: 12)
+        lblTitle.setAnchorConstraintsEqualTo(centerXAnchor: self.centerXAnchor, centerYAnchor: self.centerYAnchor)
     }
     
     open func setupBottomDivider() {
@@ -24,8 +34,8 @@ open class JZCornerHeaderBackground: UICollectionReusableView {
         bottomDivider.setAnchorConstraintsEqualTo(heightAnchor: 0.5, bottomAnchor: (bottomAnchor, 0), leadingAnchor: (leadingAnchor, 0), trailingAnchor: (trailingAnchor, 0))
     }
     
-    required public init?(coder aDecoder: NSCoder) {
+    
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }

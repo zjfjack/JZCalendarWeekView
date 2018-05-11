@@ -84,7 +84,7 @@ open class JZBaseWeekView: UIView {
         collectionView.registerSupplimentaryViews([JZColumnHeader.self, JZCornerHeader.self, JZRowHeader.self])
         
         //decoration
-        flowLayout.registerDecorationViews([JZColumnHeaderBackground.self, JZRowHeaderBackground.self, JZCornerHeaderBackground.self, JZCurrentTimeIndicator.self])
+        flowLayout.registerDecorationViews([JZColumnHeaderBackground.self, JZRowHeaderBackground.self, JZCurrentTimeIndicator.self])
         flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.verticalGridline)
         flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.horizontalGridline)
     }
@@ -215,7 +215,7 @@ open class JZBaseWeekView: UIView {
     /// - Parameters:
     ///    - yCollectionView: y position in collectionView
     open func getDateForY(yCollectionView: CGFloat) -> (Int, Int) {
-        let adjustedY = yCollectionView - flowLayout.columnHeaderHeight - flowLayout.contentsMargin.top - flowLayout.sectionMargin.top
+        let adjustedY = yCollectionView - flowLayout.columnHeaderHeight - flowLayout.contentsMargin.top
         let hour = Int(adjustedY / flowLayout.hourHeight)
         let minute = Int((adjustedY / flowLayout.hourHeight - CGFloat(hour)) * 60)
         return (hour, minute)
