@@ -37,12 +37,24 @@ open class JZBaseWeekView: UIView {
     public var numOfDays: Int!
     public var scrollType: JZScrollType!
     public var firstDayOfWeek: DayOfWeek?
-    public var allEventsBySection: EventsByDate!
+    public var allEventsBySection: [Date: [JZBaseEvent]]! {
+        didSet {
+            self.isAllDaySupported = allEventsBySection is [Date: [JZAllDayEvent]]
+            if isAllDaySupported {
+                setupAllDayEvents()
+                setupAllDayBar()
+            }
+        }
+    }
+    public var notAllDayEventsBySection = [Date: [JZAllDayEvent]]()
+    public var allDayEventsBySection = [Date: [JZAllDayEvent]]()
+    
     public weak var baseDelegate: JZBaseViewDelegate?
     open var contentViewWidth: CGFloat {
         return frame.width - flowLayout.rowHeaderWidth
     }
     private var isFirstAppear: Bool = true
+    internal var isAllDaySupported: Bool!
     internal var initialContentOffset = CGPoint.zero
     internal var scrollSections:CGFloat!
     
@@ -81,10 +93,11 @@ open class JZBaseWeekView: UIView {
     open func registerViewClasses() {
         
         //supplementary
-        collectionView.registerSupplimentaryViews([JZColumnHeader.self, JZCornerHeader.self, JZRowHeader.self])
+        collectionView.registerSupplimentaryViews([JZColumnHeader.self, JZCornerHeader.self, JZRowHeader.self, JZAllDayHeader.self])
         
         //decoration
-        flowLayout.registerDecorationViews([JZColumnHeaderBackground.self, JZRowHeaderBackground.self, JZCurrentTimeIndicator.self])
+        flowLayout.registerDecorationViews([JZColumnHeaderBackground.self, JZRowHeaderBackground.self, JZCurrentTimeIndicator.self,
+                                            JZAllDayHeaderBackground.self, JZAllDayCorner.self])
         flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.verticalGridline)
         flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.horizontalGridline)
     }
@@ -108,7 +121,7 @@ open class JZBaseWeekView: UIView {
     */
     open func setupCalendar(numOfDays:Int,
                             setDate:Date,
-                            allEvents: EventsByDate,
+                            allEvents: [Date:[JZBaseEvent]],
                             scrollType: JZScrollType = .pageScroll,
                             firstDayOfWeek:DayOfWeek? = nil) {
         
@@ -130,6 +143,31 @@ open class JZBaseWeekView: UIView {
                 self.isFirstAppear = false
                 self.flowLayout.scrollCollectionViewToCurrentTime()
             }
+        }
+    }
+    
+    open func setupAllDayEvents() {
+        notAllDayEventsBySection.removeAll()
+        allDayEventsBySection.removeAll()
+        for (date, events) in allEventsBySection {
+            let allDayEvents = events as! [JZAllDayEvent]
+            notAllDayEventsBySection[date] = allDayEvents.filter { !$0.isAllDay }
+            allEventsBySection[date] = allDayEvents.filter{ $0.isAllDay }
+        }
+    }
+    
+    open func setupAllDayBar() {
+        var currentPageDates = [Date]()
+        
+        for i in numOfDays..<2*numOfDays {
+            currentPageDates.append(initDate.set(day: initDate.day + i))
+        }
+        for date in currentPageDates {
+            if let dates = allDayEventsBySection[date], dates.count != 0 {
+                    flowLayout.allDayHeaderHeight = flowLayout.defaultAllDayOneLineHeight * CGFloat(dates.count)
+                    return
+            }
+            flowLayout.allDayHeaderHeight = 0
         }
     }
     
@@ -286,7 +324,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         let date = flowLayout.dateForColumnHeader(at: IndexPath(item: 0, section: section))
         
         if let events = allEventsBySection[date] {
-            return events.count
+            return isAllDaySupported ? notAllDayEventsBySection[date]!.count : events.count
         } else {
             return 0
         }

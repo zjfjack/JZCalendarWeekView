@@ -15,10 +15,10 @@ class RootViewModel: NSObject {
     private let secondDate = Date().add(component: .day, value: 1)
     private let thirdDate = Date().add(component: .day, value: 2)
     
-    lazy var events = [Event(id: "0", title: "One", startDate: firstDate, endDate: firstDate.add(component: .hour, value: 1), location: "Melbourne"),
-                       Event(id: "1", title: "Two", startDate: secondDate, endDate: secondDate.add(component: .hour, value: 4), location: "Sydney"),
-                       Event(id: "2", title: "Three", startDate: thirdDate, endDate: thirdDate.add(component: .hour, value: 2), location: "Tasmania"),
-                       Event(id: "3", title: "Four", startDate: thirdDate, endDate: thirdDate.add(component: .hour, value: 26), location: "Canberra")]
+    lazy var events = [Event(id: "0", title: "One", startDate: firstDate, endDate: firstDate.add(component: .hour, value: 1), location: "Melbourne", isAllDay: false),
+                       Event(id: "1", title: "Two", startDate: secondDate, endDate: secondDate.add(component: .hour, value: 4), location: "Sydney", isAllDay: false),
+                       Event(id: "2", title: "Three", startDate: thirdDate, endDate: thirdDate.add(component: .hour, value: 2), location: "Tasmania", isAllDay: false),
+                       Event(id: "3", title: "Four", startDate: thirdDate, endDate: thirdDate.add(component: .hour, value: 26), location: "Canberra", isAllDay: false)]
     
     lazy var eventsByDate: EventsByDate = JZWeekViewHelper.getIntraEventsByDate(originalEvents: events)
     

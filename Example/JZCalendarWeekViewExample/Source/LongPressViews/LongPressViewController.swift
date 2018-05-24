@@ -78,7 +78,7 @@ extension LongPressViewController: JZLongPressViewDelegate, JZLongPressViewDataS
     
     func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
         let newEvent = Event(id: UUID().uuidString, title: "New Event", startDate: startDate, endDate: startDate.add(component: .hour, value: weekView.addNewDurationMins/60),
-                             location: "Melbourne")
+                             location: "Melbourne", isAllDay: false)
         
         if viewModel.eventsByDate[startDate.startOfDay] == nil {
             viewModel.eventsByDate[startDate.startOfDay] = [Event]()

@@ -24,6 +24,7 @@
 		8E1BA96E206B5B55007BE13C /* JZRowHeaderBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA96D206B5B55007BE13C /* JZRowHeaderBackground.swift */; };
 		8E1BA972206B61B7007BE13C /* JZLongPressEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1BA971206B61B7007BE13C /* JZLongPressEventCell.swift */; };
 		8E21E8B020916A96002D72D0 /* JZLongPressWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E21E8AF20916A96002D72D0 /* JZLongPressWeekView.swift */; };
+		8E40B2E020B65C4600FFEB68 /* JZAllDayEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E40B2DF20B65C4600FFEB68 /* JZAllDayEvent.swift */; };
 		8E478FA320846A8000668F05 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E478FA220846A8000668F05 /* Extensions.swift */; };
 		8E5BB3FB2073154F00FA853F /* WeekViewHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */; };
 		8EF7EBCD20A55C8E00D5CEEA /* JZAllDayCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7EBCC20A55C8E00D5CEEA /* JZAllDayCorner.swift */; };
@@ -62,6 +63,7 @@
 		8E1BA96D206B5B55007BE13C /* JZRowHeaderBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZRowHeaderBackground.swift; sourceTree = "<group>"; };
 		8E1BA971206B61B7007BE13C /* JZLongPressEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZLongPressEventCell.swift; sourceTree = "<group>"; };
 		8E21E8AF20916A96002D72D0 /* JZLongPressWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZLongPressWeekView.swift; sourceTree = "<group>"; };
+		8E40B2DF20B65C4600FFEB68 /* JZAllDayEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZAllDayEvent.swift; sourceTree = "<group>"; };
 		8E478FA220846A8000668F05 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekViewHelperTest.swift; sourceTree = "<group>"; };
 		8EF7EBCC20A55C8E00D5CEEA /* JZAllDayCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZAllDayCorner.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				8E21E8AF20916A96002D72D0 /* JZLongPressWeekView.swift */,
 				8E1BA971206B61B7007BE13C /* JZLongPressEventCell.swift */,
 				8E023C83206C732300C523BE /* JZBaseEvent.swift */,
+				8E40B2DF20B65C4600FFEB68 /* JZAllDayEvent.swift */,
 				8E1BA969206B5350007BE13C /* JZWeekViewHelper.swift */,
 				8E1BA95C206B4AD9007BE13C /* ReusableViews */,
 				8E1BA955206B4687007BE13C /* Utils */,
@@ -283,6 +286,7 @@
 				8E478FA320846A8000668F05 /* Extensions.swift in Sources */,
 				8EF7EBCF20A55CF900D5CEEA /* JZAllDayHeader.swift in Sources */,
 				8E1BA95B206B4826007BE13C /* JZWeekViewFlowLayout.swift in Sources */,
+				8E40B2E020B65C4600FFEB68 /* JZAllDayEvent.swift in Sources */,
 				8E1BA968206B4F40007BE13C /* JZCurrentTimeIndicator.swift in Sources */,
 				8E1BA960206B4B84007BE13C /* JZColumnHeader.swift in Sources */,
 				8E023C84206C732300C523BE /* JZBaseEvent.swift in Sources */,
