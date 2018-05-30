@@ -122,7 +122,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
     
     /// The most top Y in the collectionView that you want longPress gesture enable.
     /// If you customise some decoration and supplementry views on top, **must** override this variable
-    open var longPressTopMarginY: CGFloat { return flowLayout.columnHeaderHeight }
+    open var longPressTopMarginY: CGFloat { return flowLayout.columnHeaderHeight + flowLayout.allDayHeaderHeight }
     /// The most bottom Y in the collectionView that you want longPress gesture enable.
     /// If you customise some decoration and supplementry views on bottom, **must** override this variable
     open var longPressBottomMarginY: CGFloat{ return frame.height }
@@ -131,7 +131,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
     open var longPressLeftMarginX: CGFloat { return flowLayout.rowHeaderWidth }
     /// The most right X in the collectionView that you want longPress gesture enable.
     /// If you customise some decoration and supplementry views on right, **must** override this variable
-    open var longPressRightmMarginX: CGFloat{ return frame.width }
+    open var longPressRightMarginX: CGFloat{ return frame.width }
     
     
     public override init(frame: CGRect) {
@@ -182,7 +182,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
         if pointInSelfView.x < longPressLeftMarginX + 10 && !isScrolling {
             isScrolling = true
             scrollingTo(direction: .right)
-        } else if pointInSelfView.x > longPressRightmMarginX - 20 && !isScrolling {
+        } else if pointInSelfView.x > longPressRightMarginX - 20 && !isScrolling {
             isScrolling = true
             scrollingTo(direction: .left)
         }
@@ -264,16 +264,27 @@ open class JZLongPressWeekView: JZBaseWeekView {
         return longPressView
     }
     
-    open override func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
+    /// Overload for base class with left and right margin check for LongPress
+    open func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
         let section = Int((xCollectionView - flowLayout.rowHeaderWidth) / flowLayout.sectionWidth)
         let date = Calendar.current.date(from: flowLayout.daysForSection(section))!
-        
         // when isScrolling equals true, means it will scroll to previous date
-        if xSelfView < flowLayout.rowHeaderWidth && isScrolling == false {
+        if xSelfView < longPressLeftMarginX && isScrolling == false {
             return date.add(component: .day, value: 1)
-        }else{
+        } else if xSelfView > longPressRightMarginX && isScrolling == false {
+            return date.add(component: .day, value: -1)
+        } else {
             return date
         }
+    }
+    
+    /// Overload for base class with modified date for X
+    open func getDateForPoint(pointCollectionView: CGPoint, pointSelfView: CGPoint) -> Date {
+        
+        let yearMonthDay = getDateForX(xCollectionView: pointCollectionView.x, xSelfView: pointSelfView.x)
+        let hourMinute = getDateForY(yCollectionView: pointCollectionView.y)
+        
+        return yearMonthDay.set(hour: hourMinute.0, minute: hourMinute.1, second: 0)
     }
     
     open override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
@@ -332,7 +343,7 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
         
         if gestureRecognizer.state == .possible {
             // Long press on ouside margin area should not begin
-            let isOutsideBeginArea = pointInSelfView.x < longPressLeftMarginX || pointInSelfView.x > longPressRightmMarginX ||
+            let isOutsideBeginArea = pointInSelfView.x < longPressLeftMarginX || pointInSelfView.x > longPressRightMarginX ||
                                      pointInSelfView.y < longPressTopMarginY || pointInSelfView.y > longPressBottomMarginY
             if isOutsideBeginArea { return false  }
         }
@@ -445,8 +456,7 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
     /// used by handleLongPressGesture only
     private func getLongPressViewStartDate(pointInCollectionView: CGPoint, pointInSelfView: CGPoint) -> Date {
         let longPressViewTopDate = getDateForPoint(pointCollectionView: CGPoint(x: pointInCollectionView.x, y: pointInCollectionView.y - pressPosition!.yToViewTop) , pointSelfView: pointInSelfView)
-        let longPressViewStartDate = getLongPressStartDate(date: longPressViewTopDate, dateInSection: getDateForX(xCollectionView: pointInCollectionView.x, xSelfView: pointInSelfView.x),
-                                                       timeMinInterval: moveTimeMinInterval)
+        let longPressViewStartDate = getLongPressStartDate(date: longPressViewTopDate, dateInSection: getDateForX(xCollectionView: pointInCollectionView.x, xSelfView: pointInSelfView.x), timeMinInterval: moveTimeMinInterval)
         return longPressViewStartDate
     }
     

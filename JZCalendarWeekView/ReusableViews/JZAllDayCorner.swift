@@ -10,7 +10,7 @@ import UIKit
 
 open class JZAllDayCorner: UICollectionReusableView {
     
-    var lblTitle = UILabel()
+    public var lblTitle = UILabel()
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -20,8 +20,10 @@ open class JZAllDayCorner: UICollectionReusableView {
     }
     
     open func setupUI() {
+        self.backgroundColor = .white
+        self.clipsToBounds = true
         self.addSubview(lblTitle)
-        lblTitle.text = "All Day"
+        lblTitle.text = "all-day"
         lblTitle.textColor = JZWeekViewColors.allDayHeader
         lblTitle.font = UIFont.systemFont(ofSize: 12)
         lblTitle.setAnchorConstraintsEqualTo(centerXAnchor: self.centerXAnchor, centerYAnchor: self.centerYAnchor)

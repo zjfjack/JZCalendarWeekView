@@ -10,6 +10,7 @@ import UIKit
 
 open class JZAllDayHeader: UICollectionReusableView {
     
+    let scrollView = UIScrollView()
     let stackView = UIStackView()
     
     public override init(frame: CGRect) {
@@ -23,17 +24,25 @@ open class JZAllDayHeader: UICollectionReusableView {
     }
     
     private func setupBasic() {
-        self.addSubview(stackView)
-        stackView.setAnchorConstraintsFullSizeTo(view: self, padding: 2)
-        stackView.spacing = 2
+        self.clipsToBounds = true
+        self.addSubview(scrollView)
+        scrollView.setAnchorConstraintsFullSizeTo(view: self, padding: 3)
+        scrollView.addSubview(stackView)
+        stackView.setAnchorConstraintsFullSizeTo(view: scrollView)
+        stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+        stackView.spacing = 3
+        stackView.distribution = .equalSpacing
         stackView.axis = .vertical
     }
     
     /// All-Day Header is reused as SupplementaryView, it should be updated when viewForSupplementaryElementOfKind called
     ///
-    /// - Parameter views: <#views description#>
+    /// - Parameter views: The views your want to add to stackView
     public func updateView(views: [UIView]) {
         stackView.subviews.forEach { $0.removeFromSuperview() }
-        views.forEach { stackView.addArrangedSubview($0) }
+        views.forEach {
+            $0.heightAnchor.constraint(equalToConstant: 25).isActive = true
+            stackView.addArrangedSubview($0)
+        }
     }
 }

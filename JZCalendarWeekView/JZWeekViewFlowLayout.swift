@@ -28,19 +28,19 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     public var hourGridDivision: JZHourGridDivision!
     var minuteHeight: CGFloat { return hourHeight / 60 }
     
-    public var defaultHourHeight: CGFloat = 50
-    public var defaultRowHeaderWidth: CGFloat = 42
-    public var defaultColumnHeaderHeight: CGFloat = 44
-    public var defaultHourGridDivision = JZHourGridDivision.noneDiv
+    open var defaultHourHeight: CGFloat { return 50 }
+    open var defaultRowHeaderWidth: CGFloat { return 42 }
+    open var defaultColumnHeaderHeight: CGFloat { return 44 }
+    open var defaultHourGridDivision: JZHourGridDivision { return .noneDiv }
     // You can change following constants
-    public var defaultGridThickness: CGFloat = 0.5
-    public var defaultCurrentTimeLineHeight: CGFloat = 10
-    public var defaultAllDayOneLineHeight: CGFloat = 15
+    open var defaultGridThickness: CGFloat { return 0.5 }
+    open var defaultCurrentTimeLineHeight: CGFloat { return 10 }
+    open var defaultAllDayOneLineHeight: CGFloat { return 30 }
     /// Margin for the flowLayout in collectionView
-    public var contentsMargin = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-    public var itemMargin = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+    open var contentsMargin: UIEdgeInsets { return UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0) }
+    open var itemMargin: UIEdgeInsets { return UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1) }
     /// weekview contentSize height
-    private var maxSectionHeight: CGFloat { return columnHeaderHeight + hourHeight * 24 + contentsMargin.top + contentsMargin.bottom + allDayHeaderHeight }
+    open var maxSectionHeight: CGFloat { return columnHeaderHeight + hourHeight * 24 + contentsMargin.top + contentsMargin.bottom + allDayHeaderHeight }
     
     let minOverlayZ = 1000  // Allows for 900 items in a section without z overlap issues
     let minCellZ = 100      // Allows for 100 items in a section's background
@@ -182,7 +182,6 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         let calendarGridMinY = columnHeaderHeight + contentsMargin.top + allDayHeaderHeight
         let calendarContentMinX = rowHeaderWidth + contentsMargin.left
         let calendarContentMinY = columnHeaderHeight + contentsMargin.top + allDayHeaderHeight
-        let rowHeaderMinX = fmax(collectionView!.contentOffset.x, 0)
         
         // Current time line
         var hasTimeLineInAllSections = false
@@ -215,14 +214,9 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         attributes.frame = CGRect(origin: collectionView!.contentOffset, size: CGSize(width: rowHeaderWidth, height: columnHeaderHeight))
         attributes.zIndex = zIndexForElementKind(JZSupplementaryViewKinds.cornerHeader)
         
-        // Row Header Background
-        (attributes, rowHeaderBackgroundAttributes) = layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
-                                                                                        ofKind: JZDecorationViewKinds.rowHeaderBackground,
-                                                                                        withItemCache: rowHeaderBackgroundAttributes)
-        attributes.frame = CGRect(x: rowHeaderMinX, y: collectionView!.contentOffset.y, width: rowHeaderWidth, height: collectionView!.frame.height)
-        attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.rowHeaderBackground)
-        
         // Row header
+        let rowHeaderMinX = fmax(collectionView!.contentOffset.x, 0)
+        
         for rowHeaderIndex in 0...24 {
             (attributes, rowHeaderAttributes) = layoutAttributesForSupplemantaryView(at: IndexPath(item: rowHeaderIndex, section: 0),
                                                                                      ofKind: JZSupplementaryViewKinds.rowHeader,
@@ -231,6 +225,13 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             attributes.frame = CGRect(x: rowHeaderMinX, y: rowHeaderMinY, width: rowHeaderWidth, height: hourHeight)
             attributes.zIndex = zIndexForElementKind(JZSupplementaryViewKinds.rowHeader)
         }
+        
+        // Row Header Background
+        (attributes, rowHeaderBackgroundAttributes) = layoutAttributesForDecorationView(at: IndexPath(row: 0, section: 0),
+                                                                                        ofKind: JZDecorationViewKinds.rowHeaderBackground,
+                                                                                        withItemCache: rowHeaderBackgroundAttributes)
+        attributes.frame = CGRect(x: rowHeaderMinX, y: collectionView!.contentOffset.y, width: rowHeaderWidth, height: collectionView!.frame.height)
+        attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.rowHeaderBackground)
         
         // All-Day header
         let allDayHeaderMinY = fmax(collectionView!.contentOffset.y + columnHeaderHeight, columnHeaderHeight)
@@ -272,6 +273,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         let attributesHeight = columnHeaderHeight + (collectionView!.contentOffset.y < 0 ? abs(collectionView!.contentOffset.y) : 0 )
         attributes.frame = CGRect(origin: collectionView!.contentOffset, size: CGSize(width: collectionView!.frame.width, height: attributesHeight))
         attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.columnHeaderBackground)
+        
         
         // Column Header
         let columnHeaderMinY = fmax(collectionView!.contentOffset.y, 0.0)
@@ -593,7 +595,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     
     override open func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         let visibleSections = NSMutableIndexSet()
-        NSIndexSet.init(indexesIn: NSRange(location: 0, length: collectionView!.numberOfSections))
+        NSIndexSet(indexesIn: NSRange(location: 0, length: collectionView!.numberOfSections))
             .enumerate(_:) { (section: Int, stop: UnsafeMutablePointer<ObjCBool>) -> Void in
                 let sectionRect = rectForSection(section)
                 if rect.intersects(sectionRect) {
@@ -609,15 +611,14 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         return true
     }
     
-    
     // MARK: - Section sizing
-    func rectForSection(_ section: Int) -> CGRect {
+    open func rectForSection(_ section: Int) -> CGRect {
         return CGRect(x: rowHeaderWidth + sectionWidth * CGFloat(section), y: 0,
                       width: sectionWidth, height: collectionViewContentSize.height)
     }
     
     // MARK: - Delegate Wrapper
-    func daysForSection(_ section: Int) -> DateComponents {
+    open func daysForSection(_ section: Int) -> DateComponents {
         if cachedDayDateComponents[section] != nil {
             return cachedDayDateComponents[section]!
         }
@@ -656,23 +657,20 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         }
     }
     
-    func scrollCollectionViewToCurrentTime() {
+    open func scrollCollectionViewToCurrentTime() {
         let y = max(0, min(CGFloat(Calendar.current.component(.hour, from: Date())) * hourHeight - collectionView!.frame.height / 2 + columnHeaderHeight,
                            collectionView!.contentSize.height - collectionView!.frame.height))
         
-        let tempDelegate = collectionView!.delegate
-        collectionView!.delegate = nil
-        self.collectionView!.contentOffset = CGPoint(x: self.collectionView!.contentOffset.x, y: y)
-        collectionView!.delegate = tempDelegate
+        self.collectionView!.setContentOffsetWithoutDelegate(CGPoint(x: self.collectionView!.contentOffset.x, y: y), animated: false)
     }
     
-    public func dateForTimeRowHeader(at indexPath: IndexPath) -> Date {
+    open func timeForRowHeader(at indexPath: IndexPath) -> Date {
         var components = daysForSection(indexPath.section)
         components.hour = indexPath.item
         return Calendar.current.date(from: components)!
     }
     
-    public func dateForColumnHeader(at indexPath: IndexPath) -> Date {
+    open func dateForColumnHeader(at indexPath: IndexPath) -> Date {
         let day = delegate?.collectionView(collectionView!, layout: self, dayForSection: indexPath.section)
         return Calendar.current.startOfDay(for: day!)
     }

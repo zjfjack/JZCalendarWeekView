@@ -21,6 +21,13 @@ extension UICollectionView {
             self.register($0, forSupplementaryViewOfKind: $0.className, withReuseIdentifier: $0.className)
         }
     }
+    
+    func setContentOffsetWithoutDelegate(_ contentOffset: CGPoint, animated: Bool) {
+        let tempDelegate = self.delegate
+        self.delegate = nil
+        self.setContentOffset(contentOffset, animated: animated)
+        self.delegate = tempDelegate
+    }
 }
 
 extension UICollectionViewFlowLayout {
