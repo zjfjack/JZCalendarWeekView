@@ -134,14 +134,14 @@ eg. startDate = 180329 14:00, endDate = 180330 03:00, then two events should be 
 
 ### All-Day Events
 
-All-Day feature is aimed to display all-day events separately, but only events tagged `isAllDay` true can be shown. For those events crossing few days would better keep them `isAllDay` false. (Refer to Apple Calendar & Google Calendar)
+All-Day feature is aimed to display all-day events separately, but only events tagged `isAllDay` true can be shown. For those events crossing few days would better keep them `isAllDay` false. (Refer to Apple Calendar & Google Calendar)<br />
 In order to active all-day feature, there are only two things you need to do.
 
 1. Inherit your Event class from `JZAllDayEvent` to ensure the `isAllDay` variable added.
 2. In your customised CalendarViewWeekView, override the `viewForSupplementaryElementOfKind` and use `updateView` in `AllDayHeader` to update your all-day view with your own views. [Example](Example/JZCalendarWeekViewExample/Source/LongPressViews/LongPressWeekView.swift)
 
 
-For futher usage, youcan also check the example project, some comments in code or just email me.<br />
+For futher usage, you can also check the example project, some comments in code or just email me.<br />
 
 ## Requirements
 
@@ -160,8 +160,8 @@ pod 'JZCalendarWeekView', '~> 0.4'
 
 ## Todo
 
-- [ ] Theme implementation
 - [ ] Limited date range: First Date and Last Date in CalendarView
+- [ ] Theme implementation
 - [ ] New scroll type: Infinite scroll
 - [ ] Support different types of event arrangment rules
 
