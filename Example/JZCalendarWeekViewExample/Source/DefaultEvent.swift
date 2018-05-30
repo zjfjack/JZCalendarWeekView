@@ -1,15 +1,15 @@
 //
-//  Event.swift
-//  JZCalendarViewExample
+//  DefaultEvent.swift
+//  JZCalendarWeekViewExample
 //
-//  Created by Jeff Zhang on 3/4/18.
+//  Created by Jeff Zhang on 30/5/18.
 //  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import JZCalendarWeekView
 
-class Event: JZBaseEvent {
+class DefaultEvent: JZBaseEvent {
     
     var location: String
     var title: String
@@ -24,8 +24,6 @@ class Event: JZBaseEvent {
     }
     
     override func copy(with zone: NSZone?) -> Any {
-        return Event(id: id, title: title, startDate: startDate, endDate: endDate, location: location)
+        return DefaultEvent(id: id, title: title, startDate: startDate, endDate: endDate, location: location)
     }
-    
-    
 }

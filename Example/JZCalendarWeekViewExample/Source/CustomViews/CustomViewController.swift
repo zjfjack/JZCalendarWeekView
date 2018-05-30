@@ -14,7 +14,7 @@ class CustomViewController: UIViewController {
 
     @IBOutlet weak var calendarWeekView: CustomWeekView!
     
-    let viewModel = RootViewModel()
+    let viewModel = DefaultViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()

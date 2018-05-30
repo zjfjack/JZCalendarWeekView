@@ -10,13 +10,15 @@ public enum JZSupplementaryViewKinds {
     public static let columnHeader = JZColumnHeader.className
     public static let rowHeader = JZRowHeader.className
     public static let cornerHeader = JZCornerHeader.className
+    public static let allDayHeader = JZAllDayHeader.className
     public static let eventCell = "eventCell"
 }
 
 public enum JZDecorationViewKinds {
     public static let columnHeaderBackground = JZColumnHeaderBackground.className
     public static let rowHeaderBackground = JZRowHeaderBackground.className
-    public static let cornerHeaderBackground = JZCornerHeaderBackground.className
+    public static let allDayHeaderBackground = JZAllDayHeaderBackground.className
+    public static let allDayCorner = JZAllDayCorner.className
     public static let verticalGridline = "VerticalGridline"
     public static let horizontalGridline = "HorizontalGridline"
     public static let currentTimeGridline = JZCurrentTimeIndicator.className
@@ -51,8 +53,6 @@ public enum JZScrollType {
     case sectionScroll
     //TODO: - infiniteScroll
 }
-
-public typealias EventsByDate = [Date:[JZBaseEvent]]
 
 open class JZWeekViewHelper {
     

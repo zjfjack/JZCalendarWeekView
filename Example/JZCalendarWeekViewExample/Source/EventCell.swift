@@ -14,7 +14,7 @@ class EventCell: UICollectionViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var borderView: UIView!
-    var event: Event!
+    var event: DefaultEvent!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -34,7 +34,7 @@ class EventCell: UICollectionViewCell {
         borderView.backgroundColor = UIColor(hex: 0x0899FF)
     }
     
-    func configureCell(event: Event) {
+    func configureCell(event: DefaultEvent) {
         self.event = event
         locationLabel.text = event.location
         titleLabel.text = event.title

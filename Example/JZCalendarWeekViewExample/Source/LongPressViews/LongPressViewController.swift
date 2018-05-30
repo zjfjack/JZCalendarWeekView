@@ -12,7 +12,7 @@ import JZCalendarWeekView
 class LongPressViewController: UIViewController {
         
     @IBOutlet weak var calendarWeekView: JZLongPressWeekView!
-    let viewModel = RootViewModel()
+    let viewModel = AllDayViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,11 +77,11 @@ extension LongPressViewController: JZBaseViewDelegate {
 extension LongPressViewController: JZLongPressViewDelegate, JZLongPressViewDataSource {
     
     func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {
-        let newEvent = Event(id: UUID().uuidString, title: "New Event", startDate: startDate, endDate: startDate.add(component: .hour, value: weekView.addNewDurationMins/60),
-                             location: "Melbourne")
+        let newEvent = AllDayEvent(id: UUID().uuidString, title: "New Event", startDate: startDate, endDate: startDate.add(component: .hour, value: weekView.addNewDurationMins/60),
+                             location: "Melbourne", isAllDay: false)
         
         if viewModel.eventsByDate[startDate.startOfDay] == nil {
-            viewModel.eventsByDate[startDate.startOfDay] = [Event]()
+            viewModel.eventsByDate[startDate.startOfDay] = [AllDayEvent]()
         }
         viewModel.events.append(newEvent)
         viewModel.eventsByDate = JZWeekViewHelper.getIntraEventsByDate(originalEvents: viewModel.events)
@@ -89,7 +89,7 @@ extension LongPressViewController: JZLongPressViewDelegate, JZLongPressViewDataS
     }
     
     func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
-        let event = editingEvent as! Event
+        let event = editingEvent as! AllDayEvent
         let duration = Calendar.current.dateComponents([.minute], from: event.startDate, to: event.endDate).minute!
         let selectedIndex = viewModel.events.index(where: { $0.id == event.id })!
         viewModel.events[selectedIndex].startDate = startDate
@@ -100,7 +100,7 @@ extension LongPressViewController: JZLongPressViewDelegate, JZLongPressViewDataS
     }
     
     func weekView(_ weekView: JZLongPressWeekView, viewForAddNewLongPressAt startDate: Date) -> UIView {
-        let view = UINib(nibName: "EventCell", bundle: nil).instantiate(withOwner: nil, options: nil)[0] as! EventCell
+        let view = UINib(nibName: EventCell.className, bundle: nil).instantiate(withOwner: nil, options: nil)[0] as! EventCell
         view.titleLabel.text = "New Event"
         return view
     }

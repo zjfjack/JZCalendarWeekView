@@ -13,6 +13,8 @@
 		8E048EDA207F26F500A532BA /* OptionsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E048ED8207F26F500A532BA /* OptionsTableViewCell.xib */; };
 		8E0D30B1208EBB0F00B7FC59 /* ToastUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0D30B0208EBB0F00B7FC59 /* ToastUtil.swift */; };
 		8E2E6567208D5F3600FB2CE4 /* BlackGridLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2E6566208D5F3600FB2CE4 /* BlackGridLine.swift */; };
+		8E4DC18820BE2C31007ED7A2 /* AllDayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4DC18720BE2C31007ED7A2 /* AllDayViewModel.swift */; };
+		8E4DC18A20BE2D58007ED7A2 /* DefaultEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4DC18920BE2D58007ED7A2 /* DefaultEvent.swift */; };
 		8E54D53B208D6997007DD5FE /* CustomWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E54D53A208D6997007DD5FE /* CustomWeekView.swift */; };
 		8E54D53E208D6A2B007DD5FE /* HourRowHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E54D53C208D6A2B007DD5FE /* HourRowHeader.swift */; };
 		8E5BB3D22072F4A000FA853F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB3D12072F4A000FA853F /* AppDelegate.swift */; };
@@ -20,8 +22,8 @@
 		8E5BB3D72072F4A000FA853F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E5BB3D52072F4A000FA853F /* Main.storyboard */; };
 		8E5BB3D92072F4A000FA853F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E5BB3D82072F4A000FA853F /* Assets.xcassets */; };
 		8E5BB3DC2072F4A000FA853F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E5BB3DA2072F4A000FA853F /* LaunchScreen.storyboard */; };
-		8E5BB4022073226100FA853F /* RootViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB4012073226100FA853F /* RootViewModel.swift */; };
-		8E5BB404207322BA00FA853F /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB403207322BA00FA853F /* Event.swift */; };
+		8E5BB4022073226100FA853F /* DefaultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB4012073226100FA853F /* DefaultViewModel.swift */; };
+		8E5BB404207322BA00FA853F /* AllDayEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB403207322BA00FA853F /* AllDayEvent.swift */; };
 		8E5BB407207325AB00FA853F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB406207325AB00FA853F /* Extensions.swift */; };
 		8E5EE63D20857A6500150FD3 /* ExpandableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E5EE63C20857A6500150FD3 /* ExpandableHeaderView.xib */; };
 		8E666F142097EC4B00FDB1B6 /* CustomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E666F132097EC4B00FDB1B6 /* CustomViewController.swift */; };
@@ -82,6 +84,8 @@
 		8E048ED8207F26F500A532BA /* OptionsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OptionsTableViewCell.xib; sourceTree = "<group>"; };
 		8E0D30B0208EBB0F00B7FC59 /* ToastUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastUtil.swift; sourceTree = "<group>"; };
 		8E2E6566208D5F3600FB2CE4 /* BlackGridLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackGridLine.swift; sourceTree = "<group>"; };
+		8E4DC18720BE2C31007ED7A2 /* AllDayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllDayViewModel.swift; sourceTree = "<group>"; };
+		8E4DC18920BE2D58007ED7A2 /* DefaultEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultEvent.swift; sourceTree = "<group>"; };
 		8E54D53A208D6997007DD5FE /* CustomWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWeekView.swift; sourceTree = "<group>"; };
 		8E54D53C208D6A2B007DD5FE /* HourRowHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourRowHeader.swift; sourceTree = "<group>"; };
 		8E5BB3CE2072F4A000FA853F /* JZCalendarWeekViewExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JZCalendarWeekViewExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,8 +95,8 @@
 		8E5BB3D82072F4A000FA853F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E5BB3DB2072F4A000FA853F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8E5BB3DD2072F4A000FA853F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8E5BB4012073226100FA853F /* RootViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModel.swift; sourceTree = "<group>"; };
-		8E5BB403207322BA00FA853F /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		8E5BB4012073226100FA853F /* DefaultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultViewModel.swift; sourceTree = "<group>"; };
+		8E5BB403207322BA00FA853F /* AllDayEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllDayEvent.swift; sourceTree = "<group>"; };
 		8E5BB406207325AB00FA853F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8E5EE63C20857A6500150FD3 /* ExpandableHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExpandableHeaderView.xib; sourceTree = "<group>"; };
 		8E666F132097EC4B00FDB1B6 /* CustomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomViewController.swift; sourceTree = "<group>"; };
@@ -182,10 +186,10 @@
 		8E5BB3E62072F67F00FA853F /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				8E5BB4012073226100FA853F /* RootViewModel.swift */,
+				8E5BB4012073226100FA853F /* DefaultViewModel.swift */,
 				8E5BB3D32072F4A000FA853F /* DefaultViewController.swift */,
+				8E4DC18920BE2D58007ED7A2 /* DefaultEvent.swift */,
 				8E7263E22074B73300ECF7CD /* DefaultWeekView.swift */,
-				8E5BB403207322BA00FA853F /* Event.swift */,
 				8E7263DC2074B55300ECF7CD /* EventCell.swift */,
 				8E7263DD2074B55300ECF7CD /* EventCell.xib */,
 				8E9A7DF720969923009AEB6E /* LongPressViews */,
@@ -218,6 +222,8 @@
 		8E9A7DF720969923009AEB6E /* LongPressViews */ = {
 			isa = PBXGroup;
 			children = (
+				8E4DC18720BE2C31007ED7A2 /* AllDayViewModel.swift */,
+				8E5BB403207322BA00FA853F /* AllDayEvent.swift */,
 				8EBD62E92096F8AD00520E58 /* LongPressViewController.swift */,
 				8E9A7DF420969919009AEB6E /* LongPressWeekView.swift */,
 				8EC8A469209999A2002C7634 /* LongPressEventCell.swift */,
@@ -336,17 +342,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E4DC18A20BE2D58007ED7A2 /* DefaultEvent.swift in Sources */,
 				8E5BB407207325AB00FA853F /* Extensions.swift in Sources */,
 				8E5BB3D42072F4A000FA853F /* DefaultViewController.swift in Sources */,
-				8E5BB4022073226100FA853F /* RootViewModel.swift in Sources */,
+				8E5BB4022073226100FA853F /* DefaultViewModel.swift in Sources */,
 				8E2E6567208D5F3600FB2CE4 /* BlackGridLine.swift in Sources */,
-				8E5BB404207322BA00FA853F /* Event.swift in Sources */,
+				8E5BB404207322BA00FA853F /* AllDayEvent.swift in Sources */,
 				8EBD62EA2096F8AD00520E58 /* LongPressViewController.swift in Sources */,
 				8EC8A46B209999A2002C7634 /* LongPressEventCell.swift in Sources */,
 				8E048ED9207F26F500A532BA /* OptionsTableViewCell.swift in Sources */,
 				8E9A7DF520969919009AEB6E /* LongPressWeekView.swift in Sources */,
 				8E7263DF2074B55300ECF7CD /* EventCell.swift in Sources */,
 				8E666F142097EC4B00FDB1B6 /* CustomViewController.swift in Sources */,
+				8E4DC18820BE2C31007ED7A2 /* AllDayViewModel.swift in Sources */,
 				8E54D53E208D6A2B007DD5FE /* HourRowHeader.swift in Sources */,
 				8E54D53B208D6997007DD5FE /* CustomWeekView.swift in Sources */,
 				8E7263E32074B73300ECF7CD /* DefaultWeekView.swift in Sources */,

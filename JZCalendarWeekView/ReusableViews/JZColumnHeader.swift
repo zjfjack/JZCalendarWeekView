@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// Header for each column (section, day) in collectionView (Supplementary View)
 open class JZColumnHeader: UICollectionReusableView {
     
     public var lblDay = UILabel()
@@ -18,6 +19,7 @@ open class JZColumnHeader: UICollectionReusableView {
     public override init(frame: CGRect) {
         super.init(frame: .zero)
         setupUI()
+        backgroundColor = .clear
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -49,8 +51,6 @@ open class JZColumnHeader: UICollectionReusableView {
             lblDay.textColor = JZWeekViewColors.columnHeaderDay
             lblWeekday.textColor = JZWeekViewColors.columnHeaderDay
         }
-        //set this to avoid columnheader hiding the botline in columnheaderbackground
-        backgroundColor = UIColor.clear
     }
     
 }

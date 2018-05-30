@@ -1,21 +1,25 @@
 //
-//  JZColumnHeaderBackground.swift
+//  JZAllDayHeaderBackground.swift
 //  JZCalendarWeekView
 //
-//  Created by Jeff Zhang on 28/3/18.
+//  Created by Jeff Zhang on 11/5/18.
 //  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
 import UIKit
 
-/// The whole background for the top
-open class JZColumnHeaderBackground: UICollectionReusableView {
+open class JZAllDayHeaderBackground: UICollectionReusableView {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.white
+        
         self.clipsToBounds = true
+        self.backgroundColor = .white
         setupBottomDivider()
+    }
+    
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     open func setupBottomDivider() {
@@ -23,10 +27,6 @@ open class JZColumnHeaderBackground: UICollectionReusableView {
         bottomDivider.backgroundColor = JZWeekViewColors.gridLine
         addSubview(bottomDivider)
         bottomDivider.setAnchorConstraintsEqualTo(heightAnchor: 0.5, bottomAnchor: (bottomAnchor, 0), leadingAnchor: (leadingAnchor, 0), trailingAnchor: (trailingAnchor, 0))
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
 }

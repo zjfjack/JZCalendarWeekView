@@ -9,6 +9,7 @@
 import UIKit
 import JZCalendarWeekView
 
+/// Custom grid line and row header & Not All Day
 class CustomWeekView: JZBaseWeekView {
     
     override func registerViewClasses() {
@@ -23,21 +24,21 @@ class CustomWeekView: JZBaseWeekView {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let date = flowLayout.dateForColumnHeader(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EventCell.className, for: indexPath) as! EventCell
-        cell.configureCell(event: allEventsBySection[date]![indexPath.row] as! Event)
+        cell.configureCell(event: allEventsBySection[date]![indexPath.row] as! DefaultEvent)
         return cell
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == JZSupplementaryViewKinds.rowHeader {
             let rowHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HourRowHeader.className, for: indexPath) as! HourRowHeader
-            rowHeader.updateView(date: flowLayout.dateForTimeRowHeader(at: indexPath))
+            rowHeader.updateView(date: flowLayout.timeForRowHeader(at: indexPath))
             return rowHeader
         }
         return super.collectionView(collectionView, viewForSupplementaryElementOfKind: kind, at: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedEvent = getCurrentEvent(with: indexPath) as! Event
+        let selectedEvent = getCurrentEvent(with: indexPath) as! DefaultEvent
         ToastUtil.toastMessageInTheMiddle(message: selectedEvent.title)
     }
 }

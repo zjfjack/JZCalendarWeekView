@@ -21,6 +21,13 @@ extension UICollectionView {
             self.register($0, forSupplementaryViewOfKind: $0.className, withReuseIdentifier: $0.className)
         }
     }
+    
+    func setContentOffsetWithoutDelegate(_ contentOffset: CGPoint, animated: Bool) {
+        let tempDelegate = self.delegate
+        self.delegate = nil
+        self.setContentOffset(contentOffset, animated: animated)
+        self.delegate = tempDelegate
+    }
 }
 
 extension UICollectionViewFlowLayout {
@@ -55,7 +62,7 @@ extension UIView {
         }
     }
     
-    //bottomAnchor & trailingAnchor should be negative
+    // bottomAnchor & trailingAnchor should be negative
     func setAnchorConstraintsEqualTo(widthAnchor: CGFloat?=nil, heightAnchor: CGFloat?=nil, topAnchor: (NSLayoutYAxisAnchor,CGFloat)?=nil, bottomAnchor: (NSLayoutYAxisAnchor,CGFloat)?=nil, leadingAnchor: (NSLayoutXAxisAnchor,CGFloat)?=nil, trailingAnchor: (NSLayoutXAxisAnchor,CGFloat)?=nil) {
         
         self.translatesAutoresizingMaskIntoConstraints = false

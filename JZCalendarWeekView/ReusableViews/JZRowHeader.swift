@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// Header for each row (every hour) in collectionView (Supplementary View)
 open class JZRowHeader: UICollectionReusableView {
     
     public var lblTime = UILabel()

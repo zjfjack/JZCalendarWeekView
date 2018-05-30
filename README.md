@@ -18,8 +18,9 @@ Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
 - [x] Events display on calendar view (supports events with conflict time and events crossing few days)
 - [x] Support all device orientations (including iPhone X Landscape) and iPad (Slide Over and Split View)
 - [x] Current time line displays in today section only
+- [x] All-Day Events
 
-<img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/numOfDays.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/longPress.gif" width="285"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType.gif" width="285"/>
+<img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/numOfDays.gif" width="210"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/longPress.gif" width="210"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType.gif" width="210"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/all-day.gif" width="210"/>
 
 ## Usage
 
@@ -127,12 +128,20 @@ A static function called `getIntraEventsByDate` provided in `JZWeekViewHelper` a
 open class func getIntraEventsByDate<T: JZBaseEvent>(originalEvents: [T]) -> [Date: [T]]
 ```
 In order to call this function, you should create a subclass of `JZBaseEvent` and also implement the `NSCopying` protocol. <br />
-For the `intraStartDate` and `intraEndDate` in `JZBaseEvent`, it means that if a event crosses two days, it should be devided into two events but with different intraStartDate and intraEndDate. <br />
+For the `intraStartDate` and `intraEndDate` in `JZBaseEvent`, it means that if a event crosses two days, it should be divided into two events but with different intraStartDate and intraEndDate. <br />
 eg. startDate = 180329 14:00, endDate = 180330 03:00, then two events should be generated: 1. 180329 14:00(IntraStart) - 23:59(IntraEnd) 2. 180330 00:00(IntraStart) - 03:00(IntraEnd)
 
 
-For futher usage, you can also check the example project, some comments in code or just email me.<br />
+### All-Day Events
 
+All-Day feature is aimed to display all-day events separately, but only events tagged `isAllDay` true can be shown. For those events crossing few days would better keep them `isAllDay` false. (Refer to Apple Calendar & Google Calendar)
+In order to active all-day feature, there are only two things you need to do.
+
+1. Inherit your Event class from `JZAllDayEvent` to ensure the `isAllDay` variable added.
+2. In your customised CalendarViewWeekView, override the `viewForSupplementaryElementOfKind` and use `updateView` in `AllDayHeader` to update your all-day view with your own views. [Example](Example/JZCalendarWeekViewExample/Source/LongPressViews/LongPressWeekView.swift)
+
+
+For futher usage, youcan also check the example project, some comments in code or just email me.<br />
 
 ## Requirements
 
@@ -146,13 +155,13 @@ For futher usage, you can also check the example project, some comments in code 
 JZCalendarWeekView can be added to your project by adding the following line to your `Podfile`:
 
 ```ruby
-pod 'JZCalendarWeekView', '~> 0.3'
+pod 'JZCalendarWeekView', '~> 0.4'
 ```
 
 ## Todo
 
-- [ ] Support custom decoration/supplementry view added (All-Day events and others)
 - [ ] Theme implementation
+- [ ] Limited date range: First Date and Last Date in CalendarView
 - [ ] New scroll type: Infinite scroll
 - [ ] Support different types of event arrangment rules
 
