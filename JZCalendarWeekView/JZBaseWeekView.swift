@@ -155,6 +155,7 @@ open class JZBaseWeekView: UIView {
     }
     
     open func updateAllDayBar(isScrolling: Bool) {
+        guard isAllDaySupported else { return }
         var maxEventsCount: Int = 0
         getDatesInCurrentPage(isScrolling: isScrolling).forEach {
             let count = allDayEventsBySection[$0]?.count ?? 0
@@ -220,9 +221,10 @@ open class JZBaseWeekView: UIView {
             }
             return dates
         }
-        
-        var startDate = getDateForX(xCollectionView: collectionView.contentOffset.x + flowLayout.rowHeaderWidth)
-        let endDate = getDateForX(xCollectionView: collectionView.contentOffset.x + frame.width)
+        // Sometimes end scrolling will cause some 0.xxx offset margin
+        let margin: CGFloat = 2
+        var startDate = getDateForX(xCollectionView: collectionView.contentOffset.x + margin + flowLayout.rowHeaderWidth)
+        let endDate = getDateForX(xCollectionView: collectionView.contentOffset.x + frame.width - margin)
         repeat {
             dates.append(startDate)
             startDate = startDate.add(component: .day, value: 1)
@@ -413,10 +415,12 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
             if scrollSections != 0 {
                 initDate = initDate.add(component: .day, value: -Int(scrollSections))
                 self.forceReload()
-            } else {
-                // have to update all day bar because forceReload not called here
-                updateAllDayBar(isScrolling: false)
             }
+            // seems no need to do this
+//            else {
+//                // have to update all day bar because forceReload not called here
+//                updateAllDayBar(isScrolling: false)
+//            }
         }
     }
     
@@ -439,7 +443,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         
         // All Day Bar update
-        guard flowLayout.sectionWidth != nil && scrollDirectionAxis != .vertical && isAllDaySupported else { return }
+        guard flowLayout.sectionWidth != nil && scrollDirectionAxis != .vertical else { return }
         updateAllDayBar(isScrolling: true)
     }
     
@@ -476,11 +480,11 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
     }
     
-    /// For loading next page or previous page (Only three pages exist)
+    /// For loading next page or previous page (Only three pages (3*numOfDays) exist at the same time)
     private func loadPage(_ scrollView: UIScrollView) {
         let maximumOffset = scrollView.contentSize.width - scrollView.frame.width
         let currentOffset = scrollView.contentOffset.x
-        
+
         if maximumOffset <= currentOffset {
             //load next page
             loadNextOrPrevPage(isNext: true)
