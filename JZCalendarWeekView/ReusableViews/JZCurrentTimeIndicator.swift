@@ -10,8 +10,8 @@ import Foundation
 
 open class JZCurrentTimeIndicator: UICollectionReusableView {
     
-    var halfBallView = UIView()
-    var lineView = UIView()
+    public var halfBallView = UIView()
+    public var lineView = UIView()
     let halfBallSize: CGFloat = 10
     
     public override init(frame: CGRect) {

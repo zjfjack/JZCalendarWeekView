@@ -59,7 +59,7 @@ open class JZBaseWeekView: UIView {
     
     private var isDirectionLocked = false
     
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         setup()
     }
@@ -484,7 +484,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     private func loadPage(_ scrollView: UIScrollView) {
         let maximumOffset = scrollView.contentSize.width - scrollView.frame.width
         let currentOffset = scrollView.contentOffset.x
-
+    
         if maximumOffset <= currentOffset {
             //load next page
             loadNextOrPrevPage(isNext: true)
