@@ -249,7 +249,6 @@ open class JZBaseWeekView: UIView {
         if diff < 0 { diff = 7 - abs(diff) }
         self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays - diff)
         self.firstDayOfWeek = firstDayOfWeek
-        self.forceReload()
     }
 
     
