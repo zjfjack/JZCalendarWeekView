@@ -1,4 +1,4 @@
-![logotype](https://github.com/Tobaloidee/JZCalendarWeekView/blob/master/Screenshots/logotype.png)
+<p><center><img src="https://github.com/Tobaloidee/JZCalendarWeekView/blob/master/Screenshots/logotype.png"</center></p>
 
 [![Build Status](https://travis-ci.org/zjfjack/JZCalendarWeekView.svg?branch=master)](https://travis-ci.org/zjfjack/JZCalendarWeekView)
 [![CocoaPods](https://img.shields.io/cocoapods/v/JZCalendarWeekView.svg)](https://cocoapods.org/pods/JZCalendarWeekView)
