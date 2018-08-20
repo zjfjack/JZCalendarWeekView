@@ -161,6 +161,8 @@ pod 'JZCalendarWeekView', '~> 0.4'
 ## Todo
 
 - [ ] Limited date range: First Date and Last Date in CalendarView
+- [ ] Apple type of Timeline (a whole page) & Timeline color change
+- [ ] DecorationView for different background views (refer to #12)
 - [ ] Theme implementation
 - [ ] New scroll type: Infinite scroll
 - [ ] Support different types of event arrangment rules
