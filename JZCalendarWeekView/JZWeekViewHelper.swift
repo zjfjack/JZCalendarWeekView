@@ -21,7 +21,7 @@ public enum JZDecorationViewKinds {
     public static let allDayCorner = JZAllDayCorner.className
     public static let verticalGridline = "VerticalGridline"
     public static let horizontalGridline = "HorizontalGridline"
-    public static let currentTimeGridline = JZCurrentTimeIndicator.className
+    public static let currentTimeline = JZCurrentTimelinePage.className
 }
 
 enum ScrollDirection {
@@ -45,7 +45,7 @@ public enum JZHourGridDivision: Int {
 }
 
 public enum DayOfWeek: Int {
-    case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
+    case Sunday = 1, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
 }
 
 public enum JZScrollType {

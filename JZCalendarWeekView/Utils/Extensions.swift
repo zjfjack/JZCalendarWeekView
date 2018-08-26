@@ -174,6 +174,16 @@ extension Date {
         return Calendar.current.isDateInTomorrow(self)
     }
     
+    func isInCurrentWeek(firstDayOfWeek: DayOfWeek?=nil) -> Bool {
+        var calendar = Calendar.current
+        calendar.firstWeekday = (firstDayOfWeek ?? .Sunday).rawValue
+        let today = calendar.startOfDay(for: Date())
+        let dayOfWeek = calendar.component(.weekday, from: today)
+        let weekdays = calendar.range(of: .weekday, in: .weekOfYear, for: today)!
+        let days = (weekdays.lowerBound ..< weekdays.upperBound).compactMap { calendar.date(byAdding: .day, value: $0 - dayOfWeek, to: today) }
+        return days.contains(self)
+    }
+    
     func add(component: Calendar.Component, value: Int) -> Date {
         return Calendar.current.date(byAdding: component, value: value, to: self)!
     }

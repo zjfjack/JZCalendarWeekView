@@ -95,7 +95,7 @@ open class JZBaseWeekView: UIView {
         collectionView.registerSupplimentaryViews([JZColumnHeader.self, JZCornerHeader.self, JZRowHeader.self, JZAllDayHeader.self])
         
         //decoration
-        flowLayout.registerDecorationViews([JZColumnHeaderBackground.self, JZRowHeaderBackground.self, JZCurrentTimeIndicator.self,
+        flowLayout.registerDecorationViews([JZColumnHeaderBackground.self, JZRowHeaderBackground.self, JZCurrentTimelinePage.self,
                                             JZAllDayHeaderBackground.self, JZAllDayCorner.self])
         flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.verticalGridline)
         flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.horizontalGridline)
@@ -126,7 +126,7 @@ open class JZBaseWeekView: UIView {
         
         self.numOfDays = numOfDays
         if numOfDays == 7 {
-            updateFirstDayOfWeek(setDate: setDate, firstDayOfWeek: firstDayOfWeek ?? .sunday)
+            updateFirstDayOfWeek(setDate: setDate, firstDayOfWeek: firstDayOfWeek ?? .Sunday)
         } else {
             self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays)
         }
@@ -503,6 +503,10 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
 }
 
 extension JZBaseWeekView: WeekViewFlowLayoutDelegate {
+    
+    public func getFirstDayOfWeek() -> DayOfWeek {
+        return firstDayOfWeek ?? .Sunday
+    }
     
     public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, dayForSection section: Int) -> Date {
         let date = Calendar.current.date(byAdding: .day, value: section, to: initDate)

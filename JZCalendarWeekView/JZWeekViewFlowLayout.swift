@@ -15,6 +15,8 @@ public protocol WeekViewFlowLayoutDelegate: class {
     func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, endTimeForItemAtIndexPath indexPath: IndexPath) -> Date
     /// TODO: Get the cell type for given item indexPath (Used for different cell types in the future)
     func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, cellTypeForItemAtIndexPath indexPath: IndexPath) -> String
+    
+    func getFirstDayOfWeek() -> DayOfWeek
 }
 
 open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
@@ -183,30 +185,45 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         let calendarContentMinX = rowHeaderWidth + contentsMargin.left
         let calendarContentMinY = columnHeaderHeight + contentsMargin.top + allDayHeaderHeight
         
-        // Current time line
-        var hasTimeLineInAllSections = false
-        sectionIndexes.enumerate(_:) { (section, stop) in
-            let indexPath = IndexPath(row: 0, section: section)
-            //  Only show current time line in today section
-            if dateForColumnHeader(at: indexPath).isToday {
-                let timeY = calendarContentMinY + nearbyint(CGFloat(currentTimeComponents.hour!) * hourHeight
-                    + CGFloat(currentTimeComponents.minute!) * minuteHeight)
-                let sectionMinX = calendarContentMinX + sectionWidth * CGFloat(section)
-                let currentTimeHorizontalGridlineMinY = timeY - nearbyint(defaultGridThickness / 2.0) - defaultCurrentTimeLineHeight/2
-                (attributes, currentTimeLineAttributes) = layoutAttributesForDecorationView(at: IndexPath(item: 0, section: section),
-                                                                                            ofKind: JZDecorationViewKinds.currentTimeGridline,
-                                                                                            withItemCache: currentTimeLineAttributes)
-                attributes.frame = CGRect(x: sectionMinX, y: currentTimeHorizontalGridlineMinY, width: sectionWidth, height: defaultCurrentTimeLineHeight)
-                attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.currentTimeGridline)
-                //Remove some reused sections attributes
-                currentTimeLineAttributes.removeAll()
-                currentTimeLineAttributes[indexPath] = attributes
-                hasTimeLineInAllSections = true
-            }
-        }
-        if !hasTimeLineInAllSections {currentTimeLineAttributes.removeAll()}
+        // Current time line Section
+//        var hasTimeLineInAllSections = false
+//        sectionIndexes.enumerate(_:) { (section, stop) in
+//            let indexPath = IndexPath(item: 0, section: section)
+//            //  Only show current time line in today section
+//            if dateForColumnHeader(at: indexPath).isToday {
+//                let timeY = calendarContentMinY + nearbyint(CGFloat(currentTimeComponents.hour!) * hourHeight
+//                    + CGFloat(currentTimeComponents.minute!) * minuteHeight)
+//                let sectionMinX = calendarContentMinX + sectionWidth * CGFloat(section)
+//                let currentTimeHorizontalGridlineMinY = timeY - nearbyint(defaultGridThickness / 2.0) - defaultCurrentTimeLineHeight/2
+//                (attributes, currentTimeLineAttributes) = layoutAttributesForDecorationView(at: indexPath,
+//                                                                                            ofKind: JZDecorationViewKinds.currentTimeline,
+//                                                                                            withItemCache: currentTimeLineAttributes)
+//                attributes.frame = CGRect(x: sectionMinX, y: currentTimeHorizontalGridlineMinY, width: sectionWidth, height: defaultCurrentTimeLineHeight)
+//                attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.currentTimeline)
+//                //Remove some reused sections attributes
+//                currentTimeLineAttributes.removeAll()
+//                currentTimeLineAttributes[indexPath] = attributes
+//                hasTimeLineInAllSections = true
+//            }
+//        }
+//        if !hasTimeLineInAllSections { currentTimeLineAttributes.removeAll() }
         
-    
+        // Current time line Page
+        sectionIndexes.enumerate(_:) { (section, stop) in
+            let indexPath = IndexPath(item: 0, section: section)
+            let date = dateForColumnHeader(at: indexPath)
+            guard date.isInCurrentWeek(firstDayOfWeek: delegate?.getFirstDayOfWeek()) else { return }
+            let timeY = calendarContentMinY + nearbyint(CGFloat(currentTimeComponents.hour!) * hourHeight
+                + CGFloat(currentTimeComponents.minute!) * minuteHeight)
+            let sectionMinX = calendarContentMinX + sectionWidth * CGFloat(section)
+            let currentTimeHorizontalGridlineMinY = timeY - nearbyint(defaultGridThickness / 2.0) - defaultCurrentTimeLineHeight/2
+            let layoutAttributes = JZCurrentTimelinePageLayoutAttributes(forDecorationViewOfKind: JZDecorationViewKinds.currentTimeline, with: indexPath)
+            layoutAttributes.needShowBallView = date.isToday
+            (attributes, currentTimeLineAttributes) = layoutAttributesForDecorationView(customAttributes: layoutAttributes, withItemCache: currentTimeLineAttributes)
+            attributes.frame = CGRect(x: sectionMinX, y: currentTimeHorizontalGridlineMinY, width: sectionWidth, height: defaultCurrentTimeLineHeight)
+            attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.currentTimeline)
+        }
+        
         // Corner Header
         (attributes, cornerHeaderAttributes) = layoutAttributesForSupplemantaryView(at: IndexPath(row: 0, section: 0),
                                                                                     ofKind: JZSupplementaryViewKinds.cornerHeader,
@@ -431,6 +448,8 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             return allDayHeaderBackgroundAttributes[indexPath]
         case JZDecorationViewKinds.allDayCorner:
             return allDayCornerAttributes[indexPath]
+        case JZDecorationViewKinds.currentTimeline:
+            return currentTimeLineAttributes[indexPath]
         default:
             return nil
         }
@@ -463,6 +482,13 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         } else {
             return (layoutAttributes!, itemCache)
         }
+    }
+    
+    func layoutAttributesForDecorationView(customAttributes: UICollectionViewLayoutAttributes,
+                                           withItemCache itemCache: AttDic) -> (UICollectionViewLayoutAttributes, AttDic) {
+        var _itemCache = itemCache
+        _itemCache[customAttributes.indexPath] = customAttributes
+        return (customAttributes, _itemCache)
     }
     
     private func layoutAttributesForSupplemantaryView(at indexPath: IndexPath,
@@ -578,6 +604,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         cachedStartTimeDateComponents.removeAll()
         cachedEndTimeDateComponents.removeAll()
         
+        currentTimeLineAttributes.removeAll()
         verticalGridlineAttributes.removeAll()
         horizontalGridlineAttributes.removeAll()
         columnHeaderAttributes.removeAll()
@@ -692,7 +719,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             return minOverlayZ + 5
         case JZDecorationViewKinds.columnHeaderBackground:
             return minOverlayZ + 4
-        case JZDecorationViewKinds.currentTimeGridline:
+        case JZDecorationViewKinds.currentTimeline:
             return minOverlayZ + 3
         case JZDecorationViewKinds.horizontalGridline:
             return minBackgroundZ + 2
