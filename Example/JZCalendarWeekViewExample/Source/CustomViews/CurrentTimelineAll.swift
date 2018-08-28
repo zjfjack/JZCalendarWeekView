@@ -1,14 +1,14 @@
 //
-//  JZCurrentTimelinePage.swift
-//  JZCalendarWeekView
+//  CurrentTimelineAll.swift
+//  JZCalendarWeekViewExample
 //
-//  Created by Jeff Zhang on 25/8/18.
+//  Created by Jeff Zhang on 28/8/18.
 //  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
 import UIKit
 
-open class JZCurrentTimelinePage: UICollectionReusableView {
+class CurrentTimelineAll: UICollectionReusableView {
     
     public var ballView = UIView()
     public var lineView = UIView()
@@ -25,10 +25,10 @@ open class JZCurrentTimelinePage: UICollectionReusableView {
         ballView.setAnchorCenterVerticallyTo(view: self, widthAnchor: ballSize, heightAnchor: ballSize, leadingAnchor: (leadingAnchor, 2))
         lineView.setAnchorCenterVerticallyTo(view: self, heightAnchor: 1, leadingAnchor: (leadingAnchor, 0), trailingAnchor: (trailingAnchor, 0))
         
-        ballView.backgroundColor = JZWeekViewColors.appleCalendarRed
+        ballView.backgroundColor = .purple
         ballView.layer.cornerRadius = ballSize/2
         ballView.isHidden = true
-        lineView.backgroundColor = JZWeekViewColors.appleCalendarRed
+        lineView.backgroundColor = .purple
     }
     
     open func updateView(needShowBallView: Bool) {

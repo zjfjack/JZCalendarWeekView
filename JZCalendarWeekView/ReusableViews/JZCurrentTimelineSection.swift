@@ -20,7 +20,7 @@ open class JZCurrentTimelineSection: UICollectionReusableView {
         setupUI()
     }
     
-    private func setupUI() {
+    open func setupUI() {
         self.addSubviews([halfBallView, lineView])
         halfBallView.setAnchorCenterVerticallyTo(view: self, widthAnchor: halfBallSize, heightAnchor: halfBallSize, leadingAnchor: (leadingAnchor, -5))
         lineView.setAnchorCenterVerticallyTo(view: self, heightAnchor: 1, leadingAnchor: (halfBallView.trailingAnchor, 0), trailingAnchor: (trailingAnchor, 0))
