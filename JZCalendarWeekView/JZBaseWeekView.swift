@@ -23,7 +23,7 @@ extension JZBaseViewDelegate {
 
 open class JZBaseWeekView: UIView {
     
-    public var collectionView: UICollectionView!
+    public var collectionView: JZCollectionView!
     public var flowLayout: JZWeekViewFlowLayout!
     
     /// The initial date of current collectionView. When page is not scrolling, the inital date is always
@@ -36,6 +36,12 @@ open class JZBaseWeekView: UIView {
     }
     public var numOfDays: Int!
     public var scrollType: JZScrollType!
+    public var currentTimelineType: JZCurrentTimelineType! {
+        didSet {
+            let viewClass = currentTimelineType == .section ? JZCurrentTimelineSection.self : JZCurrentTimelinePage.self
+            self.collectionView.register(viewClass, forSupplementaryViewOfKind: JZSupplementaryViewKinds.currentTimeline, withReuseIdentifier: JZSupplementaryViewKinds.currentTimeline)
+        }
+    }
     public var firstDayOfWeek: DayOfWeek?
     public var allEventsBySection: [Date: [JZBaseEvent]]! {
         didSet {
@@ -56,7 +62,6 @@ open class JZBaseWeekView: UIView {
     internal var isAllDaySupported: Bool!
     internal var initialContentOffset = CGPoint.zero
     internal var scrollSections:CGFloat!
-    
     private var isDirectionLocked = false
     
     override public init(frame: CGRect) {
@@ -74,7 +79,7 @@ open class JZBaseWeekView: UIView {
         flowLayout = JZWeekViewFlowLayout()
         flowLayout.delegate = self
         
-        collectionView = UICollectionView(frame: bounds, collectionViewLayout: flowLayout)
+        collectionView = JZCollectionView(frame: bounds, collectionViewLayout: flowLayout)
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.isDirectionalLockEnabled = true
@@ -90,12 +95,11 @@ open class JZBaseWeekView: UIView {
     
     /// Override this function to customise items, supplimentaryViews and decorationViews
     open func registerViewClasses() {
+        // supplementary
+        self.collectionView.registerSupplimentaryViews([JZColumnHeader.self, JZCornerHeader.self, JZRowHeader.self, JZAllDayHeader.self])
         
-        //supplementary
-        collectionView.registerSupplimentaryViews([JZColumnHeader.self, JZCornerHeader.self, JZRowHeader.self, JZAllDayHeader.self])
-        
-        //decoration
-        flowLayout.registerDecorationViews([JZColumnHeaderBackground.self, JZRowHeaderBackground.self, JZCurrentTimeIndicator.self,
+        // decoration
+        flowLayout.registerDecorationViews([JZColumnHeaderBackground.self, JZRowHeaderBackground.self,
                                             JZAllDayHeaderBackground.self, JZAllDayCorner.self])
         flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.verticalGridline)
         flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.horizontalGridline)
@@ -117,21 +121,24 @@ open class JZBaseWeekView: UIView {
         - allEvents: The dictionary of all the events for present. JZWeekViewHelper.getIntraEventsByDate can help transform the data
         - firstDayOfWeek: First day of a week, **only works when numOfDays is 7**. Default value is Sunday
         - scrollType: The horizontal scroll type for this view. Default value is pageScroll
+        - currentTimelineType: The current time line type for this view. Default value is section
     */
-    open func setupCalendar(numOfDays:Int,
-                            setDate:Date,
+    open func setupCalendar(numOfDays: Int,
+                            setDate: Date,
                             allEvents: [Date:[JZBaseEvent]],
                             scrollType: JZScrollType = .pageScroll,
-                            firstDayOfWeek:DayOfWeek? = nil) {
+                            firstDayOfWeek :DayOfWeek? = nil,
+                            currentTimelineType: JZCurrentTimelineType = .section) {
         
         self.numOfDays = numOfDays
         if numOfDays == 7 {
-            updateFirstDayOfWeek(setDate: setDate, firstDayOfWeek: firstDayOfWeek ?? .sunday)
+            updateFirstDayOfWeek(setDate: setDate, firstDayOfWeek: firstDayOfWeek ?? .Sunday)
         } else {
             self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays)
         }
         self.allEventsBySection = allEvents
         self.scrollType = scrollType
+        self.currentTimelineType = currentTimelineType
         
         DispatchQueue.main.async { [unowned self] in
             self.layoutSubviews()
@@ -326,7 +333,7 @@ open class JZBaseWeekView: UIView {
 }
 
 
-extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
+extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     // In order to keep efficiency, only 3 pages exist at the same time, previous-current-next
     open func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -346,7 +353,6 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         preconditionFailure("This method must be overridden")
     }
-    
     
     open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let view: UICollectionReusableView
@@ -372,6 +378,14 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
             alldayHeader.updateView(views: [])
             view = alldayHeader
             
+        case JZSupplementaryViewKinds.currentTimeline:
+            if currentTimelineType == .page {
+                let currentTimeline = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZCurrentTimelinePage
+                view = getPageTypeCurrentTimeline(timeline: currentTimeline, indexPath: indexPath)
+            } else {
+                let currentTimeline = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZCurrentTimelineSection
+                view = getSectionTypeCurrentTimeline(timeline: currentTimeline, indexPath: indexPath)
+            }
         default:
             view = UICollectionReusableView()
         }
@@ -422,7 +436,6 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
 //            }
         }
     }
-    
     
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
@@ -494,11 +507,28 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
     }
     
-    ///Can be overrided to do some operations before reload
+    /// Can be overrided to do some operations before reload
     open func loadNextOrPrevPage(isNext: Bool) {
         let addValue = isNext ? numOfDays : -numOfDays
         self.initDate = self.initDate.add(component: .day, value: addValue!)
         self.forceReload()
+    }
+    
+    /// Get the section Type current timeline
+    open func getSectionTypeCurrentTimeline(timeline: JZCurrentTimelineSection, indexPath: IndexPath) -> UICollectionReusableView {
+        let date = flowLayout.dateForColumnHeader(at: indexPath)
+        timeline.isHidden = !date.isToday
+        return timeline
+    }
+    
+    /// Get the page Type current timeline
+    /// Rules are quite confused for now
+    open func getPageTypeCurrentTimeline(timeline: JZCurrentTimelinePage, indexPath: IndexPath) -> UICollectionReusableView {
+        let date = flowLayout.dateForColumnHeader(at: indexPath)
+        let daysToToday = Date.daysBetween(start: date, end: Date(), ignoreHours: true)
+        timeline.isHidden = abs(daysToToday) > numOfDays - 1
+        timeline.updateView(needShowBallView: daysToToday == 0)
+        return timeline
     }
 }
 

@@ -137,7 +137,7 @@ extension ExampleOptionsViewController: UITableViewDelegate, UITableViewDataSour
         
         if section == 2 {
             if viewModel.optionsData[2].selectedIndex == 6 && viewModel.optionsData[3].subject != .firstDayOfWeek {
-                viewModel.insertDayOfWeekToData(firstDayOfWeek: .sunday)
+                viewModel.insertDayOfWeekToData(firstDayOfWeek: .Sunday)
                 tableView.reloadData()
             }
             if viewModel.optionsData[2].selectedIndex != 6 && viewModel.optionsData[3].subject == .firstDayOfWeek {

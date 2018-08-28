@@ -12,6 +12,7 @@ public enum JZSupplementaryViewKinds {
     public static let cornerHeader = JZCornerHeader.className
     public static let allDayHeader = JZAllDayHeader.className
     public static let eventCell = "eventCell"
+    public static let currentTimeline = "currentTimeline"
 }
 
 public enum JZDecorationViewKinds {
@@ -21,7 +22,6 @@ public enum JZDecorationViewKinds {
     public static let allDayCorner = JZAllDayCorner.className
     public static let verticalGridline = "VerticalGridline"
     public static let horizontalGridline = "HorizontalGridline"
-    public static let currentTimeGridline = JZCurrentTimeIndicator.className
 }
 
 enum ScrollDirection {
@@ -45,13 +45,18 @@ public enum JZHourGridDivision: Int {
 }
 
 public enum DayOfWeek: Int {
-    case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
+    case Sunday = 1, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
 }
 
 public enum JZScrollType {
     case pageScroll
     case sectionScroll
     //TODO: - infiniteScroll
+}
+
+public enum JZCurrentTimelineType {
+    case section // Display the current time line only in today's section
+    case page // Display the current time line in the whole page including today
 }
 
 open class JZWeekViewHelper {

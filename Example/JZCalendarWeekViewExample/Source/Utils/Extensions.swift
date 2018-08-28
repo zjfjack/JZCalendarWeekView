@@ -61,18 +61,18 @@ extension JZHourGridDivision {
 extension DayOfWeek {
     var dayName: String {
         switch self {
-        case .sunday: return "Sunday"
-        case .monday: return "Monday"
-        case .tuesday: return "Tuesday"
-        case .wednesday: return "Wednesday"
-        case .thursday: return "Thursday"
-        case .friday: return "Friday"
-        case .saturday: return "Saturday"
+        case .Sunday: return "Sunday"
+        case .Monday: return "Monday"
+        case .Tuesday: return "Tuesday"
+        case .Wednesday: return "Wednesday"
+        case .Thursday: return "Thursday"
+        case .Friday: return "Friday"
+        case .Saturday: return "Saturday"
         }
     }
     
     static var dayOfWeekList: [DayOfWeek] {
-        return [.sunday, .monday, .tuesday, .wednesday, .thursday, .friday, .saturday]
+        return [.Sunday, .Monday, .Tuesday, .Wednesday, .Thursday, .Friday, .Saturday]
     }
 }
 

@@ -17,7 +17,7 @@ Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
 - [x] Two Types of Long Press Gestures: Add a new event & Move an existing event
 - [x] Events display on calendar view (supports events with conflict time and events crossing few days)
 - [x] Support all device orientations (including iPhone X Landscape) and iPad (Slide Over and Split View)
-- [x] Current time line displays in today section only
+- [x] Customise your own current timeline
 - [x] All-Day Events
 
 <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/numOfDays.gif" width="210"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/longPress.gif" width="210"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType.gif" width="210"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/all-day.gif" width="210"/>
@@ -68,7 +68,7 @@ override func registerViewClasses() {
     collectionView.register(RowHeader.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.rowHeader, withReuseIdentifier: "RowHeader")
 }
 ```
-If you want to use your own supplementryView, you should register it and override the following function
+If you want to use your own supplementryView (including your current timeline), you should register it and override the following function
 
 ```swift
 override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
@@ -155,13 +155,12 @@ For futher usage, you can also check the example project, some comments in code 
 JZCalendarWeekView can be added to your project by adding the following line to your `Podfile`:
 
 ```ruby
-pod 'JZCalendarWeekView', '~> 0.4'
+pod 'JZCalendarWeekView', '~> 0.5'
 ```
 
 ## Todo
 
 - [ ] Limited date range: First Date and Last Date in CalendarView
-- [ ] Apple type of Timeline (a whole page) & Timeline color change
 - [ ] DecorationView for different background views (refer to #12)
 - [ ] Theme implementation
 - [ ] New scroll type: Infinite scroll
