@@ -113,9 +113,15 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     }
     
     private func initializeMinuteTick() {
-        let fireDate = Calendar.current.date(byAdding: .minute, value: 1, to: Date())!
-        minuteTimer = Timer(fireAt: fireDate, interval: 60, target: self, selector: #selector(minuteTick), userInfo: nil, repeats: true)
-        RunLoop.current.add(minuteTimer!, forMode: .defaultRunLoopMode)
+        if #available(iOS 10.0, *) {
+            minuteTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+                self?.minuteTick()
+            }
+        } else {
+            minuteTimer = WeakTimer.scheduledTimer(timeInterval: 60, target: self, repeats: true) { [weak self] _ in
+                self?.minuteTick()
+            }
+        }
     }
     
     @objc private func minuteTick() {

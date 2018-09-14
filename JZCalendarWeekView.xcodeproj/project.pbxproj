@@ -29,6 +29,7 @@
 		8E478FA320846A8000668F05 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E478FA220846A8000668F05 /* Extensions.swift */; };
 		8E5BB3FB2073154F00FA853F /* WeekViewHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */; };
 		8E99A0A22134E84800415071 /* JZCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E99A0A12134E84800415071 /* JZCollectionView.swift */; };
+		8EEB40DA214B8DDE0027D45E /* WeakTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEB40D9214B8DDE0027D45E /* WeakTimer.swift */; };
 		8EF7EBCD20A55C8E00D5CEEA /* JZAllDayCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7EBCC20A55C8E00D5CEEA /* JZAllDayCorner.swift */; };
 		8EF7EBCF20A55CF900D5CEEA /* JZAllDayHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7EBCE20A55CF900D5CEEA /* JZAllDayHeader.swift */; };
 		8EF7EBD120A55D1000D5CEEA /* JZAllDayHeaderBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7EBD020A55D1000D5CEEA /* JZAllDayHeaderBackground.swift */; };
@@ -70,6 +71,7 @@
 		8E478FA220846A8000668F05 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8E5BB3FA2073154F00FA853F /* WeekViewHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekViewHelperTest.swift; sourceTree = "<group>"; };
 		8E99A0A12134E84800415071 /* JZCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZCollectionView.swift; sourceTree = "<group>"; };
+		8EEB40D9214B8DDE0027D45E /* WeakTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakTimer.swift; sourceTree = "<group>"; };
 		8EF7EBCC20A55C8E00D5CEEA /* JZAllDayCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZAllDayCorner.swift; sourceTree = "<group>"; };
 		8EF7EBCE20A55CF900D5CEEA /* JZAllDayHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZAllDayHeader.swift; sourceTree = "<group>"; };
 		8EF7EBD020A55D1000D5CEEA /* JZAllDayHeaderBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZAllDayHeaderBackground.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 			children = (
 				8E023C85206C956F00C523BE /* JZWeekViewColors.swift */,
 				8E478FA220846A8000668F05 /* Extensions.swift */,
+				8EEB40D9214B8DDE0027D45E /* WeakTimer.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -289,6 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E99A0A22134E84800415071 /* JZCollectionView.swift in Sources */,
+				8EEB40DA214B8DDE0027D45E /* WeakTimer.swift in Sources */,
 				8E1BA96C206B5B3F007BE13C /* JZColumnHeaderBackground.swift in Sources */,
 				8E478FA320846A8000668F05 /* Extensions.swift in Sources */,
 				1FB6140D2130FE7400F08ACD /* JZCurrentTimelinePage.swift in Sources */,

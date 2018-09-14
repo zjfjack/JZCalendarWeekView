@@ -160,6 +160,7 @@ pod 'JZCalendarWeekView', '~> 0.5'
 
 ## Todo
 
+- [ ] iOS 12, XCode and Swift 4.2 Support
 - [ ] Limited date range: First Date and Last Date in CalendarView
 - [ ] DecorationView for different background views (refer to #12)
 - [ ] Theme implementation
