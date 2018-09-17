@@ -107,7 +107,7 @@ extension ExampleOptionsViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return viewModel.optionsData[indexPath.section].isExpanded ? UITableViewAutomaticDimension : 0
+        return viewModel.optionsData[indexPath.section].isExpanded ? UITableView.automaticDimension : 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

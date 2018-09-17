@@ -103,8 +103,7 @@ open class JZWeekViewHelper {
         return resultEvents
     }
     
-    // Will modify this if more notch screens coming in the future
-    private static let isiPhoneX = (UIScreen.main.nativeBounds.height / UIScreen.main.nativeScale) == 812 && UIDevice.current.userInterfaceIdiom == .phone
+    private static let hasNotch = UINavigationController().navigationBar.frame.height > 20
     
     /// Handle the viewWillTransition in UIViewController, only need call this function in ViewController owning JZWeekView.
     ///
@@ -113,7 +112,7 @@ open class JZWeekViewHelper {
     ///   - size: viewWillTransition to size
     ///   - weekView: the JZWeekView
     open class func viewTransitionHandler(to size: CGSize, weekView: JZBaseWeekView) {
-        if isiPhoneX {
+        if hasNotch {
             let flowLayout = weekView.flowLayout!
             // Not differentiate the left and right because of willTransition cannot get the following UIDeviceOrientation
             let isLandscape = size.width > size.height
