@@ -32,26 +32,31 @@ class CustomViewController: UIViewController {
     private func setupCalendarView() {
         calendarWeekView.baseDelegate = self
         
-        // For example only
         if viewModel.currentSelectedData != nil {
+            // For example only
             setupCalendarViewWithSelectedData()
-            return
+        } else {
+            // Normal setup with different visible time
+            let time8AM = DateComponents(calendar: Calendar.current, timeZone: Calendar.current.timeZone, year: 2018, month: 9, day: 24, hour: 8, minute: 0, second: 0).date!
+            calendarWeekView.setupCalendar(numOfDays: 3,
+                                           setDate: Date(),
+                                           allEvents: viewModel.eventsByDate,
+                                           scrollType: .pageScroll,
+                                           visibleTime: time8AM)
         }
-        
-        calendarWeekView.setupCalendar(numOfDays: 3,
-                                       setDate: Date(),
-                                       allEvents: viewModel.eventsByDate,
-                                       scrollType: .pageScroll)
     }
     
     /// For example only
     private func setupCalendarViewWithSelectedData() {
         guard let selectedData = viewModel.currentSelectedData else { return }
+        
+        let time8AM = DateComponents(calendar: Calendar.current, timeZone: Calendar.current.timeZone, year: 2018, month: 9, day: 24, hour: 8, minute: 0, second: 0).date!
         calendarWeekView.setupCalendar(numOfDays: selectedData.numOfDays,
                                        setDate: selectedData.date,
                                        allEvents: viewModel.eventsByDate,
                                        scrollType: selectedData.scrollType,
-                                       firstDayOfWeek: selectedData.firstDayOfWeek)
+                                       firstDayOfWeek: selectedData.firstDayOfWeek,
+                                       visibleTime: time8AM)
         calendarWeekView.updateFlowLayout(JZWeekViewFlowLayout(hourGridDivision: selectedData.hourGridDivision))
     }
     

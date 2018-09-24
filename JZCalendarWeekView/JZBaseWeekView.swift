@@ -116,19 +116,21 @@ open class JZBaseWeekView: UIView {
      Basic Setup method for JZCalendarWeekView,it **must** be called.
      
      - Parameters:
-        - numOfDays: number of days in a page
-        - setDate: the initial set date, the first date in current page except WeekView (numOfDays = 7)
+        - numOfDays: Number of days in a page
+        - setDate: The initial set date, the first date in current page except WeekView (numOfDays = 7)
         - allEvents: The dictionary of all the events for present. JZWeekViewHelper.getIntraEventsByDate can help transform the data
         - firstDayOfWeek: First day of a week, **only works when numOfDays is 7**. Default value is Sunday
         - scrollType: The horizontal scroll type for this view. Default value is pageScroll
         - currentTimelineType: The current time line type for this view. Default value is section
+        - visibleTime: WeekView will be scroll to this time, when it appears the **first time**. This visibleTime only determines **y** offset. Defaut value is current time.
     */
     open func setupCalendar(numOfDays: Int,
                             setDate: Date,
                             allEvents: [Date:[JZBaseEvent]],
                             scrollType: JZScrollType = .pageScroll,
                             firstDayOfWeek :DayOfWeek? = nil,
-                            currentTimelineType: JZCurrentTimelineType = .section) {
+                            currentTimelineType: JZCurrentTimelineType = .section,
+                            visibleTime: Date = Date()) {
         
         self.numOfDays = numOfDays
         if numOfDays == 7 {
@@ -146,7 +148,7 @@ open class JZBaseWeekView: UIView {
             
             if self.isFirstAppear {
                 self.isFirstAppear = false
-                self.flowLayout.scrollCollectionViewToCurrentTime()
+                self.flowLayout.scrollCollectionViewTo(time: visibleTime)
             }
         }
     }
