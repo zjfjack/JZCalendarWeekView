@@ -350,6 +350,8 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
         // Long press should not begin if no events at long press position and addNew not required
         if collectionView.indexPathForItem(at: pointInCollectionView) == nil && !longPressTypes.contains(LongPressType.addNew) {
             return false
+        } else if collectionView.indexPathForItem(at: pointInCollectionView) != nil && !longPressTypes.contains(LongPressType.move) {
+            return false
         }
         
         return true
