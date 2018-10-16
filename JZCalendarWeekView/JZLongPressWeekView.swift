@@ -378,6 +378,12 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
             isLongPressing = true
         }
         
+        // Check whether we should be doing this long press type
+        if !longPressTypes.contains(currentLongPressType) {
+            isLongPressing = false
+            return
+        }
+        
         // The startDate of the longPressView (the date of top Y in longPressView)
         var longPressViewStartDate: Date!
         
