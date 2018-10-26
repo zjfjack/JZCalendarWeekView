@@ -33,6 +33,8 @@
 		8EF7EBCD20A55C8E00D5CEEA /* JZAllDayCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7EBCC20A55C8E00D5CEEA /* JZAllDayCorner.swift */; };
 		8EF7EBCF20A55CF900D5CEEA /* JZAllDayHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7EBCE20A55CF900D5CEEA /* JZAllDayHeader.swift */; };
 		8EF7EBD120A55D1000D5CEEA /* JZAllDayHeaderBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7EBD020A55D1000D5CEEA /* JZAllDayHeaderBackground.swift */; };
+		F84EDF81218287F4009FCA08 /* JZWorkDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84EDF80218287F4009FCA08 /* JZWorkDay.swift */; };
+		F84EDF832182A505009FCA08 /* JZNonWorkingHoursBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84EDF822182A505009FCA08 /* JZNonWorkingHoursBackground.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +77,8 @@
 		8EF7EBCC20A55C8E00D5CEEA /* JZAllDayCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZAllDayCorner.swift; sourceTree = "<group>"; };
 		8EF7EBCE20A55CF900D5CEEA /* JZAllDayHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZAllDayHeader.swift; sourceTree = "<group>"; };
 		8EF7EBD020A55D1000D5CEEA /* JZAllDayHeaderBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZAllDayHeaderBackground.swift; sourceTree = "<group>"; };
+		F84EDF80218287F4009FCA08 /* JZWorkDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZWorkDay.swift; sourceTree = "<group>"; };
+		F84EDF822182A505009FCA08 /* JZNonWorkingHoursBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZNonWorkingHoursBackground.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +139,7 @@
 				8E023C83206C732300C523BE /* JZBaseEvent.swift */,
 				8E40B2DF20B65C4600FFEB68 /* JZAllDayEvent.swift */,
 				8E1BA969206B5350007BE13C /* JZWeekViewHelper.swift */,
+				F84EDF80218287F4009FCA08 /* JZWorkDay.swift */,
 				8E1BA95C206B4AD9007BE13C /* ReusableViews */,
 				8E1BA955206B4687007BE13C /* Utils */,
 				8E1BA94D206B4329007BE13C /* JZCalendarWeekView.h */,
@@ -167,6 +172,7 @@
 				8EF7EBCC20A55C8E00D5CEEA /* JZAllDayCorner.swift */,
 				8EF7EBCE20A55CF900D5CEEA /* JZAllDayHeader.swift */,
 				8EF7EBD020A55D1000D5CEEA /* JZAllDayHeaderBackground.swift */,
+				F84EDF822182A505009FCA08 /* JZNonWorkingHoursBackground.swift */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -298,9 +304,11 @@
 				1FB6140D2130FE7400F08ACD /* JZCurrentTimelinePage.swift in Sources */,
 				8EF7EBCF20A55CF900D5CEEA /* JZAllDayHeader.swift in Sources */,
 				8E1BA95B206B4826007BE13C /* JZWeekViewFlowLayout.swift in Sources */,
+				F84EDF832182A505009FCA08 /* JZNonWorkingHoursBackground.swift in Sources */,
 				8E40B2E020B65C4600FFEB68 /* JZAllDayEvent.swift in Sources */,
 				8E1BA968206B4F40007BE13C /* JZCurrentTimelineSection.swift in Sources */,
 				8E1BA960206B4B84007BE13C /* JZColumnHeader.swift in Sources */,
+				F84EDF81218287F4009FCA08 /* JZWorkDay.swift in Sources */,
 				8E023C84206C732300C523BE /* JZBaseEvent.swift in Sources */,
 				8E1BA964206B4E82007BE13C /* JZCornerHeader.swift in Sources */,
 				8E1BA96E206B5B55007BE13C /* JZRowHeaderBackground.swift in Sources */,

@@ -43,6 +43,7 @@ open class JZBaseWeekView: UIView {
         }
     }
     public var firstDayOfWeek: DayOfWeek?
+    public var workDayForDate: ((_ date: Date) -> JZWorkDay?)?
     public var allEventsBySection: [Date: [JZBaseEvent]]! {
         didSet {
             self.isAllDaySupported = allEventsBySection is [Date: [JZAllDayEvent]]
@@ -100,7 +101,7 @@ open class JZBaseWeekView: UIView {
         
         // decoration
         flowLayout.registerDecorationViews([JZColumnHeaderBackground.self, JZRowHeaderBackground.self,
-                                            JZAllDayHeaderBackground.self, JZAllDayCorner.self])
+                                            JZAllDayHeaderBackground.self, JZAllDayCorner.self, JZNonWorkingHoursBackground.self])
         flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.verticalGridline)
         flowLayout.register(JZGridLine.self, forDecorationViewOfKind: JZDecorationViewKinds.horizontalGridline)
     }
@@ -539,6 +540,11 @@ extension JZBaseWeekView: WeekViewFlowLayoutDelegate {
     public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, dayForSection section: Int) -> Date {
         let date = Calendar.current.date(byAdding: .day, value: section, to: initDate)
         return date!
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, workDayForSection section: Int) -> JZWorkDay? {
+        let date = Calendar.current.date(byAdding: .day, value: section, to: initDate)
+        return self.workDayForDate?(date!)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, startTimeForItemAtIndexPath indexPath: IndexPath) -> Date {
