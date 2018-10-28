@@ -26,9 +26,12 @@ open class JZBaseWeekView: UIView {
     public var collectionView: JZCollectionView!
     public var flowLayout: JZWeekViewFlowLayout!
     
-    /// The initial date of current collectionView. When page is not scrolling, the inital date is always
-    /// the numOfDays days eariler than current page first date, which means the start of the collectionView.
-    /// The core structure of JZCalendarWeekView is 3 pages, previous-current-next
+    /**
+     - The initial date of current collectionView. When page is not scrolling, the inital date is always
+     (numOfDays) days before current page first date, which means the start of the collectionView, not the current page first date
+     - The core structure of JZCalendarWeekView is 3 pages, previous-current-next
+     - If you want to update this value instead of using [updateWeekView(to date: Date)](), please **make sure the date is startOfDay**.
+    */
     public var initDate: Date! {
         didSet {
             baseDelegate?.initDateDidChange(self, initDate: initDate)
@@ -207,7 +210,7 @@ open class JZBaseWeekView: UIView {
     /// - Parameters:
     ///    - date: this date is the current date in one-day view rather than initDate
     open func updateWeekView(to date: Date) {
-        self.initDate = date.add(component: .day, value: -numOfDays)
+        self.initDate = date.startOfDay.add(component: .day, value: -numOfDays)
         DispatchQueue.main.async { [unowned self] in
             self.layoutSubviews()
             self.forceReload()
