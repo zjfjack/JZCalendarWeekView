@@ -630,7 +630,9 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     }
     
     // MARK: - Delegate Wrapper
-    open func daysForSection(_ section: Int) -> DateComponents {
+    
+    /// Internal use only, use getDateForSection in JZBaseWeekView instead
+    private func daysForSection(_ section: Int) -> DateComponents {
         if cachedDayDateComponents[section] != nil {
             return cachedDayDateComponents[section]!
         }
@@ -643,7 +645,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         return dayDateComponents
     }
     
-    func startTimeForIndexPath(_ indexPath: IndexPath) -> DateComponents {
+    private func startTimeForIndexPath(_ indexPath: IndexPath) -> DateComponents {
         if cachedStartTimeDateComponents[indexPath] != nil {
             return cachedStartTimeDateComponents[indexPath]!
         } else {
@@ -656,7 +658,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         }
     }
     
-    func endTimeForIndexPath(_ indexPath: IndexPath) -> DateComponents {
+    private func endTimeForIndexPath(_ indexPath: IndexPath) -> DateComponents {
         if cachedEndTimeDateComponents[indexPath] != nil {
             return cachedEndTimeDateComponents[indexPath]!
         } else {

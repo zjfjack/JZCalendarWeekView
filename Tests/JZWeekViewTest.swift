@@ -42,4 +42,18 @@ class JZWeekViewTest: XCTestCase {
         XCTAssertEqual(answer4, dateFormatter.date(from: "2018-02-22 22:15")!, "(15,29)) => 15")
     }
     
+    func testGetDateForSection() {
+        let today = Date().startOfDay
+        let calendar = Calendar.current
+        // 7 days will change the set Date depending on the firstDayOfWeek
+        [1, 3, 10].forEach {
+            longPressView.setupCalendar(numOfDays: $0, setDate: today, allEvents: [:])
+            let currentDate = longPressView.getDateForSection(longPressView.numOfDays)
+            XCTAssertEqual(currentDate, today)
+            let firstDate = longPressView.getDateForSection(0)
+            XCTAssertEqual(firstDate, calendar.date(byAdding: .day, value: -longPressView.numOfDays, to: today))
+            let lastDate = longPressView.getDateForSection(longPressView.numOfDays*3 - 1)
+            XCTAssertEqual(lastDate, calendar.date(byAdding: .day, value: longPressView.numOfDays*2 - 1, to: today))
+        }
+    }
 }

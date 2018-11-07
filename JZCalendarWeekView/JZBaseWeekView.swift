@@ -262,7 +262,12 @@ open class JZBaseWeekView: UIView {
         self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays - diff)
         self.firstDayOfWeek = firstDayOfWeek
     }
-
+    
+    /// Get Date for specific section.
+    /// The 0 section start from previous page, which means the first date section in current page should be **numOfDays**.
+    open func getDateForSection(_ section: Int) -> Date {
+        return Calendar.current.date(byAdding: .day, value: section, to: initDate)!
+    }
     
     /**
      Get date excluding time from points
@@ -272,8 +277,7 @@ open class JZBaseWeekView: UIView {
      */
     open func getDateForX(xCollectionView: CGFloat) -> Date {
         let section = Int((xCollectionView - flowLayout.rowHeaderWidth) / flowLayout.sectionWidth)
-        let date = Calendar.current.date(from: flowLayout.daysForSection(section))!
-        return date
+        return getDateForSection(section)
     }
     
     /// Get time from point y position
@@ -540,8 +544,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
 extension JZBaseWeekView: WeekViewFlowLayoutDelegate {
     
     public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, dayForSection section: Int) -> Date {
-        let date = Calendar.current.date(byAdding: .day, value: section, to: initDate)
-        return date!
+        return getDateForSection(section)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, startTimeForItemAtIndexPath indexPath: IndexPath) -> Date {

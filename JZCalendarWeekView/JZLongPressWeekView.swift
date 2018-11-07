@@ -267,7 +267,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
     /// Overload for base class with left and right margin check for LongPress
     open func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
         let section = Int((xCollectionView - flowLayout.rowHeaderWidth) / flowLayout.sectionWidth)
-        let date = Calendar.current.date(from: flowLayout.daysForSection(section))!
+        let date = getDateForSection(section)
         // when isScrolling equals true, means it will scroll to previous date
         if xSelfView < longPressLeftMarginX && isScrolling == false {
             return date.add(component: .day, value: 1)
