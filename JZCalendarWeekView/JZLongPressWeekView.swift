@@ -153,8 +153,17 @@ open class JZLongPressWeekView: JZBaseWeekView {
     
     /// Updating time label in longPressView during dragging
     private func updateTimeLabel(time: Date, pointInSelfView: CGPoint) {
+        updateTimeLabelText(time: time)
+        updateTimeLabelPosition(pointInSelfView: pointInSelfView)
+    }
+    
+    /// Update time label content, this method can be overridden
+    open func updateTimeLabelText(time: Date) {
         longPressTimeLabel.text = time.getTimeIgnoreSecondsFormat()
-        
+    }
+    
+    /// Update the position for the time label
+    private func updateTimeLabelPosition(pointInSelfView: CGPoint) {
         let isOutsideLeftMargin = pointInSelfView.x - pressPosition!.xToViewLeft < longPressLeftMarginX
         longPressTimeLabel.textAlignment = isOutsideLeftMargin ? .right : .left
         
