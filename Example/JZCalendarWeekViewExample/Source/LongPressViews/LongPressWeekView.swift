@@ -28,10 +28,10 @@ class LongPressWeekView: JZLongPressWeekView {
         if kind == JZSupplementaryViewKinds.allDayHeader {
             let alldayHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZAllDayHeader
             let date = flowLayout.dateForColumnHeader(at: indexPath)
-            if let allDayevents = allDayEventsBySection[date] {
-                alldayHeader.updateView(views: getAllDayHeaderViews(allDayEvents: allDayevents as! [AllDayEvent]))
-                return alldayHeader
-            }
+            let events = allDayEventsBySection[date]
+            let views = getAllDayHeaderViews(allDayEvents: events as? [AllDayEvent] ?? [])
+            alldayHeader.updateView(views: views)
+            return alldayHeader
         }
         return super.collectionView(collectionView, viewForSupplementaryElementOfKind: kind, at: indexPath)
     }
