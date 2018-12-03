@@ -227,3 +227,12 @@ extension Date {
         return date!
     }
 }
+
+
+extension CGFloat {
+    
+    func toDecimal1Value() -> CGFloat {
+        return (self * 10).rounded() / 10
+    }
+    
+}

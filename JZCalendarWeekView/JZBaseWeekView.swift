@@ -59,7 +59,7 @@ open class JZBaseWeekView: UIView {
     
     public weak var baseDelegate: JZBaseViewDelegate?
     open var contentViewWidth: CGFloat {
-        return frame.width - flowLayout.rowHeaderWidth
+        return frame.width - flowLayout.rowHeaderWidth - flowLayout.contentsMargin.left - flowLayout.contentsMargin.right
     }
     private var isFirstAppear: Bool = true
     internal var isAllDaySupported: Bool!
@@ -111,8 +111,27 @@ open class JZBaseWeekView: UIView {
     open override func layoutSubviews() {
         super.layoutSubviews()
         
-        flowLayout.sectionWidth = contentViewWidth / CGFloat(numOfDays)
+        flowLayout.sectionWidth = getSectionWidth()
         initialContentOffset = collectionView.contentOffset
+    }
+
+    /// Was going to use toDecimal1Value as well, but the CGFloat is always got the wrong precision
+    /// In order to make sure the width of all sections is the same, add few points to CGFloat
+    private func getSectionWidth() -> CGFloat {
+        var sectionWidth = contentViewWidth / CGFloat(numOfDays)
+        let remainder = sectionWidth.truncatingRemainder(dividingBy: 1)
+        switch remainder {
+        case 0...0.25:
+            sectionWidth = sectionWidth.rounded(.down)
+        case 0.25...0.75:
+            sectionWidth = sectionWidth.rounded(.down) + 0.5
+        default:
+            sectionWidth = sectionWidth.rounded(.up)
+        }
+        // Maximum added width for row header should be 0.25 * numberOfRows
+        let rowHeaderWidth = frame.width - flowLayout.contentsMargin.left - flowLayout.contentsMargin.right - sectionWidth * CGFloat(numOfDays)
+        flowLayout.rowHeaderWidth = rowHeaderWidth
+        return sectionWidth
     }
     
     /**
