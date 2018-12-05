@@ -164,7 +164,7 @@ pod 'JZCalendarWeekView', '0.5.1'
 
 ## Todo
 
-- [ ] Limited date range: First Date and Last Date in CalendarView
+- [ ] Limited date range: first date and last date (horizontal) & start time and end Time (vertical) in CalendarView
 - [ ] DecorationView for different background views (refer to #12)
 - [ ] Theme implementation
 - [ ] New scroll type: Infinite scroll
