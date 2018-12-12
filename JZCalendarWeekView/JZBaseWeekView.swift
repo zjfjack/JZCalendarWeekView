@@ -194,7 +194,13 @@ open class JZBaseWeekView: UIView {
                 maxEventsCount = count
             }
         }
-        flowLayout.allDayHeaderHeight = flowLayout.defaultAllDayOneLineHeight * CGFloat(min(maxEventsCount, 2))
+        let newAllDayHeader = flowLayout.defaultAllDayOneLineHeight * CGFloat(min(maxEventsCount, 2))
+        if newAllDayHeader != flowLayout.allDayHeaderHeight {
+            // Check whether we need update the allDayHeaderHeight
+            if !isScrolling || !willEffectContentSize(difference: flowLayout.allDayHeaderHeight - newAllDayHeader) {
+                flowLayout.allDayHeaderHeight = newAllDayHeader
+            }
+        }
     }
     
     /// Update collectionViewLayout with custom flowLayout. For some other values like gridThickness and contentsMargin, please inherit from JZWeekViewFlowLayout to change the default value
@@ -212,18 +218,32 @@ open class JZBaseWeekView: UIView {
     /// - Parameters:
     ///   - reloadEvents: If provided new events, current events will be reloaded. Default value is nil.
     open func forceReload(reloadEvents: [Date: [JZBaseEvent]]? = nil) {
-        if let events = reloadEvents {
-            self.allEventsBySection = events
-        }
+        if let events = reloadEvents { self.allEventsBySection = events }
         
-        // initial day is one page before the settle day
-        collectionView.setContentOffsetWithoutDelegate(CGPoint(x:contentViewWidth, y:collectionView.contentOffset.y), animated: false)
         updateAllDayBar(isScrolling: false)
-        
+        // initial day is one page before the settle day
+        collectionView.setContentOffsetWithoutDelegate(CGPoint(x:contentViewWidth, y:getYOffset()), animated: false)
         flowLayout.invalidateLayoutCache()
         collectionView.reloadData()
     }
-        
+    
+    /// Notice: A temporary solution to fix the scroll from bottom issue when isScrolling
+    /// The issue is because the decreased height value will cause the system to change the collectionView contentOffset, but the affected contentOffset will
+    /// greater than the contentSize height, and the view will show some abnormal updates, this value will be used with isScrolling to check whether the in scroling change will be applied
+    private func willEffectContentSize(difference: CGFloat) -> Bool {
+        return collectionView.contentOffset.y + difference + collectionView.bounds.height > collectionView.contentSize.height
+    }
+    
+    /// Fix collectionView scroll from bottom (contentsize height decreased) wrong offset issue
+    private func getYOffset() -> CGFloat {
+        guard isAllDaySupported else { return collectionView.contentOffset.y }
+        let bottomOffset = flowLayout.collectionViewContentSize.height - collectionView.bounds.height
+        if collectionView.contentOffset.y > bottomOffset {
+            return bottomOffset
+        } else {
+            return collectionView.contentOffset.y
+        }
+    }
     
     /// Reload the WeekView to date with no animation
     /// - Parameters:
