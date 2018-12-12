@@ -186,7 +186,7 @@ open class JZBaseWeekView: UIView {
     }
     
     open func updateAllDayBar(isScrolling: Bool) {
-        guard isAllDaySupported && !isScrolling else { return }
+        guard isAllDaySupported else { return }
         var maxEventsCount: Int = 0
         getDatesInCurrentPage(isScrolling: isScrolling).forEach {
             let count = allDayEventsBySection[$0]?.count ?? 0
@@ -196,7 +196,10 @@ open class JZBaseWeekView: UIView {
         }
         let newAllDayHeader = flowLayout.defaultAllDayOneLineHeight * CGFloat(min(maxEventsCount, 2))
         if newAllDayHeader != flowLayout.allDayHeaderHeight {
-            flowLayout.allDayHeaderHeight = newAllDayHeader
+            // Check whether we need update the allDayHeaderHeight
+            if !isScrolling || !willEffectContentSize(difference: flowLayout.allDayHeaderHeight - newAllDayHeader) {
+                flowLayout.allDayHeaderHeight = newAllDayHeader
+            }
         }
     }
     
@@ -222,6 +225,13 @@ open class JZBaseWeekView: UIView {
         collectionView.setContentOffsetWithoutDelegate(CGPoint(x:contentViewWidth, y:getYOffset()), animated: false)
         flowLayout.invalidateLayoutCache()
         collectionView.reloadData()
+    }
+    
+    /// Notice: A temporary solution to fix the scroll from bottom issue when isScrolling
+    /// The issue is because the decreased height value will cause the system to change the collectionView contentOffset, but the affected contentOffset will
+    /// greater than the contentSize height, and the view will show some abnormal updates, this value will be used with isScrolling to check whether the in scroling change will be applied
+    private func willEffectContentSize(difference: CGFloat) -> Bool {
+        return collectionView.contentOffset.y + difference + collectionView.bounds.height > collectionView.contentSize.height
     }
     
     /// Fix collectionView scroll from bottom (contentsize height decreased) wrong offset issue
