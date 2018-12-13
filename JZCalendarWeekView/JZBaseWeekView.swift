@@ -34,6 +34,12 @@ open class JZBaseWeekView: UIView {
             baseDelegate?.initDateDidChange(self, initDate: initDate)
         }
     }
+    public var scrollableRange: (startDate: Date?, endDate: Date?) {
+        willSet {
+            self.scrollableRange = (newValue.startDate?.startOfDay, newValue.endDate?.startOfDay)
+            setHorizontalEdgesOffsetX()
+        }
+    }
     public var numOfDays: Int!
     public var scrollType: JZScrollType!
     public var firstDayOfWeek: DayOfWeek?
@@ -57,6 +63,8 @@ open class JZBaseWeekView: UIView {
     internal var initialContentOffset = CGPoint.zero
     internal var scrollSections:CGFloat!
     
+    // Scrollable Range
+    private var scrollableEdges: (leftX: CGFloat?, rightX: CGFloat?)
     private var isDirectionLocked = false
     
     override public init(frame: CGRect) {
@@ -122,7 +130,8 @@ open class JZBaseWeekView: UIView {
                             setDate:Date,
                             allEvents: [Date:[JZBaseEvent]],
                             scrollType: JZScrollType = .pageScroll,
-                            firstDayOfWeek:DayOfWeek? = nil) {
+                            firstDayOfWeek:DayOfWeek? = nil,
+                            scrollableRange: (Date?, Date?)? = (nil, nil)) {
         
         self.numOfDays = numOfDays
         if numOfDays == 7 {
@@ -132,6 +141,8 @@ open class JZBaseWeekView: UIView {
         }
         self.allEventsBySection = allEvents
         self.scrollType = scrollType
+        self.scrollableRange.startDate = scrollableRange?.0
+        self.scrollableRange.endDate = scrollableRange?.1
         
         DispatchQueue.main.async { [unowned self] in
             self.layoutSubviews()
@@ -191,6 +202,7 @@ open class JZBaseWeekView: UIView {
         
         flowLayout.invalidateLayoutCache()
         collectionView.reloadData()
+        setHorizontalEdgesOffsetX()
     }
         
     
@@ -384,6 +396,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
     
     open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollDirectionAxis == .vertical { return }
+        if scrollView.contentOffset.x == scrollableEdges.leftX || scrollView.contentOffset.x == scrollableEdges.rightX { return }
         targetContentOffset.pointee = scrollView.contentOffset
         pagingEffect(scrollView: scrollView, velocity: velocity)
     }
@@ -443,7 +456,61 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource {
         
         // All Day Bar update
         guard flowLayout.sectionWidth != nil && scrollDirectionAxis != .vertical else { return }
+        checkScrollableRange(contentOffsetX: scrollView.contentOffset.x)
         updateAllDayBar(isScrolling: true)
+    }
+    
+    func checkScrollableRange(contentOffsetX: CGFloat) {
+        if let leftX = scrollableEdges.leftX, contentOffsetX <= leftX {
+            collectionView.setContentOffsetWithoutDelegate(CGPoint(x: leftX, y: collectionView.contentOffset.y), animated: false)
+        }
+        
+        if let rightX = scrollableEdges.rightX, contentOffsetX >= rightX {
+            collectionView.setContentOffsetWithoutDelegate(CGPoint(x: rightX, y: collectionView.contentOffset.y), animated: false)
+        }
+    }
+    
+    func setHorizontalEdgesOffsetX() {
+        if let startDate = scrollableRange.startDate {
+            let currentPageFirstDate = initDate.add(component: .day, value: numOfDays)
+            if startDate >= currentPageFirstDate {
+                scrollableEdges.leftX = contentViewWidth
+            } else {
+                if scrollType == .pageScroll {
+                    scrollableEdges.leftX = nil
+                } else {
+                    if startDate <= initDate {
+                        scrollableEdges.leftX = nil
+                    } else {
+                        let days = Date.daysBetween(start: initDate, end: startDate, ignoreHours: true)
+                        scrollableEdges.leftX = flowLayout.sectionWidth * CGFloat(days)
+                    }
+                }
+            }
+        } else {
+            scrollableEdges.leftX = nil
+        }
+        
+        if let endDate = scrollableRange.endDate {
+            let currentPageLastDate = initDate.add(component: .day, value: numOfDays * 2 - 1)
+            if endDate <= currentPageLastDate {
+                scrollableEdges.rightX = contentViewWidth
+            } else {
+                if scrollType == .pageScroll {
+                    scrollableEdges.rightX = nil
+                } else {
+                    let lastDateInView = initDate.add(component: .day, value: numOfDays * 3 - 1)
+                    if endDate >= lastDateInView {
+                        scrollableEdges.rightX = nil
+                    } else {
+                        let days = Date.daysBetween(start: initDate, end: endDate, ignoreHours: true)
+                        scrollableEdges.rightX = flowLayout.sectionWidth * CGFloat(days)
+                    }
+                }
+            }
+        } else {
+            scrollableEdges.rightX = nil
+        }
     }
     
     /// It is used for scroll paging effect, scrollTypes sectionScroll and pageScroll applied here

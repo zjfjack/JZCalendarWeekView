@@ -37,7 +37,8 @@ class LongPressViewController: UIViewController {
             calendarWeekView.setupCalendar(numOfDays: 3,
                                            setDate: Date(),
                                            allEvents: viewModel.eventsByDate,
-                                           scrollType: .pageScroll)
+                                           scrollType: .pageScroll,
+                                           scrollableRange: (nil, Date().add(component: .day, value: 2)))
         }
         
         // LongPress delegate, datasorce and type setup
