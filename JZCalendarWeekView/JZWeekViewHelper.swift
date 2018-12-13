@@ -12,6 +12,7 @@ public enum JZSupplementaryViewKinds {
     public static let cornerHeader = JZCornerHeader.className
     public static let allDayHeader = JZAllDayHeader.className
     public static let eventCell = "eventCell"
+    public static let currentTimeline = "currentTimeline"
 }
 
 public enum JZDecorationViewKinds {
@@ -21,7 +22,6 @@ public enum JZDecorationViewKinds {
     public static let allDayCorner = JZAllDayCorner.className
     public static let verticalGridline = "VerticalGridline"
     public static let horizontalGridline = "HorizontalGridline"
-    public static let currentTimeGridline = JZCurrentTimeIndicator.className
 }
 
 enum ScrollDirection {
@@ -45,13 +45,18 @@ public enum JZHourGridDivision: Int {
 }
 
 public enum DayOfWeek: Int {
-    case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
+    case Sunday = 1, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
 }
 
 public enum JZScrollType {
     case pageScroll
     case sectionScroll
     //TODO: - infiniteScroll
+}
+
+public enum JZCurrentTimelineType {
+    case section // Display the current time line only in today's section
+    case page // Display the current time line in the whole page including today
 }
 
 open class JZWeekViewHelper {
@@ -98,8 +103,7 @@ open class JZWeekViewHelper {
         return resultEvents
     }
     
-    // Will modify this if more notch screens coming in the future
-    private static let isiPhoneX = (UIScreen.main.nativeBounds.height / UIScreen.main.nativeScale) == 812 && UIDevice.current.userInterfaceIdiom == .phone
+    private static let hasNotch = UINavigationController().navigationBar.frame.height > 20
     
     /// Handle the viewWillTransition in UIViewController, only need call this function in ViewController owning JZWeekView.
     ///
@@ -108,7 +112,7 @@ open class JZWeekViewHelper {
     ///   - size: viewWillTransition to size
     ///   - weekView: the JZWeekView
     open class func viewTransitionHandler(to size: CGSize, weekView: JZBaseWeekView) {
-        if isiPhoneX {
+        if hasNotch {
             let flowLayout = weekView.flowLayout!
             // Not differentiate the left and right because of willTransition cannot get the following UIDeviceOrientation
             let isLandscape = size.width > size.height

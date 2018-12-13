@@ -104,7 +104,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
     public weak var longPressDataSource: JZLongPressViewDataSource?
     
     // You can modify these properties below
-    public var longPressTypes: [LongPressType]!
+    public var longPressTypes: [LongPressType] = [LongPressType]()
     /// It is used to identify the minimum time interval(Minute) when dragging the event view (minimum value is 1, maximum is 60)
     public var moveTimeMinInterval: Int = 15
     /// For an addNew event, the event duration mins determine the add new event duration and height
@@ -153,8 +153,17 @@ open class JZLongPressWeekView: JZBaseWeekView {
     
     /// Updating time label in longPressView during dragging
     private func updateTimeLabel(time: Date, pointInSelfView: CGPoint) {
+        updateTimeLabelText(time: time)
+        updateTimeLabelPosition(pointInSelfView: pointInSelfView)
+    }
+    
+    /// Update time label content, this method can be overridden
+    open func updateTimeLabelText(time: Date) {
         longPressTimeLabel.text = time.getTimeIgnoreSecondsFormat()
-        
+    }
+    
+    /// Update the position for the time label
+    private func updateTimeLabelPosition(pointInSelfView: CGPoint) {
         let isOutsideLeftMargin = pointInSelfView.x - pressPosition!.xToViewLeft < longPressLeftMarginX
         longPressTimeLabel.textAlignment = isOutsideLeftMargin ? .right : .left
         
@@ -267,7 +276,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
     /// Overload for base class with left and right margin check for LongPress
     open func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
         let section = Int((xCollectionView - flowLayout.rowHeaderWidth) / flowLayout.sectionWidth)
-        let date = Calendar.current.date(from: flowLayout.daysForSection(section))!
+        let date = getDateForSection(section)
         // when isScrolling equals true, means it will scroll to previous date
         if xSelfView < longPressLeftMarginX && isScrolling == false {
             return date.add(component: .day, value: 1)
@@ -347,8 +356,16 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
                                      pointInSelfView.y < longPressTopMarginY || pointInSelfView.y > longPressBottomMarginY
             if isOutsideBeginArea { return false  }
         }
+        
+        let hasItemAtPoint = collectionView.indexPathForItem(at: pointInCollectionView) != nil
+        
+        // Long press should not begin if there are events at long press position and move not required
+        if hasItemAtPoint && !longPressTypes.contains(LongPressType.move) {
+            return false
+        }
+        
         // Long press should not begin if no events at long press position and addNew not required
-        if collectionView.indexPathForItem(at: pointInCollectionView) == nil && !longPressTypes.contains(LongPressType.addNew) {
+        if !hasItemAtPoint && !longPressTypes.contains(LongPressType.addNew) {
             return false
         }
         
@@ -388,7 +405,7 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
         
         if state == .began {
             
-            currentEditingInfo.cellSize = currentLongPressType == .move ? currentMovingCell.frame.size : CGSize(width: flowLayout.sectionWidth, height: flowLayout.hourHeight * CGFloat(addNewDurationMins/60))
+            currentEditingInfo.cellSize = currentLongPressType == .move ? currentMovingCell.frame.size : CGSize(width: flowLayout.sectionWidth, height: flowLayout.hourHeight * CGFloat(addNewDurationMins)/60)
             pressPosition = currentLongPressType == .move ? (pointInCollectionView.x - currentMovingCell.frame.origin.x, pointInCollectionView.y - currentMovingCell.frame.origin.y) :
                                                             (currentEditingInfo.cellSize.width/2, currentEditingInfo.cellSize.height/2)
             longPressViewStartDate = getLongPressViewStartDate(pointInCollectionView: pointInCollectionView, pointInSelfView: pointInSelfView)

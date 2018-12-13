@@ -30,6 +30,7 @@
 		8E7263DF2074B55300ECF7CD /* EventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7263DC2074B55300ECF7CD /* EventCell.swift */; };
 		8E7263E02074B55300ECF7CD /* EventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8E7263DD2074B55300ECF7CD /* EventCell.xib */; };
 		8E7263E32074B73300ECF7CD /* DefaultWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7263E22074B73300ECF7CD /* DefaultWeekView.swift */; };
+		8E99A0A4213523C400415071 /* CurrentTimelineAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E99A0A3213523C400415071 /* CurrentTimelineAll.swift */; };
 		8E9A7DF520969919009AEB6E /* LongPressWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9A7DF420969919009AEB6E /* LongPressWeekView.swift */; };
 		8E9AE75B20773F3500B7004E /* ExampleOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9AE75A20773F3500B7004E /* ExampleOptionsViewController.swift */; };
 		8EBD62EA2096F8AD00520E58 /* LongPressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBD62E92096F8AD00520E58 /* LongPressViewController.swift */; };
@@ -103,6 +104,7 @@
 		8E7263DC2074B55300ECF7CD /* EventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
 		8E7263DD2074B55300ECF7CD /* EventCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventCell.xib; sourceTree = "<group>"; };
 		8E7263E22074B73300ECF7CD /* DefaultWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultWeekView.swift; sourceTree = "<group>"; };
+		8E99A0A3213523C400415071 /* CurrentTimelineAll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentTimelineAll.swift; sourceTree = "<group>"; };
 		8E9A7DF420969919009AEB6E /* LongPressWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressWeekView.swift; sourceTree = "<group>"; };
 		8E9AE75A20773F3500B7004E /* ExampleOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleOptionsViewController.swift; sourceTree = "<group>"; };
 		8EBD62E92096F8AD00520E58 /* LongPressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressViewController.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 				8E54D53A208D6997007DD5FE /* CustomWeekView.swift */,
 				8E2E6566208D5F3600FB2CE4 /* BlackGridLine.swift */,
 				8E54D53C208D6A2B007DD5FE /* HourRowHeader.swift */,
+				8E99A0A3213523C400415071 /* CurrentTimelineAll.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -275,6 +278,7 @@
 				TargetAttributes = {
 					8E5BB3CD2072F4A000FA853F = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -346,6 +350,7 @@
 				8E5BB407207325AB00FA853F /* Extensions.swift in Sources */,
 				8E5BB3D42072F4A000FA853F /* DefaultViewController.swift in Sources */,
 				8E5BB4022073226100FA853F /* DefaultViewModel.swift in Sources */,
+				8E99A0A4213523C400415071 /* CurrentTimelineAll.swift in Sources */,
 				8E2E6567208D5F3600FB2CE4 /* BlackGridLine.swift in Sources */,
 				8E5BB404207322BA00FA853F /* AllDayEvent.swift in Sources */,
 				8EBD62EA2096F8AD00520E58 /* LongPressViewController.swift in Sources */,
@@ -519,7 +524,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zjfjack.JZCalendarWeekViewExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -536,7 +541,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zjfjack.JZCalendarWeekViewExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

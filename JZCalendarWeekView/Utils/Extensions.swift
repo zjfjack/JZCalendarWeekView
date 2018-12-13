@@ -14,27 +14,13 @@ extension NSObject {
     }
 }
 
-
 extension UICollectionView {
-    func registerSupplimentaryViews(_ viewClasses: [UICollectionReusableView.Type]) {
-        viewClasses.forEach {
-            self.register($0, forSupplementaryViewOfKind: $0.className, withReuseIdentifier: $0.className)
-        }
-    }
     
     func setContentOffsetWithoutDelegate(_ contentOffset: CGPoint, animated: Bool) {
         let tempDelegate = self.delegate
         self.delegate = nil
         self.setContentOffset(contentOffset, animated: animated)
         self.delegate = tempDelegate
-    }
-}
-
-extension UICollectionViewFlowLayout {
-    func registerDecorationViews(_ viewClasses: [UICollectionReusableView.Type]) {
-        viewClasses.forEach {
-            self.register($0, forDecorationViewOfKind: $0.className)
-        }
     }
 }
 
@@ -174,6 +160,16 @@ extension Date {
         return Calendar.current.isDateInTomorrow(self)
     }
     
+    static func getCurrentWeekDays(firstDayOfWeek: DayOfWeek?=nil) -> [Date] {
+        var calendar = Calendar.current
+        calendar.firstWeekday = (firstDayOfWeek ?? .Sunday).rawValue
+        let today = calendar.startOfDay(for: Date())
+        let dayOfWeek = calendar.component(.weekday, from: today)
+        let weekdays = calendar.range(of: .weekday, in: .weekOfYear, for: today)!
+        let days = (weekdays.lowerBound ..< weekdays.upperBound).compactMap { calendar.date(byAdding: .day, value: $0 - dayOfWeek, to: today) }
+        return days
+    }
+    
     func add(component: Calendar.Component, value: Int) -> Date {
         return Calendar.current.date(byAdding: component, value: value, to: self)!
     }
@@ -230,4 +226,13 @@ extension Date {
         let date = Calendar.current.date(from: dateComponents)
         return date!
     }
+}
+
+
+extension CGFloat {
+    
+    func toDecimal1Value() -> CGFloat {
+        return (self * 10).rounded() / 10
+    }
+    
 }

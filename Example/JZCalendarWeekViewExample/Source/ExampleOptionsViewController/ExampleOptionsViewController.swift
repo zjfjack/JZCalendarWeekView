@@ -107,7 +107,7 @@ extension ExampleOptionsViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return viewModel.optionsData[indexPath.section].isExpanded ? UITableViewAutomaticDimension : 0
+        return viewModel.optionsData[indexPath.section].isExpanded ? UITableView.automaticDimension : 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -137,7 +137,7 @@ extension ExampleOptionsViewController: UITableViewDelegate, UITableViewDataSour
         
         if section == 2 {
             if viewModel.optionsData[2].selectedIndex == 6 && viewModel.optionsData[3].subject != .firstDayOfWeek {
-                viewModel.insertDayOfWeekToData(firstDayOfWeek: .sunday)
+                viewModel.insertDayOfWeekToData(firstDayOfWeek: .Sunday)
                 tableView.reloadData()
             }
             if viewModel.optionsData[2].selectedIndex != 6 && viewModel.optionsData[3].subject == .firstDayOfWeek {

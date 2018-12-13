@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/zjfjack/JZCalendarWeekView.svg?branch=master)](https://travis-ci.org/zjfjack/JZCalendarWeekView)
 [![CocoaPods](https://img.shields.io/cocoapods/v/JZCalendarWeekView.svg)](https://cocoapods.org/pods/JZCalendarWeekView)
 [![Platform](https://img.shields.io/cocoapods/p/JZCalendarWeekView.svg?style=flat)](https://github.com/zjfjack/JZCalendarWeekView)
-[![Swift 4.1](https://img.shields.io/badge/Swift-4.1-orange.svg?style=flat)](https://developer.apple.com/swift/)
+[![Swift 4.2](https://img.shields.io/badge/Swift-4.2-orange.svg?style=flat)](https://developer.apple.com/swift/)
 [![license MIT](https://img.shields.io/cocoapods/l/JZCalendarWeekView.svg)](http://opensource.org/licenses/MIT)
 
 iOS Calendar Week/Day View in Swift
@@ -17,7 +17,7 @@ Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
 - [x] Two Types of Long Press Gestures: Add a new event & Move an existing event
 - [x] Events display on calendar view (supports events with conflict time and events crossing few days)
 - [x] Support all device orientations (including iPhone X Landscape) and iPad (Slide Over and Split View)
-- [x] Current time line displays in today section only
+- [x] Customise your own current timeline
 - [x] All-Day Events
 
 <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/numOfDays.gif" width="210"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/longPress.gif" width="210"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/scrollType.gif" width="210"/> <img src="https://raw.githubusercontent.com/zjfjack/JZCalendarWeekView/master/Screenshots/all-day.gif" width="210"/>
@@ -68,7 +68,7 @@ override func registerViewClasses() {
     collectionView.register(RowHeader.self, forSupplementaryViewOfKind: JZSupplementaryViewKinds.rowHeader, withReuseIdentifier: "RowHeader")
 }
 ```
-If you want to use your own supplementryView, you should register it and override the following function
+If you want to use your own supplementryView (including your current timeline), you should register it and override the following function
 
 ```swift
 override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
@@ -146,8 +146,8 @@ For futher usage, you can also check the example project, some comments in code 
 ## Requirements
 
 - iOS 9.0+
-- Xcode 9.3+
-- Swift 4.1+
+- Xcode 10+
+- Swift 4.2
 
 ## Installation
 
@@ -155,12 +155,17 @@ For futher usage, you can also check the example project, some comments in code 
 JZCalendarWeekView can be added to your project by adding the following line to your `Podfile`:
 
 ```ruby
-pod 'JZCalendarWeekView', '~> 0.4'
+# Latest release in CocoaPods
+pod 'JZCalendarWeekView'
+
+# If you have NOT upgraded to Swift 4.2, use the last non-swift 4.2 compatible release
+pod 'JZCalendarWeekView', '0.5.1'
 ```
 
 ## Todo
 
-- [ ] Limited date range: First Date and Last Date in CalendarView
+- [ ] Limited date range: first date and last date (horizontal) & start time and end Time (vertical) in CalendarView
+- [ ] DecorationView for different background views (refer to #12)
 - [ ] Theme implementation
 - [ ] New scroll type: Infinite scroll
 - [ ] Support different types of event arrangment rules

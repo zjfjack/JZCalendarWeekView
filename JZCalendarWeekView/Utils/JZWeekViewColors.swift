@@ -18,7 +18,7 @@ class JZWeekViewColors {
     class var gridLine: UIColor { return UIColor.lightGray }
     
     class var today: UIColor { return UIColor(hex: 0x0089FF) }
-
+    class var appleCalendarRed: UIColor { return UIColor(hex: 0xFC3D39) }
 }
 
 
