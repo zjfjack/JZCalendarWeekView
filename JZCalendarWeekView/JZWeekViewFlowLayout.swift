@@ -280,7 +280,6 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         
         // Column Header
         let columnHeaderMinY = fmax(collectionView.contentOffset.y, 0.0)
-        print(columnHeaderMinY, collectionView.contentSize.height)
         
         sectionIndexes.enumerate(_:) { (section, stop) in
             let sectionMinX = calendarContentMinX + sectionWidth * CGFloat(section)
