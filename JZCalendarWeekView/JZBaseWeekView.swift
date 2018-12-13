@@ -37,9 +37,12 @@ open class JZBaseWeekView: UIView {
             baseDelegate?.initDateDidChange(self, initDate: initDate)
         }
     }
+    
+    /// Make sure the endDate is always greater than startDate
+    /// If call updateView to a date, which is not in the range, you weekview won't be able to scroll
     public var scrollableRange: (startDate: Date?, endDate: Date?) {
-        willSet {
-            self.scrollableRange = (newValue.startDate?.startOfDay, newValue.endDate?.startOfDay)
+        didSet {
+            self.scrollableRange = (self.scrollableRange.startDate?.startOfDay, self.scrollableRange.endDate?.startOfDay)
             setHorizontalEdgesOffsetX()
         }
     }
@@ -74,6 +77,10 @@ open class JZBaseWeekView: UIView {
     
     // Scrollable Range
     private var scrollableEdges: (leftX: CGFloat?, rightX: CGFloat?)
+    private var isReachingEdge: Bool {
+        let offsetX = collectionView.contentOffset.x
+        return offsetX <= scrollableEdges.leftX ?? -1 || offsetX >= scrollableEdges.rightX ?? CGFloat.greatestFiniteMagnitude
+    }
     private var isDirectionLocked = false
     
     override public init(frame: CGRect) {
@@ -154,6 +161,7 @@ open class JZBaseWeekView: UIView {
         - scrollType: The horizontal scroll type for this view. Default value is pageScroll
         - currentTimelineType: The current time line type for this view. Default value is section
         - visibleTime: WeekView will be scroll to this time, when it appears the **first time**. This visibleTime only determines **y** offset. Defaut value is current time.
+        - scrollableRange: The scrollable area for this weekView, both start and end dates are included, set nil as unlimited in one side
     */
     open func setupCalendar(numOfDays: Int,
                             setDate: Date,
@@ -162,7 +170,7 @@ open class JZBaseWeekView: UIView {
                             firstDayOfWeek :DayOfWeek? = nil,
                             currentTimelineType: JZCurrentTimelineType = .section,
                             visibleTime: Date = Date(),
-                            scrollableRange: (Date?, Date?)? = (nil, nil)) {
+                            scrollableRange: (startDate: Date?, endDate: Date?)? = (nil, nil)) {
         
         self.numOfDays = numOfDays
         if numOfDays == 7 {
@@ -172,8 +180,8 @@ open class JZBaseWeekView: UIView {
         }
         self.allEventsBySection = allEvents
         self.scrollType = scrollType
-        self.scrollableRange.startDate = scrollableRange?.0
-        self.scrollableRange.endDate = scrollableRange?.1
+        self.scrollableRange.startDate = scrollableRange?.startDate
+        self.scrollableRange.endDate = scrollableRange?.endDate
         self.currentTimelineType = currentTimelineType
         
         DispatchQueue.main.async { [unowned self] in
@@ -459,7 +467,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         if scrollDirectionAxis == .vertical { return }
-        if scrollView.contentOffset.x == scrollableEdges.leftX || scrollView.contentOffset.x == scrollableEdges.rightX { return }
+        if isReachingEdge { return }
         targetContentOffset.pointee = scrollView.contentOffset
         pagingEffect(scrollView: scrollView, velocity: velocity)
     }
@@ -467,10 +475,15 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
     // end dragging for loading drag to the leftmost and rightmost should load page
     // If put the checking process in scrollViewWillEndDragging, then it will not work well
     open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        let isDraggedToEdge = scrollView.contentOffset.x == 0 || scrollView.contentOffset.x == contentViewWidth * 2
-        guard scrollDirectionAxis != .vertical && isDraggedToEdge else { return }
+        let offsetX = scrollView.contentOffset.x
+        let isDraggedToPageEdge = offsetX == 0 || offsetX == contentViewWidth * 2
+        let isDraggedToSetEdge = isReachingEdge
+        // If it is just scrolling at the edge, then no need to load the page
+        let isOffsetChanged = !initialContentOffset.x.isEqual(to: offsetX)
+        guard scrollDirectionAxis != .vertical && isOffsetChanged && (isDraggedToPageEdge || isDraggedToSetEdge) else { return }
         if !decelerate { isDirectionLocked = false }
-        loadPage(scrollView)
+        isDraggedToPageEdge ? loadPage(scrollView) :
+                              loadPageWithScrollSections(needCalulateScrollSections: true)
     }
     
     open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -487,15 +500,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
             loadPage(scrollView)
         } else {
             // changing initial date(loadPage) for one day scroll after paging effect
-            if scrollSections != 0 {
-                initDate = initDate.add(component: .day, value: -Int(scrollSections))
-                self.forceReload()
-            }
-            // seems no need to do this
-//            else {
-//                // have to update all day bar because forceReload not called here
-//                updateAllDayBar(isScrolling: false)
-//            }
+            loadPageWithScrollSections(needCalulateScrollSections: false)
         }
     }
     
@@ -522,7 +527,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
         updateAllDayBar(isScrolling: true)
     }
     
-    func checkScrollableRange(contentOffsetX: CGFloat) {
+    private func checkScrollableRange(contentOffsetX: CGFloat) {
         if let leftX = scrollableEdges.leftX, contentOffsetX <= leftX {
             collectionView.setContentOffsetWithoutDelegate(CGPoint(x: leftX, y: collectionView.contentOffset.y), animated: false)
         }
@@ -532,20 +537,27 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
         }
     }
     
-    func setHorizontalEdgesOffsetX() {
+    
+    /// This method will be called automatically when ForceReload or resetting the scrollableRange value
+    /// **If you want to reset the scrollType, numsOfDays, initDate without calling forceReload, you should call this method**
+    public func setHorizontalEdgesOffsetX() {
         if let startDate = scrollableRange.startDate {
             let currentPageFirstDate = initDate.add(component: .day, value: numOfDays)
             if startDate >= currentPageFirstDate {
                 scrollableEdges.leftX = contentViewWidth
             } else {
-                if scrollType == .pageScroll {
-                    scrollableEdges.leftX = nil
+                if let endDate = scrollableRange.endDate, endDate <= currentPageFirstDate {
+                    scrollableEdges.leftX = contentViewWidth
                 } else {
-                    if startDate <= initDate {
+                    if scrollType == .pageScroll {
                         scrollableEdges.leftX = nil
                     } else {
-                        let days = Date.daysBetween(start: initDate, end: startDate, ignoreHours: true)
-                        scrollableEdges.leftX = flowLayout.sectionWidth * CGFloat(days)
+                        if startDate <= initDate {
+                            scrollableEdges.leftX = nil
+                        } else {
+                            let days = Date.daysBetween(start: initDate, end: startDate, ignoreHours: true)
+                            scrollableEdges.leftX = flowLayout.sectionWidth * CGFloat(days)
+                        }
                     }
                 }
             }
@@ -566,7 +578,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
                         scrollableEdges.rightX = nil
                     } else {
                         let days = Date.daysBetween(start: initDate, end: endDate, ignoreHours: true)
-                        scrollableEdges.rightX = flowLayout.sectionWidth * CGFloat(days)
+                        scrollableEdges.rightX = flowLayout.sectionWidth * CGFloat(days - numOfDays + 1)
                     }
                 }
             }
@@ -584,9 +596,8 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
         let scrollXDistance = initialContentOffset.x - xCurrentOffset
         // scroll one section
         if scrollType == .sectionScroll {
-            let sectionWidth = flowLayout.sectionWidth!
-            scrollSections = (scrollXDistance/sectionWidth).rounded()
-            scrollView.setContentOffset(CGPoint(x:initialContentOffset.x-sectionWidth * scrollSections,y:yCurrentOffset), animated: true)
+            setScrollSections(scrollXDistance: scrollXDistance)
+            scrollView.setContentOffset(CGPoint(x:initialContentOffset.x-flowLayout.sectionWidth*scrollSections,y:yCurrentOffset), animated: true)
         } else {
             // Only for pageScroll
             let scrollProportion:CGFloat = 1/5
@@ -628,6 +639,22 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
         let addValue = isNext ? numOfDays : -numOfDays
         self.initDate = self.initDate.add(component: .day, value: addValue!)
         self.forceReload()
+    }
+    
+    /// Only for loading page in sectionScroll type
+    private func loadPageWithScrollSections(needCalulateScrollSections: Bool) {
+        if needCalulateScrollSections {
+            setScrollSections(scrollXDistance: initialContentOffset.x - collectionView.contentOffset.x)
+        }
+        if scrollSections != 0 {
+            initDate = initDate.add(component: .day, value: -Int(scrollSections))
+            self.forceReload()
+        }
+    }
+    
+    private func setScrollSections(scrollXDistance: CGFloat) {
+        let sectionWidth = flowLayout.sectionWidth!
+        scrollSections = (scrollXDistance/sectionWidth).rounded()
     }
     
     /// Get the section Type current timeline

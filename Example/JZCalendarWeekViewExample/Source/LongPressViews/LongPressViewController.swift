@@ -38,7 +38,7 @@ class LongPressViewController: UIViewController {
                                            setDate: Date(),
                                            allEvents: viewModel.eventsByDate,
                                            scrollType: .pageScroll,
-                                           scrollableRange: (nil, Date().add(component: .day, value: 2)))
+                                           scrollableRange: (nil, nil))
         }
         
         // LongPress delegate, datasorce and type setup
