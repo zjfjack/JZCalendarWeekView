@@ -185,6 +185,9 @@ open class JZBaseWeekView: UIView {
         }
     }
     
+    /// This function is used to update the AllDayBar height
+    ///
+    /// - Parameter isScrolling: Whether the collectionView is scrolling now
     open func updateAllDayBar(isScrolling: Bool) {
         guard isAllDaySupported else { return }
         var maxEventsCount: Int = 0
@@ -194,13 +197,21 @@ open class JZBaseWeekView: UIView {
                 maxEventsCount = count
             }
         }
-        let newAllDayHeader = flowLayout.defaultAllDayOneLineHeight * CGFloat(min(maxEventsCount, 2))
+        let newAllDayHeader = getAllDayHeaderHeight(maxEventsCount: maxEventsCount)
         if newAllDayHeader != flowLayout.allDayHeaderHeight {
             // Check whether we need update the allDayHeaderHeight
             if !isScrolling || !willEffectContentSize(difference: flowLayout.allDayHeaderHeight - newAllDayHeader) {
                 flowLayout.allDayHeaderHeight = newAllDayHeader
             }
         }
+    }
+    
+    /// You can simply override this method to customise your preferred AllDayHeader height rule.
+    ///
+    /// If the actual height(contentSize height) is higher than this one, then the AllDayHeader will become scrollable.
+    /// - Parameter maxEventsCount: Among all days appeared in current page, the maximum all-day events count in one day
+    open func getAllDayHeaderHeight(maxEventsCount: Int) -> CGFloat {
+        return flowLayout.defaultAllDayOneLineHeight * CGFloat(min(maxEventsCount, 2))
     }
     
     /// Update collectionViewLayout with custom flowLayout. For some other values like gridThickness and contentsMargin, please inherit from JZWeekViewFlowLayout to change the default value
