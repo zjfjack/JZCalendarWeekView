@@ -54,13 +54,16 @@ class ExampleOptionsViewController: UIViewController {
         var firstDayOfWeek: DayOfWeek? = nil
         let dataList = viewModel.optionsData
         let viewType = dataList[0].selectedValue as! ViewType
+        let scrollableRange: (Date?, Date?)
         if dataList[2].selectedValue as! Int == 7 {
             firstDayOfWeek = dataList[3].selectedValue as? DayOfWeek
             scrollType = dataList[4].selectedValue as! JZScrollType
             hourGridDivision = dataList[5].selectedValue as! JZHourGridDivision
+            scrollableRange = (dataList[6].selectedValue as? Date, dataList[7].selectedValue as? Date)
         } else {
             scrollType = dataList[3].selectedValue as! JZScrollType
             hourGridDivision = dataList[4].selectedValue as! JZHourGridDivision
+            scrollableRange = (dataList[5].selectedValue as? Date, dataList[6].selectedValue as? Date)
         }
         
         let selectedData = OptionsSelectedData(viewType: viewType,
@@ -68,7 +71,8 @@ class ExampleOptionsViewController: UIViewController {
                                                numOfDays: dataList[2].selectedValue as! Int,
                                                scrollType: scrollType,
                                                firstDayOfWeek: firstDayOfWeek,
-                                               hourGridDivision: hourGridDivision)
+                                               hourGridDivision: hourGridDivision,
+                                               scrollableRange: scrollableRange)
         
         guard viewType == viewModel.perviousSelectedData.viewType else {
             
