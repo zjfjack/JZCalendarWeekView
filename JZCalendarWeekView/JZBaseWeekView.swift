@@ -77,10 +77,6 @@ open class JZBaseWeekView: UIView {
     
     // Scrollable Range
     private var scrollableEdges: (leftX: CGFloat?, rightX: CGFloat?)
-    private var isReachingEdge: Bool {
-        let offsetX = collectionView.contentOffset.x
-        return offsetX <= scrollableEdges.leftX ?? -1 || offsetX >= scrollableEdges.rightX ?? CGFloat.greatestFiniteMagnitude
-    }
     private var isDirectionLocked = false
     
     override public init(frame: CGRect) {
@@ -205,6 +201,9 @@ open class JZBaseWeekView: UIView {
         }
     }
     
+    /// This function is used to update the AllDayBar height
+    ///
+    /// - Parameter isScrolling: Whether the collectionView is scrolling now
     open func updateAllDayBar(isScrolling: Bool) {
         guard isAllDaySupported else { return }
         var maxEventsCount: Int = 0
@@ -214,13 +213,21 @@ open class JZBaseWeekView: UIView {
                 maxEventsCount = count
             }
         }
-        let newAllDayHeader = flowLayout.defaultAllDayOneLineHeight * CGFloat(min(maxEventsCount, 2))
+        let newAllDayHeader = getAllDayHeaderHeight(maxEventsCount: maxEventsCount)
         if newAllDayHeader != flowLayout.allDayHeaderHeight {
             // Check whether we need update the allDayHeaderHeight
             if !isScrolling || !willEffectContentSize(difference: flowLayout.allDayHeaderHeight - newAllDayHeader) {
                 flowLayout.allDayHeaderHeight = newAllDayHeader
             }
         }
+    }
+    
+    /// You can simply override this method to customise your preferred AllDayHeader height rule.
+    ///
+    /// If the actual height(contentSize height) is higher than this one, then the AllDayHeader will become scrollable.
+    /// - Parameter maxEventsCount: Among all days appeared in current page, the maximum all-day events count in one day
+    open func getAllDayHeaderHeight(maxEventsCount: Int) -> CGFloat {
+        return flowLayout.defaultAllDayOneLineHeight * CGFloat(min(maxEventsCount, 2))
     }
     
     /// Update collectionViewLayout with custom flowLayout. For some other values like gridThickness and contentsMargin, please inherit from JZWeekViewFlowLayout to change the default value
@@ -239,13 +246,16 @@ open class JZBaseWeekView: UIView {
     ///   - reloadEvents: If provided new events, current events will be reloaded. Default value is nil.
     open func forceReload(reloadEvents: [Date: [JZBaseEvent]]? = nil) {
         if let events = reloadEvents { self.allEventsBySection = events }
-        
-        updateAllDayBar(isScrolling: false)
-        // initial day is one page before the settle day
-        collectionView.setContentOffsetWithoutDelegate(CGPoint(x:contentViewWidth, y:getYOffset()), animated: false)
-        flowLayout.invalidateLayoutCache()
-        collectionView.reloadData()
-        setHorizontalEdgesOffsetX()
+
+        DispatchQueue.main.async { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.updateAllDayBar(isScrolling: false)
+            // initial day is one page before the settle day
+            strongSelf.collectionView.setContentOffsetWithoutDelegate(CGPoint(x:strongSelf.contentViewWidth, y:strongSelf.getYOffset()), animated: false)
+            strongSelf.flowLayout.invalidateLayoutCache()
+            strongSelf.collectionView.reloadData()
+            strongSelf.setHorizontalEdgesOffsetX()
+        }
     }
     
     /// Notice: A temporary solution to fix the scroll from bottom issue when isScrolling
@@ -466,42 +476,19 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        if scrollDirectionAxis == .vertical { return }
-        if isReachingEdge { return }
+        if scrollDirectionAxis == .vertical || scrollDirectionAxis == .none { return }
         targetContentOffset.pointee = scrollView.contentOffset
         pagingEffect(scrollView: scrollView, velocity: velocity)
     }
     
-    // end dragging for loading drag to the leftmost and rightmost should load page
-    // If put the checking process in scrollViewWillEndDragging, then it will not work well
-    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        let offsetX = scrollView.contentOffset.x
-        let isDraggedToPageEdge = offsetX == 0 || offsetX == contentViewWidth * 2
-        let isDraggedToSetEdge = isReachingEdge
-        // If it is just scrolling at the edge, then no need to load the page
-        let isOffsetChanged = !initialContentOffset.x.isEqual(to: offsetX)
-        guard scrollDirectionAxis != .vertical && isOffsetChanged && (isDraggedToPageEdge || isDraggedToSetEdge) else { return }
-        if !decelerate { isDirectionLocked = false }
-        isDraggedToPageEdge ? loadPage(scrollView) :
-                              loadPageWithScrollSections(needCalulateScrollSections: true)
-    }
-    
+    // This function will be called when veritical scrolling ends
     open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        //for directionLock
         isDirectionLocked = false
     }
     
     // This function will be called by setting content offset (pagingEffect function)
     open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        //for directionLock
-        isDirectionLocked = false
-        
-        if scrollType != .sectionScroll {
-            loadPage(scrollView)
-        } else {
-            // changing initial date(loadPage) for one day scroll after paging effect
-            loadPageWithScrollSections(needCalulateScrollSections: false)
-        }
+        loadPage()
     }
     
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -528,12 +515,12 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     private func checkScrollableRange(contentOffsetX: CGFloat) {
-        if let leftX = scrollableEdges.leftX, contentOffsetX <= leftX {
-            collectionView.setContentOffsetWithoutDelegate(CGPoint(x: leftX, y: collectionView.contentOffset.y), animated: false)
+        if let leftX = scrollableEdges.leftX, contentOffsetX < leftX {
+            collectionView.setContentOffset(CGPoint(x: leftX, y: collectionView.contentOffset.y), animated: false)
         }
         
-        if let rightX = scrollableEdges.rightX, contentOffsetX >= rightX {
-            collectionView.setContentOffsetWithoutDelegate(CGPoint(x: rightX, y: collectionView.contentOffset.y), animated: false)
+        if let rightX = scrollableEdges.rightX, contentOffsetX > rightX {
+            collectionView.setContentOffset(CGPoint(x: rightX, y: collectionView.contentOffset.y), animated: false)
         }
     }
     
@@ -546,7 +533,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
             if startDate >= currentPageFirstDate {
                 scrollableEdges.leftX = contentViewWidth
             } else {
-                if let endDate = scrollableRange.endDate, endDate <= currentPageFirstDate {
+                if let endDate = scrollableRange.endDate, endDate < currentPageFirstDate {
                     scrollableEdges.leftX = contentViewWidth
                 } else {
                     if scrollType == .pageScroll {
@@ -556,7 +543,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
                             scrollableEdges.leftX = nil
                         } else {
                             let days = Date.daysBetween(start: initDate, end: startDate, ignoreHours: true)
-                            scrollableEdges.leftX = flowLayout.sectionWidth * CGFloat(days)
+                            scrollableEdges.leftX = (flowLayout.sectionWidth ?? 0) * CGFloat(days)
                         }
                     }
                 }
@@ -570,15 +557,19 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
             if endDate <= currentPageLastDate {
                 scrollableEdges.rightX = contentViewWidth
             } else {
-                if scrollType == .pageScroll {
-                    scrollableEdges.rightX = nil
+                if let startDate = scrollableRange.startDate, startDate > currentPageLastDate {
+                    scrollableEdges.rightX = contentViewWidth
                 } else {
-                    let lastDateInView = initDate.add(component: .day, value: numOfDays * 3 - 1)
-                    if endDate >= lastDateInView {
+                    if scrollType == .pageScroll {
                         scrollableEdges.rightX = nil
                     } else {
-                        let days = Date.daysBetween(start: initDate, end: endDate, ignoreHours: true)
-                        scrollableEdges.rightX = flowLayout.sectionWidth * CGFloat(days - numOfDays + 1)
+                        let lastDateInView = initDate.add(component: .day, value: numOfDays * 3 - 1)
+                        if endDate >= lastDateInView {
+                            scrollableEdges.rightX = nil
+                        } else {
+                            let days = Date.daysBetween(start: initDate, end: endDate, ignoreHours: true)
+                            scrollableEdges.rightX = (flowLayout.sectionWidth ?? 0) * CGFloat(days - numOfDays + 1)
+                        }
                     }
                 }
             }
@@ -589,40 +580,63 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
     
     /// It is used for scroll paging effect, scrollTypes sectionScroll and pageScroll applied here
     private func pagingEffect(scrollView: UIScrollView, velocity: CGPoint) {
-        
         let yCurrentOffset = scrollView.contentOffset.y
         let xCurrentOffset = scrollView.contentOffset.x
+        let setOffsetX: CGFloat
         
         let scrollXDistance = initialContentOffset.x - xCurrentOffset
         // scroll one section
         if scrollType == .sectionScroll {
-            setScrollSections(scrollXDistance: scrollXDistance)
-            scrollView.setContentOffset(CGPoint(x:initialContentOffset.x-flowLayout.sectionWidth*scrollSections,y:yCurrentOffset), animated: true)
+            let sectionWidth = flowLayout.sectionWidth!
+            scrollSections = (scrollXDistance/sectionWidth).rounded()
+            setOffsetX = initialContentOffset.x - sectionWidth * scrollSections
         } else {
             // Only for pageScroll
-            let scrollProportion:CGFloat = 1/5
+            let scrollProportion: CGFloat = 1/4
             let isVelocitySatisfied = abs(velocity.x) > 0.2
             // scroll a whole page
             if scrollXDistance >= 0 {
                 if scrollXDistance >= scrollProportion * contentViewWidth || isVelocitySatisfied {
-                    scrollView.setContentOffset(CGPoint(x:initialContentOffset.x-contentViewWidth,y:yCurrentOffset), animated: true)
-                }else{
-                    scrollView.setContentOffset(initialContentOffset, animated: true)
+                    setOffsetX = initialContentOffset.x - contentViewWidth
+                } else {
+                    setOffsetX = initialContentOffset.x
                 }
             } else {
                 if -scrollXDistance >= scrollProportion * contentViewWidth || isVelocitySatisfied {
-                    scrollView.setContentOffset(CGPoint(x:initialContentOffset.x+contentViewWidth,y:yCurrentOffset), animated: true)
+                    setOffsetX = initialContentOffset.x + contentViewWidth
                 } else {
-                    scrollView.setContentOffset(initialContentOffset, animated: true)
+                    setOffsetX = initialContentOffset.x
                 }
             }
         }
+        if setOffsetX.isEqual(to: scrollView.contentOffset.x) {
+            // If setOffsetX equals to current offsetX, then scrollViewDidEndScrollingAnimation will not be called, should update view here
+            loadPage()
+        } else {
+            // page will be loaded in scrollViewDidEndScrollingAnimation
+            scrollView.setContentOffset(CGPoint(x: setOffsetX, y: yCurrentOffset), animated: true)
+        }
     }
     
-    /// For loading next page or previous page (Only three pages (3*numOfDays) exist at the same time)
-    private func loadPage(_ scrollView: UIScrollView) {
-        let maximumOffset = scrollView.contentSize.width - scrollView.frame.width
-        let currentOffset = scrollView.contentOffset.x
+    /// Load the page after horizontal scroll action.
+    /// Can be overrided to do some operations before reload.
+    open func loadPage() {
+        scrollType == .pageScroll ? loadPagePageScroll() : loadPageSectionScroll()
+        isDirectionLocked = false
+    }
+    
+    // sectionScroll load page depends on scrollSections
+    private func loadPageSectionScroll() {
+        if scrollSections != 0 {
+            initDate = initDate.add(component: .day, value: -Int(scrollSections))
+            self.forceReload()
+        }
+    }
+    
+    /// pageScroll loading next page or previous page (Only three pages (3*numOfDays) exist at the same time)
+    private func loadPagePageScroll() {
+        let maximumOffset = collectionView.contentSize.width - collectionView.frame.width
+        let currentOffset = collectionView.contentOffset.x
     
         if maximumOffset <= currentOffset {
             //load next page
@@ -634,8 +648,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
         }
     }
     
-    /// Can be overrided to do some operations before reload
-    open func loadNextOrPrevPage(isNext: Bool) {
+    private func loadNextOrPrevPage(isNext: Bool) {
         let addValue = isNext ? numOfDays : -numOfDays
         self.initDate = self.initDate.add(component: .day, value: addValue!)
         self.forceReload()
