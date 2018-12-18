@@ -16,6 +16,7 @@ Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
 - [x] Two Scroll types: One-Day scroll (scroll a section) or Page scroll
 - [x] Two Types of Long Press Gestures: Add a new event & Move an existing event
 - [x] Events display on calendar view (supports events with conflict time and events crossing few days)
+- [x] Set horizontal scrollable range dates
 - [x] Support all device orientations (including iPhone X Landscape) and iPad (Slide Over and Split View)
 - [x] Customise your own current timeline
 - [x] All-Day Events
@@ -141,6 +142,14 @@ In order to active all-day feature, there are only two things you need to do.
 2. In your customised CalendarViewWeekView, override the `viewForSupplementaryElementOfKind` and use `updateView` in `AllDayHeader` to update your all-day view with your own views. [Example](Example/JZCalendarWeekViewExample/Source/LongPressViews/LongPressWeekView.swift)
 
 
+### Horizontal Scrollable Range
+
+Horizontal scrollable range dates allow you to set your preferred scrollable range. CalendarWeekView can only be horizontal scrollable between `startDate`(including) and `endDate`(including). `nil` means no limit.
+
+1. You can set `scrollableRange` when you call `setupCalendar()` or simply change this variable.
+2. If you change `scrollType` without calling `forceReload()`, you should call `setHorizontalEdgesOffsetX()` to reset the edges, because for different scroll types, the edges are different.
+
+
 For futher usage, you can also check the example project, some comments in code or just email me.<br />
 
 ## Requirements
@@ -164,8 +173,8 @@ pod 'JZCalendarWeekView', '0.5.1'
 
 ## Todo
 
-- [ ] Limited date range: first date and last date (horizontal) & start time and end Time (vertical) in CalendarView
 - [ ] DecorationView for different background views (refer to #12)
+- [ ] Limited date range: start time and end Time (vertical) in CalendarView
 - [ ] Theme implementation
 - [ ] New scroll type: Infinite scroll
 - [ ] Support different types of event arrangment rules
