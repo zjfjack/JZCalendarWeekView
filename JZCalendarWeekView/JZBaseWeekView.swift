@@ -628,7 +628,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
             self.forceReload()
         }
     }
-    
+
     /// pageScroll loading next page or previous page (Only three pages (3*numOfDays) exist at the same time)
     private func loadPagePageScroll() {
         let maximumOffset = collectionView.contentSize.width - collectionView.frame.width
