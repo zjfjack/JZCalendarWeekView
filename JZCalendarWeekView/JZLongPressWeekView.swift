@@ -25,7 +25,11 @@ public protocol JZLongPressViewDelegate: class {
     ///   - startDate: the startDate of the event when gesture ends
     func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date)
 
-    // When Custom long press gesture begins, this function will be called.
+    /// When Custom long press gesture begins on an , this function will be called.
+    /// Use this function to perform actions when a use long presses on an existing event
+    /// - Parameters:
+    ///   - weekView: current long pressed JZLongPressWeekView
+    ///   - cell: current long pressed JZLongPressEventCell
     func weekView(_ weekView: JZLongPressWeekView, didBeginLongPressOn cell: JZLongPressEventCell)
     
     /// Sometimes the longPress will be cancelled because some curtain reason.
@@ -82,8 +86,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
         case addNew
         /// when long press position is on a existed event, this type will allow user to move the existed event
         case move
-
-        // Custom event to implement functionality besides move when long press on an event
+        // Custom event to implement functionality besides move when long press on an existing event
         case custom
     }
     
