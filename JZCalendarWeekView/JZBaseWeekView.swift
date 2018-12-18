@@ -76,7 +76,7 @@ open class JZBaseWeekView: UIView {
     internal var scrollSections:CGFloat!
     
     // Scrollable Range
-    private var scrollableEdges: (leftX: CGFloat?, rightX: CGFloat?)
+    internal var scrollableEdges: (leftX: CGFloat?, rightX: CGFloat?)
     private var isDirectionLocked = false
     
     override public init(frame: CGRect) {
@@ -528,53 +528,49 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
     /// This method will be called automatically when ForceReload or resetting the scrollableRange value
     /// **If you want to reset the scrollType, numsOfDays, initDate without calling forceReload, you should call this method**
     public func setHorizontalEdgesOffsetX() {
-        if let startDate = scrollableRange.startDate {
-            let currentPageFirstDate = initDate.add(component: .day, value: numOfDays)
-            if startDate >= currentPageFirstDate {
-                scrollableEdges.leftX = contentViewWidth
-            } else {
-                if let endDate = scrollableRange.endDate, endDate < currentPageFirstDate {
+        let currentPageFirstDate = initDate.add(component: .day, value: numOfDays)
+        let currentPageLastDate = initDate.add(component: .day, value: numOfDays * 2 - 1)
+        
+        if let endDate = scrollableRange.endDate, endDate < currentPageFirstDate {
+            // out of range
+            scrollableEdges.leftX = contentViewWidth
+        } else {
+            if let startDate = scrollableRange.startDate {
+                if startDate >= currentPageFirstDate {
                     scrollableEdges.leftX = contentViewWidth
                 } else {
-                    if scrollType == .pageScroll {
+                    let firstDateInView = initDate!
+                    if scrollType == .pageScroll || startDate <= firstDateInView {
                         scrollableEdges.leftX = nil
                     } else {
-                        if startDate <= initDate {
-                            scrollableEdges.leftX = nil
-                        } else {
-                            let days = Date.daysBetween(start: initDate, end: startDate, ignoreHours: true)
-                            scrollableEdges.leftX = (flowLayout.sectionWidth ?? 0) * CGFloat(days)
-                        }
+                        let days = Date.daysBetween(start: initDate, end: startDate, ignoreHours: true)
+                        scrollableEdges.leftX = (flowLayout.sectionWidth ?? 0) * CGFloat(days)
                     }
                 }
+            } else {
+                scrollableEdges.leftX = nil
             }
-        } else {
-            scrollableEdges.leftX = nil
         }
         
-        if let endDate = scrollableRange.endDate {
-            let currentPageLastDate = initDate.add(component: .day, value: numOfDays * 2 - 1)
-            if endDate <= currentPageLastDate {
-                scrollableEdges.rightX = contentViewWidth
-            } else {
-                if let startDate = scrollableRange.startDate, startDate > currentPageLastDate {
+        if let startDate = scrollableRange.startDate, startDate > currentPageLastDate {
+            // out of range
+            scrollableEdges.rightX = contentViewWidth
+        } else {
+            if let endDate = scrollableRange.endDate {
+                if endDate <= currentPageLastDate {
                     scrollableEdges.rightX = contentViewWidth
                 } else {
-                    if scrollType == .pageScroll {
+                    let lastDateInView = initDate.add(component: .day, value: numOfDays * 3 - 1)
+                    if scrollType == .pageScroll || endDate >= lastDateInView {
                         scrollableEdges.rightX = nil
                     } else {
-                        let lastDateInView = initDate.add(component: .day, value: numOfDays * 3 - 1)
-                        if endDate >= lastDateInView {
-                            scrollableEdges.rightX = nil
-                        } else {
-                            let days = Date.daysBetween(start: initDate, end: endDate, ignoreHours: true)
-                            scrollableEdges.rightX = (flowLayout.sectionWidth ?? 0) * CGFloat(days - numOfDays + 1)
-                        }
+                        let days = Date.daysBetween(start: initDate, end: endDate, ignoreHours: true)
+                        scrollableEdges.rightX = (flowLayout.sectionWidth ?? 0) * CGFloat(days - numOfDays + 1)
                     }
                 }
+            } else {
+                scrollableEdges.rightX = nil
             }
-        } else {
-            scrollableEdges.rightX = nil
         }
     }
     
