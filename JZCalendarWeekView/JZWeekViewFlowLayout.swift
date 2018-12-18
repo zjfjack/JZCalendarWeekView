@@ -277,7 +277,6 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         attributes.frame = CGRect(origin: collectionView.contentOffset, size: CGSize(width: collectionView.frame.width, height: attributesHeight))
         attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.columnHeaderBackground)
         
-        
         // Column Header
         let columnHeaderMinY = fmax(collectionView.contentOffset.y, 0.0)
         

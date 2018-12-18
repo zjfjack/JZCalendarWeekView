@@ -11,11 +11,13 @@ import XCTest
 
 class JZWeekViewTest: XCTestCase {
     
-    var longPressView = JZLongPressWeekView(frame: .zero)
+    var longPressView: JZLongPressWeekView!
     
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        
+        longPressView = JZLongPressWeekView(frame: CGRect(x: 0, y: 0, width: 375, height: 667))
+        longPressView.flowLayout.sectionWidth = 111
     }
     
     override func tearDown() {
@@ -55,5 +57,141 @@ class JZWeekViewTest: XCTestCase {
             let lastDate = longPressView.getDateForSection(longPressView.numOfDays*3 - 1)
             XCTAssertEqual(lastDate, calendar.date(byAdding: .day, value: longPressView.numOfDays*2 - 1, to: today))
         }
+    }
+    
+    
+    func testSetHorizontalEdgesOffsetX() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "YYYY-MM-dd"
+        
+        func date(_ str: String) -> Date { return dateFormatter.date(from: str)! }
+        func days(_ start: Date, _ end: Date) -> CGFloat { return CGFloat(Date.daysBetween(start: start, end: end, ignoreHours: true)) }
+        
+        let testDates = [nil,
+                         date("2018-02-15"), // initDate - 1
+                         date("2018-02-16"), // initDate
+                         date("2018-02-17"), // initDate + 1
+                         date("2018-02-18"), // initDate + 2
+                         date("2018-02-19"), // currentPageFirstDate
+                         date("2018-02-20"), // currentPageFirstDate + 1
+                         date("2018-02-21"), // currentPageLastDate
+                         date("2018-02-22"), // currentPageLastDate + 1
+                         date("2018-02-23"), // currentPageLastDate + 2
+                         date("2018-02-24"), // lastDate
+                         date("2018-02-25"), // lastDate + 1
+                         nil]
+        
+        let currentPageFirstDate = testDates[5]!
+        let currentPageLastDate = testDates[7]!
+        let initDate = testDates[2]!
+        let lastDate = testDates[10]!
+        
+        let sectionWidth = longPressView.flowLayout.sectionWidth!
+        
+        // Assume startDate should be eariler than endDate
+        func testLongPressView() {
+            for i in 0..<testDates.count {
+                for j in i..<testDates.count {
+                    let startDate = testDates[i], endDate = testDates[j]
+                    let scrollableRange = (startDate, endDate)
+                    longPressView.scrollableRange = scrollableRange
+                    
+                    if let startDate = startDate, let endDate = endDate {
+                        // out of range
+                        if startDate > currentPageLastDate || endDate < currentPageFirstDate {
+                            XCTAssertEqual(longPressView.scrollableEdges.leftX, longPressView.contentViewWidth, "\(startDate, endDate)")
+                            XCTAssertEqual(longPressView.scrollableEdges.rightX, longPressView.contentViewWidth, "\(startDate, endDate)")
+                            continue
+                        }
+                        
+                        // startDate in valid range
+                        if case currentPageFirstDate...currentPageLastDate = startDate {
+                            XCTAssertEqual(longPressView.scrollableEdges.leftX, longPressView.contentViewWidth, "\(startDate)")
+                        } else {
+                            // startDate < currentPageFirstDate
+                            if longPressView.scrollType == .pageScroll {
+                                XCTAssertNil(longPressView.scrollableEdges.leftX, "\(startDate)")
+                            } else {
+                                if startDate > initDate {
+                                    XCTAssertEqual(longPressView.scrollableEdges.leftX, days(initDate, startDate) * sectionWidth, "\(startDate)")
+                                } else {
+                                    XCTAssertNil(longPressView.scrollableEdges.leftX, "\(startDate)")
+                                }
+                            }
+                        }
+                        
+                        // endDate in valid range
+                        if case currentPageFirstDate...currentPageLastDate = endDate {
+                            XCTAssertEqual(longPressView.scrollableEdges.rightX, longPressView.contentViewWidth, "\(endDate)")
+                        } else {
+                            // endDate > currentPageLastDate
+                            if longPressView.scrollType == .pageScroll {
+                                XCTAssertNil(longPressView.scrollableEdges.rightX, "\(endDate)")
+                            } else {
+                                if endDate < lastDate {
+                                    XCTAssertEqual(longPressView.scrollableEdges.rightX, (days(initDate, endDate) - CGFloat(longPressView.numOfDays) + 1) * sectionWidth, "\(endDate)")
+                                } else {
+                                    XCTAssertNil(longPressView.scrollableEdges.rightX, "\(endDate)")
+                                }
+                            }
+                        }
+                        continue
+                    }
+                    
+                    if let startDate = startDate {
+                        // out of range
+                        if startDate > currentPageLastDate {
+                            XCTAssertEqual(longPressView.scrollableEdges.leftX, longPressView.contentViewWidth, "\(startDate, endDate)")
+                            XCTAssertEqual(longPressView.scrollableEdges.rightX, longPressView.contentViewWidth, "\(startDate, endDate)")
+                        } else if startDate >= currentPageFirstDate {
+                            XCTAssertEqual(longPressView.scrollableEdges.leftX, longPressView.contentViewWidth, "\(startDate, endDate)")
+                            XCTAssertNil(longPressView.scrollableEdges.rightX, "nil")
+                        } else {
+                            if longPressView.scrollType == .pageScroll {
+                                XCTAssertNil(longPressView.scrollableEdges.leftX, "nil")
+                            } else {
+                                if startDate > initDate {
+                                    XCTAssertEqual(longPressView.scrollableEdges.leftX, days(initDate, startDate) * sectionWidth, "\(startDate)")
+                                } else {
+                                    XCTAssertNil(longPressView.scrollableEdges.leftX, "\(startDate)")
+                                }
+                            }
+                            XCTAssertNil(longPressView.scrollableEdges.rightX, "nil")
+                        }
+                        continue
+                    }
+                    
+                    if let endDate = endDate {
+                        // out of range
+                        if endDate < currentPageFirstDate {
+                            XCTAssertEqual(longPressView.scrollableEdges.leftX, longPressView.contentViewWidth, "\(startDate, endDate)")
+                            XCTAssertEqual(longPressView.scrollableEdges.rightX, longPressView.contentViewWidth, "\(startDate, endDate)")
+                        } else if endDate <= currentPageLastDate {
+                            XCTAssertNil(longPressView.scrollableEdges.leftX, "nil")
+                            XCTAssertEqual(longPressView.scrollableEdges.rightX, longPressView.contentViewWidth, "\(startDate, endDate)")
+                        } else {
+                            XCTAssertNil(longPressView.scrollableEdges.leftX, "nil")
+                            if longPressView.scrollType == .pageScroll {
+                                XCTAssertNil(longPressView.scrollableEdges.rightX, "nil")
+                            } else {
+                                if endDate < lastDate {
+                                    XCTAssertEqual(longPressView.scrollableEdges.rightX, (days(initDate, endDate) - CGFloat(longPressView.numOfDays) + 1) * sectionWidth, "\(endDate)")
+                                } else {
+                                    XCTAssertNil(longPressView.scrollableEdges.rightX, "\(endDate)")
+                                }
+                            }
+                        }
+                        continue
+                    }
+                    XCTAssertNil(longPressView.scrollableEdges.leftX, "start nil")
+                    XCTAssertNil(longPressView.scrollableEdges.rightX, "end nil")
+                }
+            }
+        }
+        longPressView.setupCalendar(numOfDays: 3, setDate: date("2018-02-19"), allEvents: [:], scrollType: .pageScroll, scrollableRange: (nil, nil))
+        testLongPressView()
+        longPressView.scrollType = .sectionScroll
+        longPressView.setHorizontalEdgesOffsetX()
+        testLongPressView()
     }
 }

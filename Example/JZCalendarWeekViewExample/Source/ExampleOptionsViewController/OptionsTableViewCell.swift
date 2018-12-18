@@ -43,10 +43,11 @@ class OptionsTableViewCell: UITableViewCell {
         setupNormalPickerView()
         setupDatePicker()
         
-        if data.subject == .currentDate {
+        let noIndexData: [OptionSectionType] = [.currentDate, .scrollableRangeStart, .scrollableRangeEnd]
+        if noIndexData.contains(data.subject) {
             pickerView.isHidden = true
             datePicker.isHidden = false
-            datePicker.setDate(pickerData.selectedValue as! Date, animated: false)
+            datePicker.setDate(pickerData.selectedValue as? Date ?? Date(), animated: false)
         } else {
             pickerView.isHidden = false
             datePicker.isHidden = true

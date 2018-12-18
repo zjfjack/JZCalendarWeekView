@@ -59,11 +59,6 @@ class CustomViewController: UIViewController {
                                        visibleTime: time8AM)
         calendarWeekView.updateFlowLayout(JZWeekViewFlowLayout(hourGridDivision: selectedData.hourGridDivision))
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 }
 
 extension CustomViewController: JZBaseViewDelegate {
@@ -110,10 +105,10 @@ extension CustomViewController: OptionsViewDelegate {
                                                             numOfDays: numOfDays,
                                                             scrollType: calendarWeekView.scrollType,
                                                             firstDayOfWeek: firstDayOfWeek,
-                                                            hourGridDivision: calendarWeekView.flowLayout.hourGridDivision)
+                                                            hourGridDivision: calendarWeekView.flowLayout.hourGridDivision,
+                                                            scrollableRange: calendarWeekView.scrollableRange)
         return viewModel.currentSelectedData
     }
-    
     
     func finishUpdate(selectedData: OptionsSelectedData) {
         
@@ -129,6 +124,8 @@ extension CustomViewController: OptionsViewDelegate {
         // Update Scroll Type
         if selectedData.scrollType != viewModel.currentSelectedData.scrollType {
             calendarWeekView.scrollType = selectedData.scrollType
+            // If you want to change the scrollType without forceReload, you should call setHorizontalEdgesOffsetX
+            calendarWeekView.setHorizontalEdgesOffsetX()
         }
         // Update FirstDayOfWeek
         if selectedData.firstDayOfWeek != viewModel.currentSelectedData.firstDayOfWeek {
@@ -137,6 +134,10 @@ extension CustomViewController: OptionsViewDelegate {
         // Update hourGridDivision
         if selectedData.hourGridDivision != viewModel.currentSelectedData.hourGridDivision {
             calendarWeekView.updateFlowLayout(JZWeekViewFlowLayout(hourGridDivision: selectedData.hourGridDivision))
+        }
+        // Update scrollableRange
+        if selectedData.scrollableRange != viewModel.currentSelectedData.scrollableRange {
+            calendarWeekView.scrollableRange = selectedData.scrollableRange
         }
     }
     

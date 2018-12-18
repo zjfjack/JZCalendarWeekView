@@ -111,7 +111,7 @@ extension UIView {
         }
     }
     
-    //bottomAnchor & trailingAnchor should be negative
+    // bottomAnchor & trailingAnchor should be negative
     func setAnchorConstraintsEqualTo(widthAnchor: CGFloat?=nil, heightAnchor: CGFloat?=nil, topAnchor: (NSLayoutYAxisAnchor,CGFloat)?=nil, bottomAnchor: (NSLayoutYAxisAnchor,CGFloat)?=nil, leadingAnchor: (NSLayoutXAxisAnchor,CGFloat)?=nil, trailingAnchor: (NSLayoutXAxisAnchor,CGFloat)?=nil) {
         
         self.translatesAutoresizingMaskIntoConstraints = false

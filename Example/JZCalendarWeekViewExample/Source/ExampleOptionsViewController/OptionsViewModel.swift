@@ -64,6 +64,8 @@ enum OptionSectionType: String {
     case scrollType = "Scroll Type"
     case firstDayOfWeek = "First Day Of Week"
     case hourGridDivision = "Hour Grid Division"
+    case scrollableRangeStart = "Scrollable Range Start Date"
+    case scrollableRangeEnd = "Scrollable Range End Date"
 }
 
 struct OptionsSelectedData {
@@ -74,14 +76,16 @@ struct OptionsSelectedData {
     var scrollType: JZScrollType
     var firstDayOfWeek: DayOfWeek?
     var hourGridDivision: JZHourGridDivision
+    var scrollableRange: (startDate: Date?, endDate: Date?)
     
-    init(viewType: ViewType, date: Date, numOfDays: Int, scrollType: JZScrollType, firstDayOfWeek: DayOfWeek?, hourGridDivision: JZHourGridDivision) {
+    init(viewType: ViewType, date: Date, numOfDays: Int, scrollType: JZScrollType, firstDayOfWeek: DayOfWeek?, hourGridDivision: JZHourGridDivision, scrollableRange: (Date?, Date?)) {
         self.viewType = viewType
         self.date = date
         self.numOfDays = numOfDays
         self.scrollType = scrollType
         self.firstDayOfWeek = firstDayOfWeek
         self.hourGridDivision = hourGridDivision
+        self.scrollableRange = scrollableRange
     }
 }
 
@@ -96,7 +100,9 @@ class OptionsViewModel: NSObject {
             ExpandableData(subject: .currentDate),
             ExpandableData(subject: .numOfDays, categories: Array(1...10)),
             ExpandableData(subject: .scrollType, categories: [JZScrollType.pageScroll, JZScrollType.sectionScroll]),
-            ExpandableData(subject: .hourGridDivision, categories: hourDivisionCategories)
+            ExpandableData(subject: .hourGridDivision, categories: hourDivisionCategories),
+            ExpandableData(subject: .scrollableRangeStart),
+            ExpandableData(subject: .scrollableRangeEnd)
         ]
     }()
     let perviousSelectedData: OptionsSelectedData
@@ -110,6 +116,8 @@ class OptionsViewModel: NSObject {
         optionsData[2].selectedValue = selectedData.numOfDays
         optionsData[3].selectedValue = selectedData.scrollType
         optionsData[4].selectedValue = selectedData.hourGridDivision
+        optionsData[5].selectedValue = selectedData.scrollableRange.startDate
+        optionsData[6].selectedValue = selectedData.scrollableRange.endDate
         if let selectedDayOfWeek = selectedData.firstDayOfWeek {
             self.insertDayOfWeekToData(firstDayOfWeek: selectedDayOfWeek)
         }
@@ -132,7 +140,19 @@ class OptionsViewModel: NSObject {
             return (data.selectedValue! as! DayOfWeek).dayName
         case .hourGridDivision:
             return (data.selectedValue! as! JZHourGridDivision).displayText
+        case .scrollableRangeStart:
+            return getScrollableRangeSubTitle(data.selectedValue as? Date)
+        case .scrollableRangeEnd:
+            return getScrollableRangeSubTitle(data.selectedValue as? Date)
         }
+    }
+    
+    func getScrollableRangeSubTitle(_ date: Date?) -> String {
+        var str = "nil"
+        if let date = date {
+            str = dateFormatter.string(from: date)
+        }
+        return str
     }
     
     func insertDayOfWeekToData(firstDayOfWeek: DayOfWeek) {
