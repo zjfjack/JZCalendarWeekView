@@ -111,7 +111,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
     public weak var longPressDataSource: JZLongPressViewDataSource?
     
     // You can modify these properties below
-    public var longPressTypes: [LongPressType]!
+    public var longPressTypes: [LongPressType] = [LongPressType]()
     /// It is used to identify the minimum time interval(Minute) when dragging the event view (minimum value is 1, maximum is 60)
     public var moveTimeMinInterval: Int = 15
     /// For an addNew event, the event duration mins determine the add new event duration and height
@@ -354,12 +354,16 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
                 pointInSelfView.y < longPressTopMarginY || pointInSelfView.y > longPressBottomMarginY
             if isOutsideBeginArea { return false  }
         }
-        // Long press should not begin if no events at long press position and addNew not required
-        if collectionView.indexPathForItem(at: pointInCollectionView) == nil && !longPressTypes.contains(LongPressType.addNew) {
+        
+        let hasItemAtPoint = collectionView.indexPathForItem(at: pointInCollectionView) != nil
+        
+        // Long press should not begin if there are events at long press position and move not required
+        if hasItemAtPoint && !longPressTypes.contains(LongPressType.move) {
             return false
         }
-
-        if collectionView.indexPathForItem(at: pointInCollectionView) != nil && !longPressTypes.contains(LongPressType.move) && !longPressTypes.contains(LongPressType.custom) {
+        
+        // Long press should not begin if no events at long press position and addNew not required
+        if !hasItemAtPoint && !longPressTypes.contains(LongPressType.addNew) {
             return false
         }
 
