@@ -96,6 +96,8 @@ public protocol JZLongPressViewDelegate: class {
     func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date)
     /// When Move long press gesture ends, this function will be called.
     func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date)
+    /// When an event is long pressed on, this function will be called.
+    func weekView(_ weekView: JZLongPressWeekView, didBeginLongPressOn cell: JZLongPressEventCell)
     /// Sometimes the longPress will be cancelled because some curtain reason.
     func weekView(_ weekView: JZLongPressWeekView, longPressType: JZLongPressWeekView.LongPressType, didCancelLongPressAt startDate: Date)
 }
@@ -112,7 +114,7 @@ Also, you should provide the long press types and there are some other propertie
 ```swift
 calendarWeekView.longPressDelegate = self
 calendarWeekView.longPressDataSource = self
-calendarWeekView.longPressTypes = [.addNew, .move]
+calendarWeekView.longPressTypes = [.addNew, .move, .custom]
 
 // Optional
 calendarWeekView.addNewDurationMins = 120
