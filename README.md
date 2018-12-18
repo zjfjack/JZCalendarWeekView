@@ -16,6 +16,7 @@ Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
 - [x] Two Scroll types: One-Day scroll (scroll a section) or Page scroll
 - [x] Two Types of Long Press Gestures: Add a new event & Move an existing event
 - [x] Events display on calendar view (supports events with conflict time and events crossing few days)
+- [x] Set horizontal scrollable range dates
 - [x] Support all device orientations (including iPhone X Landscape) and iPad (Slide Over and Split View)
 - [x] Customise your own current timeline
 - [x] All-Day Events
@@ -108,7 +109,7 @@ public protocol JZLongPressViewDataSource: class {
 ```
 Also, you should provide the long press types and there are some other properties you can change.
 
-```swift 
+```swift
 calendarWeekView.longPressDelegate = self
 calendarWeekView.longPressDataSource = self
 calendarWeekView.longPressTypes = [.addNew, .move]
@@ -124,7 +125,7 @@ If you want to use the `move` type long press, you have to inherit your `UIColle
 In JZCalendarWeekView, the data model is using `[Date: [Event]]` dictionary because for each day (a section in collectionView), there might be some events. <br />
 
 A static function called `getIntraEventsByDate` provided in `JZWeekViewHelper` allow you to tranform your events list into `[Date: [Event]]` dictionary.
-```swift 
+```swift
 open class func getIntraEventsByDate<T: JZBaseEvent>(originalEvents: [T]) -> [Date: [T]]
 ```
 In order to call this function, you should create a subclass of `JZBaseEvent` and also implement the `NSCopying` protocol. <br />
@@ -139,6 +140,14 @@ In order to active all-day feature, there are only two things you need to do.
 
 1. Inherit your Event class from `JZAllDayEvent` to ensure the `isAllDay` variable added.
 2. In your customised CalendarViewWeekView, override the `viewForSupplementaryElementOfKind` and use `updateView` in `AllDayHeader` to update your all-day view with your own views. [Example](Example/JZCalendarWeekViewExample/Source/LongPressViews/LongPressWeekView.swift)
+
+
+### Horizontal Scrollable Range
+
+Horizontal scrollable range dates allow you to set your preferred scrollable range. CalendarWeekView can only be horizontal scrollable between `startDate`(including) and `endDate`(including). `nil` means no limit.
+
+1. You can set `scrollableRange` when you call `setupCalendar()` or simply change this variable.
+2. If you change `scrollType` without calling `forceReload()`, you should call `setHorizontalEdgesOffsetX()` to reset the edges, because for different scroll types, the edges are different.
 
 
 For futher usage, you can also check the example project, some comments in code or just email me.<br />
@@ -164,8 +173,8 @@ pod 'JZCalendarWeekView', '0.5.1'
 
 ## Todo
 
-- [ ] Limited date range: First Date and Last Date in CalendarView
 - [ ] DecorationView for different background views (refer to #12)
+- [ ] Limited date range: start time and end Time (vertical) in CalendarView
 - [ ] Theme implementation
 - [ ] New scroll type: Infinite scroll
 - [ ] Support different types of event arrangment rules
@@ -178,6 +187,3 @@ If you have any questions and suggestions, feel free to contact me.
 ## License
 
 JZCalendarWeekView is available under the MIT license. See the [LICENSE](https://github.com/zjfjack/JZCalendarWeekView/blob/master/LICENSE)  for more info.
-
-
-
