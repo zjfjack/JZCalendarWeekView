@@ -13,6 +13,8 @@ open class JZAllDayHeader: UICollectionReusableView {
     let scrollView = UIScrollView()
     let stackView = UIStackView()
     
+    private let scrollViewPadding: CGFloat = 3
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -25,8 +27,19 @@ open class JZAllDayHeader: UICollectionReusableView {
     
     private func setupBasic() {
         self.clipsToBounds = true
+        setupScrollView()
+        setupStackView()
+    }
+    
+    private func setupScrollView() {
         self.addSubview(scrollView)
-        scrollView.setAnchorConstraintsFullSizeTo(view: self, padding: 3)
+        scrollView.setAnchorConstraintsEqualTo(topAnchor: (topAnchor, scrollViewPadding), leadingAnchor: (leadingAnchor, scrollViewPadding), trailingAnchor: (trailingAnchor, -scrollViewPadding))
+        let scrollViewBotCons = scrollView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -scrollViewPadding)
+        scrollViewBotCons.priority = .defaultHigh
+        scrollViewBotCons.isActive = true
+    }
+    
+    private func setupStackView() {
         scrollView.addSubview(stackView)
         stackView.setAnchorConstraintsFullSizeTo(view: scrollView)
         stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
@@ -40,6 +53,13 @@ open class JZAllDayHeader: UICollectionReusableView {
     /// - Parameter views: The views your want to add to stackView
     public func updateView(views: [UIView]) {
         stackView.subviews.forEach { $0.removeFromSuperview() }
+        if views.count == 0 {
+            scrollView.removeFromSuperview()
+        } else {
+            if scrollView.superview == nil {
+                setupScrollView()
+            }
+        }
         views.forEach {
             $0.heightAnchor.constraint(equalToConstant: 25).isActive = true
             stackView.addArrangedSubview($0)
