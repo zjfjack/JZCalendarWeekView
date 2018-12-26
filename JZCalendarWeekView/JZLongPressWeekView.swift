@@ -219,15 +219,22 @@ open class JZLongPressWeekView: JZBaseWeekView {
             }
             
         } else {
+            var contentOffsetX: CGFloat
             switch scrollType! {
             case .sectionScroll:
                 let sectionWidth = flowLayout.sectionWidth!
                 scrollSections = direction == .left ? -1 : 1
-                collectionView.setContentOffset(CGPoint(x: currentOffset.x - sectionWidth * scrollSections, y: currentOffset.y), animated: true)
+                contentOffsetX = currentOffset.x - sectionWidth * scrollSections
             case .pageScroll:
-                let contentViewWidth = frame.width - flowLayout.rowHeaderWidth
-                let contentOffsetX = direction == .left ? contentViewWidth * 2 : 0
-                collectionView.setContentOffset(CGPoint(x: contentOffsetX, y: currentOffset.y), animated: true)
+                contentOffsetX = direction == .left ? contentViewWidth * 2 : 0
+            }
+            // Take the horizontal scrollable edges into account
+            let contentOffsetXWithScrollableEdges = min(max(contentOffsetX, scrollableEdges.leftX ?? -1), scrollableEdges.rightX ?? CGFloat.greatestFiniteMagnitude)
+            if contentOffsetXWithScrollableEdges == currentOffset.x {
+                // scrollViewDidEndScrollingAnimation will not be called
+                isScrolling = false
+            } else {
+                collectionView.setContentOffset(CGPoint(x: contentOffsetXWithScrollableEdges, y: currentOffset.y), animated: true)
             }
         }
         // must set initial contentoffset because willBeginDragging will not be called
