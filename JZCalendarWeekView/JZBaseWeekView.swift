@@ -186,7 +186,7 @@ open class JZBaseWeekView: UIView {
             
             if self.isFirstAppear {
                 self.isFirstAppear = false
-                self.flowLayout.scrollCollectionViewTo(time: visibleTime)
+                self.scrollWeekView(to: visibleTime)
             }
         }
     }
@@ -276,7 +276,10 @@ open class JZBaseWeekView: UIView {
         }
     }
     
-    /// Reload the WeekView to date with no animation
+    /// Reload the WeekView to date with no animation (Horizontally).
+    /// If the date you set is out of scrollableRange, it will update to that date, but it won't be able to scroll.
+    ///
+    /// The vertical animated scroll method is *scrollWeekView(to time: Date)*.
     /// - Parameters:
     ///    - date: this date is the current date in one-day view rather than initDate
     open func updateWeekView(to date: Date) {
@@ -285,6 +288,21 @@ open class JZBaseWeekView: UIView {
             self.layoutSubviews()
             self.forceReload()
         }
+    }
+    
+    /// Vertically scroll collectionView to the specific time in a day.
+    /// If the time you set is too late, it will only reach the bottom 24:00 as the maximum value.
+    ///
+    /// The horizontal update method is *updateWeekView(to date: Date)*.
+    ///
+    /// - Parameter time: Only **hour and min** will be calulated for the Y offset
+    open func scrollWeekView(to time: Date) {
+        let components = Calendar.current.dateComponents([.hour, .minute], from: time)
+        let hour = CGFloat(components.hour!) + CGFloat(components.minute!) / 60
+        let setTimeY = hour * flowLayout.hourHeight + flowLayout.contentsMargin.top
+        let maxOffsetY = collectionView.contentSize.height - collectionView.frame.height + flowLayout.columnHeaderHeight + flowLayout.allDayHeaderHeight + flowLayout.contentsMargin.bottom + flowLayout.contentsMargin.top
+        collectionView.setContentOffsetWithoutDelegate(CGPoint(x: collectionView.contentOffset.x,
+                                                               y: max(0, min(setTimeY, maxOffsetY))), animated: false)
     }
     
     /// Get current event with item indexPath
