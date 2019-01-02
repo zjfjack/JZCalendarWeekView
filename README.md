@@ -8,7 +8,7 @@
 
 iOS Calendar Week/Day View in Swift
 
-Inspired from WRCalendarView (https://github.com/wayfinders/WRCalendarView)
+Inspired from [WRCalendarView](https://github.com/wayfinders/WRCalendarView)
 
 ## Features
 
@@ -149,8 +149,7 @@ Horizontal scrollable range dates allow you to set your preferred scrollable ran
 1. You can set `scrollableRange` when you call `setupCalendar()` or simply change this variable.
 2. If you change `scrollType` without calling `forceReload()`, you should call `setHorizontalEdgesOffsetX()` to reset the edges, because for different scroll types, the edges are different.
 
-
-For futher usage, you can also check the example project, some comments in code or just email me.<br />
+#### For futher usage, you can also check the example project, some comments in code or just email me.<br />
 
 ## Requirements
 
@@ -166,9 +165,6 @@ JZCalendarWeekView can be added to your project by adding the following line to 
 ```ruby
 # Latest release in CocoaPods
 pod 'JZCalendarWeekView'
-
-# If you have NOT upgraded to Swift 4.2, use the last non-swift 4.2 compatible release
-pod 'JZCalendarWeekView', '0.5.1'
 ```
 
 ## Todo
