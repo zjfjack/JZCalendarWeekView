@@ -14,7 +14,7 @@ open class JZColumnHeader: UICollectionReusableView {
     public var lblDay = UILabel()
     public var lblWeekday = UILabel()
     let calendarCurrent = Calendar.current
-    let dateFormatter = DateFormatter()
+    public var dateFormatter = DateFormatter()
     
     public override init(frame: CGRect) {
         super.init(frame: .zero)
