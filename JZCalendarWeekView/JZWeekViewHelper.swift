@@ -103,7 +103,19 @@ open class JZWeekViewHelper {
         return resultEvents
     }
     
-    private static let hasNotch = UINavigationController().navigationBar.frame.height > 20
+    // This function has to be updated once new devices coming
+    private static var hasNotch: Bool = {
+        switch UIScreen.main.nativeBounds.height {
+        case 2436: // iPhone X / iPhone XS
+            fallthrough
+        case 2688: // iPhone Xs Max
+            fallthrough
+        case 1792: // iPhone XR
+            return true
+        default:
+            return false
+        }
+    }()
     
     /// Handle the viewWillTransition in UIViewController, only need call this function in ViewController owning JZWeekView.
     ///
@@ -111,14 +123,16 @@ open class JZWeekViewHelper {
     /// - Parameters:
     ///   - size: viewWillTransition to size
     ///   - weekView: the JZWeekView
-    open class func viewTransitionHandler(to size: CGSize, weekView: JZBaseWeekView) {
+    open class func viewTransitionHandler(to size: CGSize, weekView: JZBaseWeekView, needRefresh: Bool = true) {
         if hasNotch {
             let flowLayout = weekView.flowLayout!
             // Not differentiate the left and right because of willTransition cannot get the following UIDeviceOrientation
             let isLandscape = size.width > size.height
-            flowLayout.rowHeaderWidth = isLandscape ? flowLayout.defaultRowHeaderWidth + CGFloat(30) : flowLayout.defaultRowHeaderWidth
+            flowLayout.rowHeaderWidth = isLandscape ? flowLayout.defaultRowHeaderWidth + CGFloat(32) : flowLayout.defaultRowHeaderWidth
         }
-        weekView.refreshWeekView()
+        if needRefresh {
+            weekView.refreshWeekView()
+        }
     }
 }
 

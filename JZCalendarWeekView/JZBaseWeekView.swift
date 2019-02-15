@@ -181,6 +181,8 @@ open class JZBaseWeekView: UIView {
         self.currentTimelineType = currentTimelineType
         
         DispatchQueue.main.async { [unowned self] in
+            // Check the screen orientation when initialisation
+            JZWeekViewHelper.viewTransitionHandler(to: UIScreen.main.bounds.size, weekView: self, needRefresh: false)
             self.layoutSubviews()
             self.forceReload(reloadEvents: allEvents)
             
