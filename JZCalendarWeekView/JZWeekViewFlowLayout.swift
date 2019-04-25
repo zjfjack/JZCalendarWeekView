@@ -537,7 +537,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
                 // Determine the number of divisions needed (maximum number of currently overlapping items)
                 var divisions = 1
                 
-                for currentY in stride(from: minY, to: maxY, by: 1) {
+                for currentY in stride(from: minY, to: maxY, by: 0.1) {
                     var numberItemsForCurrentY = 0
                     
                     for overlappingItemAttributes in overlappingItems {
