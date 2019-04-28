@@ -522,34 +522,10 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             if overlappingItems.count > 0 {
                 // Add the item we're adjusting to the overlap set
                 overlappingItems.insert(itemAttributes, at: 0)
-                var minY = CGFloat.greatestFiniteMagnitude
-                var maxY = CGFloat.leastNormalMagnitude
                 
-                for overlappingItemAttributes in overlappingItems {
-                    if overlappingItemAttributes.frame.minY < minY {
-                        minY = overlappingItemAttributes.frame.minY
-                    }
-                    if overlappingItemAttributes.frame.maxY > maxY {
-                        maxY = overlappingItemAttributes.frame.maxY
-                    }
-                }
-                
-                // Determine the number of divisions needed (maximum number of currently overlapping items)
-                var divisions = 1
-                
-                for currentY in stride(from: minY, to: maxY, by: 1) {
-                    var numberItemsForCurrentY = 0
-                    
-                    for overlappingItemAttributes in overlappingItems {
-                        if currentY >= overlappingItemAttributes.frame.minY &&
-                            currentY < overlappingItemAttributes.frame.maxY {
-                            numberItemsForCurrentY += 1
-                        }
-                    }
-                    if numberItemsForCurrentY > divisions {
-                        divisions = numberItemsForCurrentY
-                    }
-                }
+                let startY = overlappingItems.map { $0.frame.minY }
+                let endY = overlappingItems.map { $0.frame.maxY }
+                let divisions = maxOverlapIntervalCount(startY: startY, endY: endY)
                 
                 // Adjust the items to have a width of the section size divided by the number of divisions needed
                 let divisionWidth = (sectionWidth / CGFloat(divisions)).toDecimal1Value()
@@ -583,6 +559,27 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
                 }
             }
         }
+    }
+    
+    /// Determine the number of divisions needed (maximum number of currently overlapping items)
+    ///
+    /// Refer to algorithm from http://www.zrzahid.com/maximum-number-of-overlapping-intervals/
+    func maxOverlapIntervalCount(startY: [CGFloat], endY: [CGFloat]) -> Int {
+        var maxOverlap = 0, currentOverlap = 0
+        let sortedStartY = startY.sorted(), sortedEndY = endY.sorted()
+        
+        var i = 0, j = 0
+        while i < sortedStartY.count && j < sortedEndY.count {
+            if sortedStartY[i] < sortedEndY[j] {
+                currentOverlap += 1
+                maxOverlap = max(maxOverlap, currentOverlap)
+                i += 1
+            } else {
+                currentOverlap -= 1
+                j += 1
+            }
+        }
+        return maxOverlap
     }
     
     func invalidateLayoutCache() {
