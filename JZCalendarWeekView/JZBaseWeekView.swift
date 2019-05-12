@@ -180,16 +180,14 @@ open class JZBaseWeekView: UIView {
         self.scrollableRange.endDate = scrollableRange?.endDate
         self.currentTimelineType = currentTimelineType
         
-        DispatchQueue.main.async { [unowned self] in
-            // Check the screen orientation when initialisation
-            JZWeekViewHelper.viewTransitionHandler(to: UIScreen.main.bounds.size, weekView: self, needRefresh: false)
-            self.layoutSubviews()
-            self.forceReload(reloadEvents: allEvents)
-            
-            if self.isFirstAppear {
-                self.isFirstAppear = false
-                self.scrollWeekView(to: visibleTime)
-            }
+        // Check the screen orientation when initialisation
+        JZWeekViewHelper.viewTransitionHandler(to: UIScreen.main.bounds.size, weekView: self, needRefresh: false)
+        self.layoutSubviews()
+        self.forceReload(reloadEvents: allEvents)
+        
+        if self.isFirstAppear {
+            self.isFirstAppear = false
+            self.scrollWeekView(to: visibleTime)
         }
     }
     
@@ -248,16 +246,13 @@ open class JZBaseWeekView: UIView {
     ///   - reloadEvents: If provided new events, current events will be reloaded. Default value is nil.
     open func forceReload(reloadEvents: [Date: [JZBaseEvent]]? = nil) {
         if let events = reloadEvents { self.allEventsBySection = events }
-
-        DispatchQueue.main.async { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.updateAllDayBar(isScrolling: false)
-            // initial day is one page before the settle day
-            strongSelf.collectionView.setContentOffsetWithoutDelegate(CGPoint(x:strongSelf.contentViewWidth, y:strongSelf.getYOffset()), animated: false)
-            strongSelf.flowLayout.invalidateLayoutCache()
-            strongSelf.collectionView.reloadData()
-            strongSelf.setHorizontalEdgesOffsetX()
-        }
+        
+        self.updateAllDayBar(isScrolling: false)
+        // initial day is one page before the settle day
+        self.collectionView.setContentOffsetWithoutDelegate(CGPoint(x:self.contentViewWidth, y:self.getYOffset()), animated: false)
+        self.flowLayout.invalidateLayoutCache()
+        self.collectionView.reloadData()
+        self.setHorizontalEdgesOffsetX()
     }
     
     /// Notice: A temporary solution to fix the scroll from bottom issue when isScrolling
@@ -286,10 +281,8 @@ open class JZBaseWeekView: UIView {
     ///    - date: this date is the current date in one-day view rather than initDate
     open func updateWeekView(to date: Date) {
         self.initDate = date.startOfDay.add(component: .day, value: -numOfDays)
-        DispatchQueue.main.async { [unowned self] in
-            self.layoutSubviews()
-            self.forceReload()
-        }
+        self.layoutSubviews()
+        self.forceReload()
     }
     
     /// Vertically scroll collectionView to the specific time in a day.
