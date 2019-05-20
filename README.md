@@ -163,8 +163,16 @@ Horizontal scrollable range dates allow you to set your preferred scrollable ran
 JZCalendarWeekView can be added to your project by adding the following line to your `Podfile`:
 
 ```ruby
-# Latest release in CocoaPods
+# Latest release in CocoaPods (optional: provide version number)
 pod 'JZCalendarWeekView'
+```
+
+### Carthage
+JZCalendarWeekView can be added to your project by adding the following line to your `Cartfile`:
+
+```ruby
+# Latest release on Carthage (optional: provide version number)
+github "zjfjack/JZCalendarWeekView"
 ```
 
 ## Todo
