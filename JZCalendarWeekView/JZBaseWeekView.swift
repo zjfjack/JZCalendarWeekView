@@ -323,10 +323,9 @@ open class JZBaseWeekView: UIView {
             }
             return dates
         }
-        // Sometimes end scrolling will cause some 0.xxx offset margin
-        let margin: CGFloat = 2
-        var startDate = getDateForX(xCollectionView: collectionView.contentOffset.x + margin + flowLayout.rowHeaderWidth)
-        let endDate = getDateForX(xCollectionView: collectionView.contentOffset.x + frame.width - margin)
+        var startDate = getDateForContentOffsetX(collectionView.contentOffset.x)
+        // substract 1 to make sure it won't include the next section when reach the boundary
+        let endDate = getDateForContentOffsetX(collectionView.contentOffset.x + contentViewWidth - 1)
         repeat {
             dates.append(startDate)
             startDate = startDate.add(component: .day, value: 1)
@@ -351,46 +350,6 @@ open class JZBaseWeekView: UIView {
         if diff < 0 { diff = 7 - abs(diff) }
         self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays - diff)
         self.firstDayOfWeek = firstDayOfWeek
-    }
-    
-    /// Get Date for specific section.
-    /// The 0 section start from previous page, which means the first date section in current page should be **numOfDays**.
-    open func getDateForSection(_ section: Int) -> Date {
-        return Calendar.current.date(byAdding: .day, value: section, to: initDate)!
-    }
-    
-    /**
-     Get date excluding time from points
-     NOTICE: No need consider rowHeaderWidth, because that part is not considered in contentOffset
-        - Parameters:
-            - xCollectionView: x position in collectionView
-     */
-    open func getDateForX(xCollectionView: CGFloat) -> Date {
-        let section = Int((xCollectionView - flowLayout.rowHeaderWidth) / flowLayout.sectionWidth)
-        return getDateForSection(section)
-    }
-    
-    /// Get time from point y position
-    /// - Parameters:
-    ///    - yCollectionView: y position in collectionView
-    open func getDateForY(yCollectionView: CGFloat) -> (Int, Int) {
-        let adjustedY = yCollectionView - flowLayout.columnHeaderHeight - flowLayout.contentsMargin.top - flowLayout.allDayHeaderHeight
-        let hour = Int(adjustedY / flowLayout.hourHeight)
-        let minute = Int((adjustedY / flowLayout.hourHeight - CGFloat(hour)) * 60)
-        return (hour, minute)
-    }
-    
-    /**
-     Get date from current point, can be used for gesture recognizer
-        - Parameters:
-            - pointCollectionView: current point position in collectionView
-     */
-    open func getDateForPoint(pointCollectionView: CGPoint) -> Date {
-        
-        let yearMonthDay = getDateForX(xCollectionView: pointCollectionView.x)
-        let hourMinute = getDateForY(yCollectionView: pointCollectionView.y)
-        
-        return yearMonthDay.set(hour: hourMinute.0, minute: hourMinute.1, second: 0)
     }
     
     /// Get weekview scroll direction (directionalLockEnabled)
@@ -429,8 +388,84 @@ open class JZBaseWeekView: UIView {
             return .none
         }
     }
+    
+    // MARK: - Date related getters
+    
+    /// Get Date for specific section.
+    /// The 0 section start from previous page, which means the first date section in current page should be **numOfDays**.
+    open func getDateForSection(_ section: Int) -> Date {
+        return Calendar.current.date(byAdding: .day, value: section, to: initDate)!
+    }
+    
+    /**
+     Get date excluding time from **collectionView contentOffset only** rather than gesture point in collectionView
+        - Parameter contentOffsetX: collectionView contentOffset x
+     */
+    open func getDateForContentOffsetX(_ contentOffsetX: CGFloat) -> Date {
+        let adjustedX = contentOffsetX - flowLayout.contentsMargin.left
+        let section = Int(adjustedX / flowLayout.sectionWidth)
+        return getDateForSection(section)
+    }
+    
+    /**
+     Get time excluding date from **collectionView contentOffset only** rather than gesture point in collectionView
+        - Parameter contentOffsetY: collectionView contentOffset y
+     */
+    open func getDateForContentOffsetY(_ contentOffsetY: CGFloat) -> (hour: Int, minute: Int) {
+        var adjustedY = contentOffsetY - flowLayout.contentsMargin.top
+        adjustedY = max(0, adjustedY)
+        let hour = Int(adjustedY / flowLayout.hourHeight)
+        let minute = Int((adjustedY / flowLayout.hourHeight - CGFloat(hour)) * 60)
+        return (hour, minute)
+    }
+    
+    /**
+     Get full date from **collectionView contentOffset only** rather than gesture point in collectionView
+        - Parameter contentOffset: collectionView contentOffset
+     */
+    open func getDateForContentOffset(_ contentOffset: CGPoint) -> Date {
+        let yearMonthDay = getDateForContentOffsetX(contentOffset.x)
+        let time = getDateForContentOffsetY(contentOffset.y)
+        return yearMonthDay.set(hour: time.hour, minute: time.minute, second: 0)
+    }
+    
+    /**
+     Get date excluding time from **gesture point in collectionView only** rather than collectionView contentOffset
+        - Parameter xCollectionView: gesture point x in collectionView
+     */
+    open func getDateForPointX(_ xCollectionView: CGFloat) -> Date {
+        // RowHeader(horizontal UICollectionReusableView) should be considered in gesture point
+        let adjustedX = xCollectionView - flowLayout.rowHeaderWidth - flowLayout.contentsMargin.left
+        let section = Int(adjustedX / flowLayout.sectionWidth)
+        return getDateForSection(section)
+    }
+    
+    /**
+     Get time excluding date from **gesture point in collectionView only** rather than collectionView contentOffset
+        - Parameter yCollectionView: gesture point y in collectionView
+     */
+    open func getDateForPointY(_ yCollectionView: CGFloat) -> (hour: Int, minute: Int) {
+        // ColumnHeader and AllDayHeader(vertical UICollectionReusableView) should be considered in gesture point
+        var adjustedY = yCollectionView - flowLayout.columnHeaderHeight - flowLayout.contentsMargin.top - flowLayout.allDayHeaderHeight
+        let minY: CGFloat = 0
+        // contentSize will include all reusableView, margin and scrollable area
+        let maxY = collectionView.contentSize.height - flowLayout.contentsMargin.top - flowLayout.contentsMargin.bottom - flowLayout.allDayHeaderHeight - flowLayout.columnHeaderHeight
+        adjustedY = max(minY, min(adjustedY, maxY))
+        let hour = Int(adjustedY / flowLayout.hourHeight)
+        let minute = Int((adjustedY / flowLayout.hourHeight - CGFloat(hour)) * 60)
+        return (hour, minute)
+    }
+    
+    /**
+     Get full date from **gesture point in collectionView only** rather than collectionView contentOffset
+        - Parameter point: gesture point in collectionView
+     */
+    open func getDateForPoint(_ point: CGPoint) -> Date {
+        let yearMonthDay = getDateForPointX(point.x)
+        let time = getDateForPointY(point.y)
+        return yearMonthDay.set(hour: time.hour, minute: time.minute, second: 0)
+    }
 }
-
 
 extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
@@ -512,7 +547,6 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
         var lockedDirection: ScrollDirection!
         
         if !isDirectionLocked {

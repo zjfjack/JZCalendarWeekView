@@ -269,8 +269,8 @@ open class JZLongPressWeekView: JZBaseWeekView {
                                             longPressDataSource!.weekView(self, viewForAddNewLongPressAt: startDate)
         longPressView.clipsToBounds = false
         
-        //timeText width will change from 00:00 - 24:00, and for each time the length will be different
-        //add 5 to ensure the max width
+        // timeText width will change from 00:00 - 24:00, and for each time the length will be different
+        // add 5 to ensure the max width
         let labelHeight: CGFloat = 15
         let textWidth = UILabel.getLabelWidth(labelHeight, font: longPressTimeLabel.font, text: "23:59") + 5
         let timeLabelWidth = max(selectedCell?.bounds.width ?? flowLayout.sectionWidth, textWidth)
@@ -281,9 +281,8 @@ open class JZLongPressWeekView: JZBaseWeekView {
     }
     
     /// Overload for base class with left and right margin check for LongPress
-    open func getDateForX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
-        let section = Int((xCollectionView - flowLayout.rowHeaderWidth) / flowLayout.sectionWidth)
-        let date = getDateForSection(section)
+    open func getDateForPointX(xCollectionView: CGFloat, xSelfView: CGFloat) -> Date {
+        let date = self.getDateForPointX(xCollectionView)
         // when isScrolling equals true, means it will scroll to previous date
         if xSelfView < longPressLeftMarginX && isScrolling == false {
             return date.add(component: .day, value: 1)
@@ -296,10 +295,8 @@ open class JZLongPressWeekView: JZBaseWeekView {
     
     /// Overload for base class with modified date for X
     open func getDateForPoint(pointCollectionView: CGPoint, pointSelfView: CGPoint) -> Date {
-        
-        let yearMonthDay = getDateForX(xCollectionView: pointCollectionView.x, xSelfView: pointSelfView.x)
-        let hourMinute = getDateForY(yCollectionView: pointCollectionView.y)
-        
+        let yearMonthDay = getDateForPointX(xCollectionView: pointCollectionView.x, xSelfView: pointSelfView.x)
+        let hourMinute = getDateForPointY(pointCollectionView.y)
         return yearMonthDay.set(hour: hourMinute.0, minute: hourMinute.1, second: 0)
     }
     
@@ -480,7 +477,7 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
     /// used by handleLongPressGesture only
     private func getLongPressViewStartDate(pointInCollectionView: CGPoint, pointInSelfView: CGPoint) -> Date {
         let longPressViewTopDate = getDateForPoint(pointCollectionView: CGPoint(x: pointInCollectionView.x, y: pointInCollectionView.y - pressPosition!.yToViewTop) , pointSelfView: pointInSelfView)
-        let longPressViewStartDate = getLongPressStartDate(date: longPressViewTopDate, dateInSection: getDateForX(xCollectionView: pointInCollectionView.x, xSelfView: pointInSelfView.x), timeMinInterval: moveTimeMinInterval)
+        let longPressViewStartDate = getLongPressStartDate(date: longPressViewTopDate, dateInSection: getDateForPointX(xCollectionView: pointInCollectionView.x, xSelfView: pointInSelfView.x), timeMinInterval: moveTimeMinInterval)
         return longPressViewStartDate
     }
     
