@@ -285,8 +285,11 @@ open class JZLongPressWeekView: JZBaseWeekView {
         let date = self.getDateForPointX(xCollectionView)
         // when isScrolling equals true, means it will scroll to previous date
         if xSelfView < longPressLeftMarginX && isScrolling == false {
+            // should add one date to put the view inside current page
             return date.add(component: .day, value: 1)
         } else if xSelfView > longPressRightMarginX && isScrolling == false {
+            // normally this condition will not enter
+            // should substract one date to put the view inside current page
             return date.add(component: .day, value: -1)
         } else {
             return date
