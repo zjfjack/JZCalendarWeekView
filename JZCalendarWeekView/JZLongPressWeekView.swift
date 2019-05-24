@@ -197,7 +197,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
         }
     }
     
-    private func scrollingTo(direction: ScrollDirection) {
+    private func scrollingTo(direction: LongPressScrollDirection) {
         let currentOffset = collectionView.contentOffset
         let maxOffsetY = collectionView.contentSize.height - collectionView.bounds.height + collectionView.contentInset.bottom
         
@@ -482,6 +482,18 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
         let longPressViewTopDate = getDateForPoint(pointCollectionView: CGPoint(x: pointInCollectionView.x, y: pointInCollectionView.y - pressPosition!.yToViewTop) , pointSelfView: pointInSelfView)
         let longPressViewStartDate = getLongPressStartDate(date: longPressViewTopDate, dateInSection: getDateForPointX(xCollectionView: pointInCollectionView.x, xSelfView: pointInSelfView.x), timeMinInterval: moveTimeMinInterval)
         return longPressViewStartDate
+    }
+    
+}
+
+extension JZLongPressWeekView {
+    
+    /// For indicating which direction should collectionView scroll to in LongPressWeekView
+    enum LongPressScrollDirection {
+        case up
+        case down
+        case left
+        case right
     }
     
 }

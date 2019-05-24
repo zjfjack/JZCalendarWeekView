@@ -77,7 +77,6 @@ open class JZBaseWeekView: UIView {
     
     // Scrollable Range
     internal var scrollableEdges: (leftX: CGFloat?, rightX: CGFloat?)
-    private var isDirectionLocked = false
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -352,43 +351,6 @@ open class JZBaseWeekView: UIView {
         self.firstDayOfWeek = firstDayOfWeek
     }
     
-    /// Get weekview scroll direction (directionalLockEnabled)
-    fileprivate func getScrollDirection() -> ScrollDirection {
-        var scrollDirection: ScrollDirection
-        
-        if initialContentOffset.x != collectionView.contentOffset.x &&
-            initialContentOffset.y != collectionView.contentOffset.y {
-            scrollDirection = .crazy
-        } else {
-            if initialContentOffset.x > collectionView.contentOffset.x {
-                scrollDirection = .left
-            } else if initialContentOffset.x < collectionView.contentOffset.x {
-                scrollDirection = .right
-            } else if initialContentOffset.y > collectionView.contentOffset.y {
-                scrollDirection = .up
-            } else if initialContentOffset.y < collectionView.contentOffset.y {
-                scrollDirection = .down
-            } else {
-                scrollDirection = .none
-            }
-        }
-        return scrollDirection
-    }
-    
-    /// Get scroll direction axis
-    fileprivate var scrollDirectionAxis: ScrollDirection {
-        switch getScrollDirection() {
-        case .left, .right:
-            return .horizontal
-        case .up, .down:
-            return .vertical
-        case .crazy:
-            return .crazy
-        default:
-            return .none
-        }
-    }
-    
     // MARK: - Date related getters
     
     /// Get Date for specific section.
@@ -527,19 +489,27 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
         return view
     }
     
+    /// Get collectionView current scroll direction
+    var scrollDirection: ScrollDirection {
+        let collectionViewTranslation = self.collectionView.panGestureRecognizer.translation(in: self)
+        if collectionViewTranslation.x != 0 {
+            return .horizontal
+        } else if collectionViewTranslation.y != 0 {
+            return .vertical
+        } else {
+            return .none
+        }
+    }
+    
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         initialContentOffset = scrollView.contentOffset
     }
     
     open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        if scrollDirectionAxis == .vertical || scrollDirectionAxis == .none { return }
+        let scrollDirection = self.scrollDirection
+        if scrollDirection == .vertical || scrollDirection == .none { return }
         targetContentOffset.pointee = scrollView.contentOffset
         pagingEffect(scrollView: scrollView, velocity: velocity)
-    }
-    
-    // This function will be called when veritical scrolling ends
-    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        isDirectionLocked = false
     }
     
     // This function will be called by setting content offset (pagingEffect function)
@@ -548,23 +518,9 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
     }
     
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        var lockedDirection: ScrollDirection!
-        
-        if !isDirectionLocked {
-            let isScrollingHorizontally = abs(scrollView.contentOffset.x - initialContentOffset.x) > abs(scrollView.contentOffset.y - initialContentOffset.y)
-            lockedDirection = isScrollingHorizontally ? .vertical : .horizontal
-            isDirectionLocked = true
-        }
-        
-        // forbid scrolling two directions together
-        if scrollDirectionAxis == .crazy {
-            let newOffset = lockedDirection == .vertical ? CGPoint(x: scrollView.contentOffset.x, y: initialContentOffset.y) :
-                                                           CGPoint(x: initialContentOffset.x, y: scrollView.contentOffset.y)
-            scrollView.contentOffset = newOffset
-        }
-        
         // All Day Bar update
-        guard flowLayout.sectionWidth != nil && scrollDirectionAxis != .vertical else { return }
+        print(scrollDirection)
+        guard flowLayout.sectionWidth != nil && scrollDirection == .horizontal else { return }
         checkScrollableRange(contentOffsetX: scrollView.contentOffset.x)
         updateAllDayBar(isScrolling: true)
     }
@@ -673,7 +629,6 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDataSource, 
     /// Can be overrided to do some operations before reload.
     open func loadPage() {
         scrollType == .pageScroll ? loadPagePageScroll() : loadPageSectionScroll()
-        isDirectionLocked = false
     }
     
     // sectionScroll load page depends on scrollSections
