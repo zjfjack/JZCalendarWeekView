@@ -136,7 +136,6 @@ open class JZLongPressWeekView: JZBaseWeekView {
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setupGestures()
     }
     
@@ -179,42 +178,53 @@ open class JZLongPressWeekView: JZBaseWeekView {
     /// - The logic of vertical scroll is top scroll depending on **longPressView top** to longPressTopMarginY, bottom scroll denpending on **finger point** to LongPressBottomMarginY.
     /// - The logic of horizontal scroll is left scroll depending on **finger point** to longPressLeftMarginY, bottom scroll denpending on **finger point** to LongPressRightMarginY.
     private func updateScroll(pointInSelfView: CGPoint) {
+        if isScrolling { return }
+        
         // vertical
-        if pointInSelfView.y - pressPosition!.yToViewTop < longPressTopMarginY + 10 && !isScrolling {
+        if pointInSelfView.y - pressPosition!.yToViewTop < longPressTopMarginY + 10 {
             isScrolling = true
             scrollingTo(direction: .up)
-        } else if pointInSelfView.y > longPressBottomMarginY - 40 && !isScrolling {
+            return
+        } else if pointInSelfView.y > longPressBottomMarginY - 40 {
             isScrolling = true
             scrollingTo(direction: .down)
+            return
         }
         // horizontal
-        if pointInSelfView.x < longPressLeftMarginX + 10 && !isScrolling {
+        if pointInSelfView.x < longPressLeftMarginX + 10 {
             isScrolling = true
             scrollingTo(direction: .right)
-        } else if pointInSelfView.x > longPressRightMarginX - 20 && !isScrolling {
+            return
+        } else if pointInSelfView.x > longPressRightMarginX - 20 {
             isScrolling = true
             scrollingTo(direction: .left)
+            return
         }
     }
     
+    /*
+     NOTICE: Existing issue: In some scenarios, longPress to edge cannot trigger collectionView scrolling
+     Generally, it is because isScrolling set true previously but doesn't set false back, which cause cannot scroll next time because isScrolling is true
+        1. In section scroll, when keep longPressing and scrolling, sometimes it will become unscrollable. (Should be caused by forceReload async, page scroll got enough time to async reload)
+        2. In both scroll types, if you end longPress at the left or right edge when collectionView is scrolling, it might cause isScrolling cannot set back to false either.
+     This issue exists before 0.7.0 (not caused by pagination redesign), will be fixed when async forceReload issue has been resolved
+    */
     private func scrollingTo(direction: LongPressScrollDirection) {
         let currentOffset = collectionView.contentOffset
-        let maxOffsetY = collectionView.contentSize.height - collectionView.bounds.height + collectionView.contentInset.bottom
+        let minOffsetY: CGFloat = 0, maxOffsetY = collectionView.contentSize.height - collectionView.bounds.height
         
         if direction == .up || direction == .down {
-            var yOffset = CGFloat()
-            
-            if scrollType == .sectionScroll { scrollSections = 0 }
+            let yOffset: CGFloat
             
             if direction == .up {
-                yOffset = max(0,currentOffset.y - 50)
+                yOffset = max(minOffsetY, currentOffset.y - 50)
                 collectionView.setContentOffset(CGPoint(x: currentOffset.x,y: yOffset) , animated: true)
             } else {
-                yOffset = min(maxOffsetY,currentOffset.y + 50)
+                yOffset = min(maxOffsetY, currentOffset.y + 50)
                 collectionView.setContentOffset(CGPoint(x: currentOffset.x,y: yOffset) , animated: true)
             }
-            // scrollview didEndAnimation will not set isScrolling, should set by ourselves
-            if yOffset == 0 || yOffset == maxOffsetY {
+            // scrollview didEndAnimation will not set isScrolling, should be set manually
+            if yOffset == minOffsetY || yOffset == maxOffsetY {
                 isScrolling = false
             }
             
@@ -222,9 +232,8 @@ open class JZLongPressWeekView: JZBaseWeekView {
             var contentOffsetX: CGFloat
             switch scrollType! {
             case .sectionScroll:
-                let sectionWidth = flowLayout.sectionWidth!
-                scrollSections = direction == .left ? -1 : 1
-                contentOffsetX = currentOffset.x - sectionWidth * scrollSections
+                let scrollSections: CGFloat = direction == .left ? -1 : 1
+                contentOffsetX = currentOffset.x - flowLayout.sectionWidth! * scrollSections
             case .pageScroll:
                 contentOffsetX = direction == .left ? contentViewWidth * 2 : 0
             }
@@ -237,10 +246,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
                 collectionView.setContentOffset(CGPoint(x: contentOffsetXWithScrollableEdges, y: currentOffset.y), animated: true)
             }
         }
-        // must set initial contentoffset because willBeginDragging will not be called
-        initialContentOffset = collectionView.contentOffset
     }
-    
     
     /// Calculate the expected start date with timeMinInterval
     func getLongPressStartDate(date: Date, dateInSection: Date, timeMinInterval: Int) -> Date {
@@ -303,8 +309,11 @@ open class JZLongPressWeekView: JZBaseWeekView {
         return yearMonthDay.set(hour: hourMinute.0, minute: hourMinute.1, second: 0)
     }
     
-    open override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        super.scrollViewDidEndScrollingAnimation(scrollView)
+    // Only being called when setContentOffset ends animition by scrollingTo method
+    // scrollViewDidEndScrollingAnimation won't be called in JZBaseWeekView, then should load page here
+    open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        // vertical scroll should not load page, handled in loadPage method
+        loadPage()
         isScrolling = false
     }
     
