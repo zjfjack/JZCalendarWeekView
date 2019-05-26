@@ -24,13 +24,9 @@ public enum JZDecorationViewKinds {
     public static let horizontalGridline = "HorizontalGridline"
 }
 
+/// For checking scrollView(collectionView) currently scrolling direction
 enum ScrollDirection {
     case none
-    case crazy
-    case left
-    case right
-    case up
-    case down
     case horizontal
     case vertical
 }

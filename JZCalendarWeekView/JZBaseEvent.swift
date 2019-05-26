@@ -29,7 +29,7 @@ open class JZBaseEvent: NSObject, NSCopying {
         self.intraEndDate = endDate
     }
     
-    // Must be overrided
+    // Must be overridden
     // Shadow copy is enough for JZWeekViewHelper to create multiple events for cross-day events
     open func copy(with zone: NSZone? = nil) -> Any {
         return JZBaseEvent(id: id, startDate: startDate, endDate: endDate)

@@ -11,16 +11,6 @@ import XCTest
 
 class WeekViewHelperTest: XCTestCase {
     
-    override func setUp() {
-        super.setUp()
-        
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
     func testGetIntraEventsByDateSameDateEvents() {
         let testDate = Date().startOfDay
         let sameDayEvent = JZBaseEvent(id: UUID().uuidString, startDate: testDate, endDate: testDate.add(component: .hour, value: 3))
