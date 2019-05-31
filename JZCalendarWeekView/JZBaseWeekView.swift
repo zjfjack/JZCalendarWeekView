@@ -99,7 +99,6 @@ open class JZBaseWeekView: UIView {
         collectionView.bounces = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.decelerationRate = .fast
         collectionView.backgroundColor = UIColor.white
         addSubview(collectionView)
         collectionView.setAnchorConstraintsFullSizeTo(view: self)
@@ -511,6 +510,8 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
         if self.scrollDirection != nil { return }
         // Warning: scrollViewWillBeginDragging contentOffset value might be incorrect, 0.5 or 1 pixel difference, ignored for now
         self.scrollDirection = self.getBeginDraggingScrollDirection()
+        // deceleration rate should be normal in vertical scroll
+        scrollView.decelerationRate = self.scrollDirection!.direction == .horizontal ? .fast : .normal
     }
     
     open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
