@@ -72,6 +72,7 @@ open class JZBaseWeekView: UIView {
     }
     private var isFirstAppear: Bool = true
     internal var isAllDaySupported: Bool!
+    internal var scrollDirection: ScrollDirection?
     
     // Scrollable Range
     internal var scrollableEdges: (leftX: CGFloat?, rightX: CGFloat?)
@@ -493,33 +494,59 @@ extension JZBaseWeekView: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate: UIScrollViewDelegate for Pagination Effect
 extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    /// Get collectionView current scroll direction
-    var scrollDirection: ScrollDirection {
-        let collectionViewTranslation = self.collectionView.panGestureRecognizer.translation(in: self)
-        if collectionViewTranslation.x != 0 {
-            return .horizontal
-        } else if collectionViewTranslation.y != 0 {
-            return .vertical
+    /// Get scrolling direction when first time start beginning dragging until scrolling ends
+    internal func getBeginDraggingScrollDirection() -> ScrollDirection {
+        let velocity = self.collectionView.panGestureRecognizer.velocity(in: self)
+        if abs(velocity.x) >= abs(velocity.y) {
+            // if velocity exists both x and y, the lower value side should be locked
+            return ScrollDirection(direction: .horizontal, lockedAt: velocity.x == 0 ? nil : self.collectionView.contentOffset.y)
         } else {
-            return .none
+            return ScrollDirection(direction: .vertical, lockedAt: velocity.y == 0 ? nil : self.collectionView.contentOffset.x)
         }
     }
     
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        // Only check when scroll direction is nil to ensure the direction for this scroll before it ends
+        // Because if swipe again before scroll ends, this method will be called again but the direction should be the same
+        if self.scrollDirection != nil { return }
+        // Warning: scrollViewWillBeginDragging contentOffset value might be incorrect, 0.5 or 1 pixel difference, ignored for now
+        self.scrollDirection = self.getBeginDraggingScrollDirection()
+    }
+    
     open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        // vertical scroll should not call paginationEffect, not sure about none type (call paginationEffect for safety now)
-        if self.scrollDirection == .vertical { return }
+        // vertical scroll should not call paginationEffect
+        guard let scrollDirection = self.scrollDirection, scrollDirection.direction == .horizontal else { return }
         paginationEffect(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
+    }
+    
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        // handle the situation scrollViewDidEndDecelerating not being called
+        if !decelerate { self.endOfScroll() }
     }
     
     // This function will be called when veritical scrolling ends
     open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.endOfScroll()
+    }
+    
+    /// Some actions need to be done when scroll ends
+    private func endOfScroll() {
         // vertical scroll should not load page, handled in loadPage method
         loadPage()
+        self.scrollDirection = nil
     }
     
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // all day bar update and check scrollable range, not sure about none type (update for safety now)
-        guard flowLayout.sectionWidth != nil && scrollDirection != .vertical else { return }
+        guard let scrollDirection = scrollDirection else { return }
+        if let lockedAt = scrollDirection.lockedAt {
+            if scrollDirection.direction == .horizontal {
+                scrollView.contentOffset.y = lockedAt
+            } else {
+                scrollView.contentOffset.x = lockedAt
+            }
+        }
+        // all day bar update and check scrollable range when scrolling horizontally
+        guard flowLayout.sectionWidth != nil, scrollDirection.direction == .horizontal else { return }
         checkScrollableRange(contentOffsetX: scrollView.contentOffset.x)
         updateAllDayBar(isScrolling: true)
     }
@@ -542,11 +569,8 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
             shouldScrollToPage = currentPage + Int(round(scrollDistanceX / pageWidth))
         }
         let shouldScrollToContentOffsetX = CGFloat(shouldScrollToPage) * pageWidth
-        // if shouldScrollToContentOffsetX equals currentContentOffsetX which means no need scroll and
-        // scrollViewDidEndDecelerating won't be called, then loagPage should be called manually
-        if shouldScrollToContentOffsetX == currentContentOffset.x {
-            loadPage()
-        }
+        // if shouldScrollToContentOffsetX equals currentContentOffsetX which means scrollViewDidEndDecelerating won't be called
+        // This case is now handled in scrollViewDidEndDragging
         targetContentOffset.pointee = CGPoint(x: shouldScrollToContentOffsetX, y: currentContentOffset.y)
     }
     
@@ -554,12 +578,9 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
     ///
     /// Can be overridden to do some operations before reload.
     open func loadPage() {
-        // It means collectionView is scrolling back to previous contentOffsetX
-        // Or it is vertical scroll (offsetX check is more efficient than scrollDirection check)
+        // It means collectionView is scrolling back to previous contentOffsetX or It is vertical scroll
         // Each scroll should always start from the middle, which is contentViewWidth
-        if collectionView.contentOffset.x == contentViewWidth {
-            return
-        }
+        if collectionView.contentOffset.x == contentViewWidth { return }
         scrollType == .pageScroll ? loadPagePageScroll() : loadPageSectionScroll()
     }
     

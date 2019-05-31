@@ -25,10 +25,22 @@ public enum JZDecorationViewKinds {
 }
 
 /// For checking scrollView(collectionView) currently scrolling direction
-enum ScrollDirection {
-    case none
-    case horizontal
-    case vertical
+struct ScrollDirection {
+    
+    enum Direction {
+        case horizontal
+        case vertical
+    }
+    
+    /// scrolling direction
+    let direction: Direction
+    /// locked at curtain x or y value, nil means not locked, similar to previous initialContentOffset but put it in direction
+    let lockedAt: CGFloat?
+    
+    init(direction: Direction, lockedAt: CGFloat?) {
+        self.direction = direction
+        self.lockedAt = lockedAt
+    }
 }
 
 public enum JZHourGridDivision: Int {
