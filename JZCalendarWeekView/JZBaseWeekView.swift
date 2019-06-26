@@ -558,7 +558,7 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
         // current section will always get current section, applied floor Int here
         let currentSection = Int(currentContentOffset.x / flowLayout.sectionWidth)
         let currentPage = scrollType == .sectionScroll ? currentSection : (currentSection >= numOfDays ? 1 : 0)  // The divider section for 0 and 1 page is at numOfDays
-        let isVelocitySatisfied = abs(velocity.x) > 0.2
+        let isVelocitySatisfied = abs(velocity.x) > 0.4
         var shouldScrollToPage: Int
         
         if isVelocitySatisfied {
