@@ -18,6 +18,7 @@ public enum JZSupplementaryViewKinds {
 public enum JZDecorationViewKinds {
     public static let columnHeaderBackground = JZColumnHeaderBackground.className
     public static let rowHeaderBackground = JZRowHeaderBackground.className
+    public static let nonWorkingHoursBackground = JZNonWorkingHoursBackground.className
     public static let allDayHeaderBackground = JZAllDayHeaderBackground.className
     public static let allDayCorner = JZAllDayCorner.className
     public static let verticalGridline = "VerticalGridline"

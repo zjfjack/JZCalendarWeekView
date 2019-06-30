@@ -9,6 +9,8 @@
 public protocol WeekViewFlowLayoutDelegate: class {
     /// Get the date for given section
     func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, dayForSection section: Int) -> Date
+    /// Get the work day for given section
+    func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, workDayForSection section: Int) -> JZWorkDay?
     /// Get the start time for given item indexPath
     func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, startTimeForItemAtIndexPath indexPath: IndexPath) -> Date
     /// Get the end time for given item indexPath
@@ -70,6 +72,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     var itemAttributes = AttDic()
     var columnHeaderAttributes = AttDic()
     var columnHeaderBackgroundAttributes = AttDic()
+    var nonWorkingHoursBackgroundAttributes = AttDic()
     var rowHeaderAttributes = AttDic()
     var rowHeaderBackgroundAttributes = AttDic()
     var verticalGridlineAttributes = AttDic()
@@ -177,6 +180,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             allAttributes.append(contentsOf: columnHeaderBackgroundAttributes.values)
             allAttributes.append(contentsOf: rowHeaderAttributes.values)
             allAttributes.append(contentsOf: rowHeaderBackgroundAttributes.values)
+            allAttributes.append(contentsOf: nonWorkingHoursBackgroundAttributes.values)
             allAttributes.append(contentsOf: verticalGridlineAttributes.values)
             allAttributes.append(contentsOf: horizontalGridlineAttributes.values)
             allAttributes.append(contentsOf: cornerHeaderAttributes.values)
@@ -291,6 +295,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             attributes.frame = CGRect(x: sectionMinX, y: columnHeaderMinY, width: sectionWidth, height: columnHeaderHeight)
             attributes.zIndex = zIndexForElementKind(JZSupplementaryViewKinds.columnHeader)
             
+            layoutNonWorkingHoursBackgroundAttributes(section: section, sectionX: sectionMinX, calendarGridMinY: calendarGridMinY, sectionHeight: sectionHeight)
             layoutVerticalGridLinesAttributes(section: section, sectionX: sectionMinX, calendarGridMinY: calendarGridMinY, sectionHeight: sectionHeight)
             layoutItemsAttributes(section: section, sectionX: sectionMinX, calendarStartY: calendarGridMinY)
         }
@@ -332,6 +337,48 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         
         adjustItemsForOverlap(sectionItemAttributes, inSection: section, sectionMinX: sectionX,
                               currentSectionZ: zIndexForElementKind(JZSupplementaryViewKinds.eventCell))
+    }
+    
+    func layoutNonWorkingHoursBackgroundAttributes(section: Int, sectionX: CGFloat, calendarGridMinY: CGFloat, sectionHeight: CGFloat) {
+        var attributes = UICollectionViewLayoutAttributes()
+        
+        let workDay = delegate?.collectionView(collectionView!, layout: self, workDayForSection: section)
+        for hour in 0...23 {
+            (attributes, nonWorkingHoursBackgroundAttributes) = layoutAttributesForDecorationView(at: IndexPath(item: hour, section: section),
+                                                                                                  ofKind: JZDecorationViewKinds.nonWorkingHoursBackground,
+                                                                                                  withItemCache: nonWorkingHoursBackgroundAttributes)
+            if workDay != nil {
+                let nonWorkingHoursBackgroundMinX = nearbyint(sectionX - defaultGridThickness / 2.0)
+                var nonWorkingHoursBackgroundMinY = nearbyint(calendarGridMinY + (hourHeight * CGFloat(hour))) - (defaultGridThickness / 2.0)
+                let nonWorkingHoursBackgroundWidth = fmin(sectionWidth, collectionView!.frame.width)
+                var nonWorkingHoursBackgroundHeight: CGFloat = 0
+                if let day = delegate?.collectionView(collectionView!, layout: self, dayForSection: section) {
+                    let startTime = day.startOfDay.addingTimeInterval(TimeInterval(hour) * 60 * 60)
+                    let endTime = startTime.addingTimeInterval(60 * 60)
+                    if startTime < workDay!.startTime || endTime > workDay!.endTime {
+                        if (startTime < workDay!.startTime && endTime <= workDay!.startTime) || (startTime >= workDay!.endTime) {
+                            nonWorkingHoursBackgroundHeight = hourHeight
+                        }
+                        else if (startTime < workDay!.startTime && endTime > workDay!.startTime) {
+                            nonWorkingHoursBackgroundHeight = hourHeight - (hourHeight * CGFloat((workDay!.startTime.timeIntervalSince(startTime) / endTime.timeIntervalSince(startTime))))
+                        }
+                        else if (startTime > workDay!.startTime && endTime > workDay!.endTime) {
+                            nonWorkingHoursBackgroundMinY += hourHeight * CGFloat((workDay!.endTime.timeIntervalSince(startTime) / endTime.timeIntervalSince(startTime)))
+                            nonWorkingHoursBackgroundHeight = hourHeight - nonWorkingHoursBackgroundMinY
+                        }
+                    }
+                }
+                else {
+                    fatalError()
+                }
+                attributes.frame = CGRect(x: nonWorkingHoursBackgroundMinX, y: nonWorkingHoursBackgroundMinY,
+                                          width: nonWorkingHoursBackgroundWidth, height: nonWorkingHoursBackgroundHeight)
+            }
+            else {
+                attributes.frame = .zero
+            }
+            attributes.zIndex = zIndexForElementKind(JZDecorationViewKinds.nonWorkingHoursBackground)
+        }
     }
     
     func layoutVerticalGridLinesAttributes(section: Int, sectionX: CGFloat, calendarGridMinY: CGFloat, sectionHeight: CGFloat) {
@@ -438,6 +485,8 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             return allDayHeaderBackgroundAttributes[indexPath]
         case JZDecorationViewKinds.allDayCorner:
             return allDayCornerAttributes[indexPath]
+        case JZDecorationViewKinds.nonWorkingHoursBackground:
+            return nonWorkingHoursBackgroundAttributes[indexPath]
         default:
             return nil
         }
@@ -597,6 +646,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         rowHeaderAttributes.removeAll()
         rowHeaderBackgroundAttributes.removeAll()
         cornerHeaderAttributes.removeAll()
+        nonWorkingHoursBackgroundAttributes.removeAll()
         itemAttributes.removeAll()
         allAttributes.removeAll()
         
@@ -705,6 +755,8 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             return minBackgroundZ + 2
         case JZDecorationViewKinds.verticalGridline:
             return minBackgroundZ + 1
+        case JZDecorationViewKinds.nonWorkingHoursBackground:
+            return minBackgroundZ
         default:
             return minCellZ
         }
