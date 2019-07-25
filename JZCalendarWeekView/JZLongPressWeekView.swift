@@ -421,16 +421,18 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
         }
 
         if state == .began {
-            guard let movingCell = currentMovingCell else {
-                isLongPressing = false
-                return
+            if currentLongPressType == .move {
+                if let movingCell = currentMovingCell {
+                    currentEditingInfo.cellSize = movingCell.frame.size
+                    pressPosition = (pointInCollectionView.x - movingCell.frame.origin.x, pointInCollectionView.y - movingCell.frame.origin.y)
+                } else {
+                    isLongPressing = false
+                    return
+                }
+            } else {
+                currentEditingInfo.cellSize = CGSize(width: flowLayout.sectionWidth, height: flowLayout.hourHeight * CGFloat(addNewDurationMins)/60)
+                pressPosition = (currentEditingInfo.cellSize.width/2, currentEditingInfo.cellSize.height/2)
             }
-
-            currentEditingInfo.cellSize = currentLongPressType == .move ? movingCell.frame.size : CGSize(width: flowLayout.sectionWidth, height: flowLayout.hourHeight * CGFloat(addNewDurationMins)/60)
-
-            pressPosition = currentLongPressType == .move
-                ? (pointInCollectionView.x - movingCell.frame.origin.x, pointInCollectionView.y - movingCell.frame.origin.y)
-                : (currentEditingInfo.cellSize.width/2, currentEditingInfo.cellSize.height/2)
 
             longPressViewStartDate = getLongPressViewStartDate(pointInCollectionView: pointInCollectionView,
                                                                pointInSelfView: pointInSelfView)
@@ -442,7 +444,7 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
                 return
             }
 
-            longPressView = initLongPressView(selectedCell: movingCell, type: currentLongPressType, startDate: longPressViewStartDate)
+            longPressView = initLongPressView(selectedCell: currentMovingCell, type: currentLongPressType, startDate: longPressViewStartDate)
 
             if let longPressView = longPressView {
                 longPressView.frame.size = currentEditingInfo.cellSize
@@ -453,7 +455,7 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
                                                y: pointInSelfView.y - pressPosition.yToViewTop + currentEditingInfo.cellSize.height/2)
             }
 
-            if currentLongPressType == .move {
+            if currentLongPressType == .move, let movingCell = currentMovingCell {
                 currentEditingInfo.event = (movingCell as! JZLongPressEventCell).event
 
                 getCurrentMovingCells().forEach {
