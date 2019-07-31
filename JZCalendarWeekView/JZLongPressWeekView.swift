@@ -3,7 +3,7 @@
 //  JZCalendarWeekView
 //
 //  Created by Jeff Zhang on 26/4/18.
-//  Copyright ¬© 2018 Jeff Zhang. All rights reserved.
+//  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
 import UIKit
