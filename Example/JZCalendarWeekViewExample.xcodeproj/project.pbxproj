@@ -518,11 +518,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = XRYH9M2JN7;
+				DEVELOPMENT_TEAM = L85MD8WTSB;
 				INFOPLIST_FILE = "$(SRCROOT)/JZCalendarWeekViewExample/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zjfjack.JZCalendarWeekViewExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.midrive.JZCalendarWeekViewExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -535,11 +535,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = XRYH9M2JN7;
+				DEVELOPMENT_TEAM = L85MD8WTSB;
 				INFOPLIST_FILE = "$(SRCROOT)/JZCalendarWeekViewExample/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zjfjack.JZCalendarWeekViewExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.midrive.JZCalendarWeekViewExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
