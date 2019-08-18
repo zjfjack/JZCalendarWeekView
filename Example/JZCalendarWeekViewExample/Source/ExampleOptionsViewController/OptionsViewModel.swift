@@ -20,11 +20,11 @@ class ExpandableData {
     var selectedIndex: Int {
         guard let cate = categories else { fatalError() }
         switch subject {
-        case .viewType: return cate.index(where: {$0 as! ViewType == selectedValue as! ViewType})!
-        case .numOfDays: return cate.index(where: {$0 as! Int == selectedValue as! Int})!
-        case .scrollType: return cate.index(where: {$0 as! JZScrollType == selectedValue as! JZScrollType})!
-        case .firstDayOfWeek: return cate.index(where: {$0 as! DayOfWeek == selectedValue as! DayOfWeek})!
-        case .hourGridDivision: return cate.index(where: {$0 as! JZHourGridDivision == selectedValue as! JZHourGridDivision})!
+        case .viewType: return cate.index(where: {$0 as? ViewType == selectedValue as? ViewType})!
+        case .numOfDays: return cate.index(where: {$0 as? Int == selectedValue as? Int})!
+        case .scrollType: return cate.index(where: {$0 as? JZScrollType == selectedValue as? JZScrollType})!
+        case .firstDayOfWeek: return cate.index(where: {$0 as? DayOfWeek == selectedValue as? DayOfWeek})!
+        case .hourGridDivision: return cate.index(where: {$0 as? JZHourGridDivision == selectedValue as? JZHourGridDivision})!
         default:
             return 0
         }
@@ -38,11 +38,11 @@ class ExpandableData {
     func getCategoriesInString() -> [String] {
         guard let cate = categories else { return [] }
         switch subject {
-        case .viewType: return cate.map { ($0 as! ViewType).rawValue }
-        case .numOfDays: return cate.map { ($0 as! Int).description }
-        case .scrollType: return cate.map { ($0 as! JZScrollType).displayText }
-        case .firstDayOfWeek: return cate.map { ($0 as! DayOfWeek).dayName }
-        case .hourGridDivision: return cate.map { ($0 as! JZHourGridDivision).displayText }
+        case .viewType: return cate.map { ($0 as? ViewType)?.rawValue ?? "" }
+        case .numOfDays: return cate.map { ($0 as? Int)?.description ?? "" }
+        case .scrollType: return cate.map { ($0 as? JZScrollType)?.displayText ?? "" }
+        case .firstDayOfWeek: return cate.map { ($0 as? DayOfWeek)?.dayName ?? "" }
+        case .hourGridDivision: return cate.map { ($0 as? JZHourGridDivision)?.displayText ?? "" }
         default:
             return []
         }
@@ -124,25 +124,29 @@ class OptionsViewModel: NSObject {
 
     func getHeaderViewSubtitle(_ section: Int) -> String {
         let data = optionsData[section]
+        var subtitle: String?
 
         switch data.subject {
         case .viewType:
-            return (data.selectedValue! as! ViewType).rawValue
+            subtitle = (data.selectedValue as? ViewType)?.rawValue
         case .currentDate:
-            return dateFormatter.string(from: (data.selectedValue as! Date))
+            if let date = data.selectedValue as? Date {
+                subtitle = dateFormatter.string(from: date)
+            }
         case .numOfDays:
-            return (data.selectedValue! as! Int).description
+            subtitle = (data.selectedValue as? Int)?.description
         case .scrollType:
-            return (data.selectedValue! as! JZScrollType).displayText
+            subtitle = (data.selectedValue! as? JZScrollType)?.displayText
         case .firstDayOfWeek:
-            return (data.selectedValue! as! DayOfWeek).dayName
+            subtitle = (data.selectedValue! as? DayOfWeek)?.dayName
         case .hourGridDivision:
-            return (data.selectedValue! as! JZHourGridDivision).displayText
+            subtitle = (data.selectedValue! as? JZHourGridDivision)?.displayText
         case .scrollableRangeStart:
-            return getScrollableRangeSubTitle(data.selectedValue as? Date)
+            subtitle = (getScrollableRangeSubTitle(data.selectedValue as? Date))
         case .scrollableRangeEnd:
-            return getScrollableRangeSubTitle(data.selectedValue as? Date)
+            subtitle = (getScrollableRangeSubTitle(data.selectedValue as? Date))
         }
+        return subtitle ?? ""
     }
 
     func getScrollableRangeSubTitle(_ date: Date?) -> String {

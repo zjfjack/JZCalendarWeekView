@@ -89,7 +89,9 @@ extension CustomViewController: OptionsViewDelegate {
     }
 
     @objc func presentOptionsVC() {
-        let optionsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "OptionsViewController") as! ExampleOptionsViewController
+        guard let optionsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "OptionsViewController") as? ExampleOptionsViewController else {
+            return
+        }
         let optionsViewModel = OptionsViewModel(selectedData: getSelectedData())
         optionsVC.viewModel = optionsViewModel
         optionsVC.delegate = self

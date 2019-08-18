@@ -50,11 +50,11 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     let minBackgroundZ = 0
 
     // Attributes
-    var cachedDayDateComponents = Dictionary<Int, DateComponents>()
-    var cachedCurrentTimeComponents = Dictionary<Int, DateComponents>()
-    var cachedStartTimeDateComponents = Dictionary<IndexPath, DateComponents>()
-    var cachedEndTimeDateComponents = Dictionary<IndexPath, DateComponents>()
-    var registeredDecorationClasses = Dictionary<String, AnyClass>()
+    var cachedDayDateComponents = [Int: DateComponents]()
+    var cachedCurrentTimeComponents = [Int: DateComponents]()
+    var cachedStartTimeDateComponents = [IndexPath: DateComponents]()
+    var cachedEndTimeDateComponents = [IndexPath: DateComponents]()
+    var registeredDecorationClasses = [String: AnyClass]()
     var needsToPopulateAttributesForAllSections = true
 
     var currentTimeComponents: DateComponents {
@@ -64,9 +64,9 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         return cachedCurrentTimeComponents[0]!
     }
 
-    typealias AttDic = Dictionary<IndexPath, UICollectionViewLayoutAttributes>
+    typealias AttDic = [IndexPath: UICollectionViewLayoutAttributes]
 
-    var allAttributes = Array<UICollectionViewLayoutAttributes>()
+    var allAttributes = [UICollectionViewLayoutAttributes]()
     var itemAttributes = AttDic()
     var columnHeaderAttributes = AttDic()
     var columnHeaderBackgroundAttributes = AttDic()

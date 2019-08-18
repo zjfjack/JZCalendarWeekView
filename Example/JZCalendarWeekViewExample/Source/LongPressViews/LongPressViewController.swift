@@ -85,7 +85,7 @@ extension LongPressViewController: JZLongPressViewDelegate, JZLongPressViewDataS
     }
 
     func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
-        let event = editingEvent as! AllDayEvent
+        guard let event = editingEvent as? AllDayEvent else { return }
         let duration = Calendar.current.dateComponents([.minute], from: event.startDate, to: event.endDate).minute!
         let selectedIndex = viewModel.events.index(where: { $0.id == event.id })!
         viewModel.events[selectedIndex].startDate = startDate
@@ -96,9 +96,11 @@ extension LongPressViewController: JZLongPressViewDelegate, JZLongPressViewDataS
     }
 
     func weekView(_ weekView: JZLongPressWeekView, viewForAddNewLongPressAt startDate: Date) -> UIView {
-        let view = UINib(nibName: EventCell.className, bundle: nil).instantiate(withOwner: nil, options: nil)[0] as! EventCell
-        view.titleLabel.text = "New Event"
-        return view
+        if let view = UINib(nibName: EventCell.className, bundle: nil).instantiate(withOwner: nil, options: nil)[0] as? EventCell {
+            view.titleLabel.text = "New Event"
+            return view
+        }
+        return UIView()
     }
 }
 
@@ -124,7 +126,9 @@ extension LongPressViewController: OptionsViewDelegate {
     }
 
     @objc func presentOptionsVC() {
-        let optionsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "OptionsViewController") as! ExampleOptionsViewController
+        guard let optionsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "OptionsViewController") as? ExampleOptionsViewController else {
+            return
+        }
         let optionsViewModel = OptionsViewModel(selectedData: getSelectedData())
         optionsVC.viewModel = optionsViewModel
         optionsVC.delegate = self

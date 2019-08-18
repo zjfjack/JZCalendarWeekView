@@ -4,6 +4,10 @@ disabled_rules:
     - file_length
     - identifier_name
     - type_body_length
+    - function_body_length
+    - no_fallthrough_only
 force_cast: warning
-type_body_length:
-   - 500
+excluded:
+    - Tests
+cyclomatic_complexity:
+    ignores_case_statements: true

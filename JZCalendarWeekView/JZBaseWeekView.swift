@@ -193,7 +193,7 @@ open class JZBaseWeekView: UIView {
         notAllDayEventsBySection.removeAll()
         allDayEventsBySection.removeAll()
         for (date, events) in allEventsBySection {
-            let allDayEvents = events as! [JZAllDayEvent]
+            guard let allDayEvents = events as? [JZAllDayEvent] else { continue }
             notAllDayEventsBySection[date] = allDayEvents.filter { !$0.isAllDay }
             allDayEventsBySection[date] = allDayEvents.filter { $0.isAllDay }
         }
@@ -450,39 +450,39 @@ extension JZBaseWeekView: UICollectionViewDataSource {
     }
 
     open func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let view: UICollectionReusableView
+        var view = UICollectionReusableView()
 
         switch kind {
-
         case JZSupplementaryViewKinds.columnHeader:
-            let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZColumnHeader
-            columnHeader.updateView(date: flowLayout.dateForColumnHeader(at: indexPath))
-            view = columnHeader
-
+            if let columnHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as? JZColumnHeader {
+                columnHeader.updateView(date: flowLayout.dateForColumnHeader(at: indexPath))
+                view = columnHeader
+            }
         case JZSupplementaryViewKinds.rowHeader:
-            let rowHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZRowHeader
-            rowHeader.updateView(date: flowLayout.timeForRowHeader(at: indexPath))
-            view = rowHeader
-
+            if let rowHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as? JZRowHeader {
+                rowHeader.updateView(date: flowLayout.timeForRowHeader(at: indexPath))
+                view = rowHeader
+            }
         case JZSupplementaryViewKinds.cornerHeader:
-            let cornerHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZCornerHeader
-            view = cornerHeader
-
+            if let cornerHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as? JZCornerHeader {
+                view = cornerHeader
+            }
         case JZSupplementaryViewKinds.allDayHeader:
-            let alldayHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZAllDayHeader
-            alldayHeader.updateView(views: [])
-            view = alldayHeader
-
+            if let alldayHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as? JZAllDayHeader {
+                alldayHeader.updateView(views: [])
+                view = alldayHeader
+            }
         case JZSupplementaryViewKinds.currentTimeline:
             if currentTimelineType == .page {
-                let currentTimeline = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZCurrentTimelinePage
-                view = getPageTypeCurrentTimeline(timeline: currentTimeline, indexPath: indexPath)
+                if let currentTimeline = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as? JZCurrentTimelinePage {
+                    view = getPageTypeCurrentTimeline(timeline: currentTimeline, indexPath: indexPath)
+                }
             } else {
-                let currentTimeline = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as! JZCurrentTimelineSection
-                view = getSectionTypeCurrentTimeline(timeline: currentTimeline, indexPath: indexPath)
+                if let currentTimeline = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as? JZCurrentTimelineSection {
+                    view = getSectionTypeCurrentTimeline(timeline: currentTimeline, indexPath: indexPath)
+                }
             }
-        default:
-            view = UICollectionReusableView()
+        default: break
         }
         return view
     }

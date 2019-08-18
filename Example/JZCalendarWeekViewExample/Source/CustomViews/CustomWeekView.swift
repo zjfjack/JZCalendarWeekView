@@ -24,20 +24,25 @@ class CustomWeekView: JZBaseWeekView {
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let date = flowLayout.dateForColumnHeader(at: indexPath)
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EventCell.className, for: indexPath) as! EventCell
-        cell.configureCell(event: allEventsBySection[date]![indexPath.row] as! DefaultEvent)
-        return cell
+        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EventCell.className, for: indexPath) as? EventCell,
+            let event = allEventsBySection[date]?[indexPath.row] as? DefaultEvent {
+            cell.configureCell(event: event)
+            return cell
+        }
+        preconditionFailure("EventCell and DefaultEvent should be casted")
     }
 
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == JZSupplementaryViewKinds.rowHeader {
-
-            let rowHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HourRowHeader.className, for: indexPath) as! HourRowHeader
-            rowHeader.updateView(date: flowLayout.timeForRowHeader(at: indexPath))
-            return rowHeader
+            if let rowHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HourRowHeader.className, for: indexPath) as? HourRowHeader {
+                rowHeader.updateView(date: flowLayout.timeForRowHeader(at: indexPath))
+                return rowHeader
+            }
+            preconditionFailure("HourRowHeader should be casted")
         } else if kind == JZSupplementaryViewKinds.currentTimeline {
-
-            let currentTimeline = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CurrentTimelineAll.className, for: indexPath) as! CurrentTimelineAll
+            guard let currentTimeline = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CurrentTimelineAll.className, for: indexPath) as? CurrentTimelineAll else {
+                preconditionFailure("CurrentTimelineAll should be casted")
+            }
             let isToday = Calendar.current.isDateInToday(flowLayout.dateForColumnHeader(at: indexPath))
             currentTimeline.updateView(needShowBallView: isToday)
             return currentTimeline
@@ -46,7 +51,8 @@ class CustomWeekView: JZBaseWeekView {
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedEvent = getCurrentEvent(with: indexPath) as! DefaultEvent
-        ToastUtil.toastMessageInTheMiddle(message: selectedEvent.title)
+        if let selectedEvent = getCurrentEvent(with: indexPath) as? DefaultEvent {
+            ToastUtil.toastMessageInTheMiddle(message: selectedEvent.title)
+        }
     }
 }
