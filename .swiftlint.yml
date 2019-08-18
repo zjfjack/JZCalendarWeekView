@@ -1,0 +1,9 @@
+disabled_rules:
+    - line_length
+    - type_name
+    - file_length
+    - identifier_name
+    - type_body_length
+force_cast: warning
+type_body_length:
+   - 500

@@ -26,17 +26,17 @@ public enum JZDecorationViewKinds {
 
 /// For checking scrollView(collectionView) currently scrolling direction
 struct ScrollDirection {
-    
+
     enum Direction {
         case horizontal
         case vertical
     }
-    
+
     /// scrolling direction
     let direction: Direction
     /// locked at curtain x or y value, nil means not locked, similar to previous initialContentOffset but put it in direction
     let lockedAt: CGFloat?
-    
+
     init(direction: Direction, lockedAt: CGFloat?) {
         self.direction = direction
         self.lockedAt = lockedAt
@@ -68,7 +68,7 @@ public enum JZCurrentTimelineType {
 }
 
 open class JZWeekViewHelper {
-    
+
     /**
      Get calculated events dictionary with intraStartTime and intraEndTime
      - Parameters:
@@ -110,7 +110,7 @@ open class JZWeekViewHelper {
         }
         return resultEvents
     }
-    
+
     // This function has to be updated once new devices coming
     private static var hasNotch: Bool = {
         switch UIScreen.main.nativeBounds.height {
@@ -124,7 +124,7 @@ open class JZWeekViewHelper {
             return false
         }
     }()
-    
+
     /// Handle the viewWillTransition in UIViewController, only need call this function in ViewController owning JZWeekView.
     ///
     /// Support All orientations (including iPhone X Landscape) and iPad (Slide Over and Split View)
@@ -143,11 +143,3 @@ open class JZWeekViewHelper {
         }
     }
 }
-
-
-
-
-
-
-
-

@@ -10,33 +10,31 @@ import UIKit
 import JZCalendarWeekView
 
 class ExpandableData {
-    
+
     var subject: OptionSectionType
     var categories: [Any]?
     lazy var categoriesStr: [String] = getCategoriesInString()
     var isExpanded: Bool = false
     var selectedValue: Any!
-    
+
     var selectedIndex: Int {
-        get {
-            guard let cate = categories else { fatalError() }
-            switch subject {
-            case .viewType: return cate.index(where: {$0 as! ViewType == selectedValue as! ViewType})!
-            case .numOfDays: return cate.index(where: {$0 as! Int == selectedValue as! Int})!
-            case .scrollType: return cate.index(where: {$0 as! JZScrollType == selectedValue as! JZScrollType})!
-            case .firstDayOfWeek: return cate.index(where: {$0 as! DayOfWeek == selectedValue as! DayOfWeek})!
-            case .hourGridDivision: return cate.index(where: {$0 as! JZHourGridDivision == selectedValue as! JZHourGridDivision})!
-            default:
-                return 0
-            }
+        guard let cate = categories else { fatalError() }
+        switch subject {
+        case .viewType: return cate.index(where: {$0 as! ViewType == selectedValue as! ViewType})!
+        case .numOfDays: return cate.index(where: {$0 as! Int == selectedValue as! Int})!
+        case .scrollType: return cate.index(where: {$0 as! JZScrollType == selectedValue as! JZScrollType})!
+        case .firstDayOfWeek: return cate.index(where: {$0 as! DayOfWeek == selectedValue as! DayOfWeek})!
+        case .hourGridDivision: return cate.index(where: {$0 as! JZHourGridDivision == selectedValue as! JZHourGridDivision})!
+        default:
+            return 0
         }
     }
-    
+
     init(subject: OptionSectionType, categories: [Any]?=nil) {
         self.subject = subject
         self.categories = categories
     }
-    
+
     func getCategoriesInString() -> [String] {
         guard let cate = categories else { return [] }
         switch subject {
@@ -69,7 +67,7 @@ enum OptionSectionType: String {
 }
 
 struct OptionsSelectedData {
-    
+
     var viewType: ViewType
     var date: Date
     var numOfDays: Int
@@ -77,7 +75,7 @@ struct OptionsSelectedData {
     var firstDayOfWeek: DayOfWeek?
     var hourGridDivision: JZHourGridDivision
     var scrollableRange: (startDate: Date?, endDate: Date?)
-    
+
     init(viewType: ViewType, date: Date, numOfDays: Int, scrollType: JZScrollType, firstDayOfWeek: DayOfWeek?, hourGridDivision: JZHourGridDivision, scrollableRange: (Date?, Date?)) {
         self.viewType = viewType
         self.date = date
@@ -90,7 +88,7 @@ struct OptionsSelectedData {
 }
 
 class OptionsViewModel: NSObject {
-    
+
     let dateFormatter = DateFormatter()
     var optionsData: [ExpandableData] = {
         let hourDivisionCategories: [JZHourGridDivision] = [.noneDiv, .minutes_5, .minutes_10, .minutes_15, .minutes_20, .minutes_30]
@@ -106,11 +104,11 @@ class OptionsViewModel: NSObject {
         ]
     }()
     let perviousSelectedData: OptionsSelectedData
-    
+
     init(selectedData: OptionsSelectedData) {
         self.perviousSelectedData = selectedData
         super.init()
-        
+
         optionsData[0].selectedValue = selectedData.viewType
         optionsData[1].selectedValue = selectedData.date
         optionsData[2].selectedValue = selectedData.numOfDays
@@ -123,10 +121,10 @@ class OptionsViewModel: NSObject {
         }
         dateFormatter.dateFormat = "YYYY-MM-dd"
     }
-    
+
     func getHeaderViewSubtitle(_ section: Int) -> String {
         let data = optionsData[section]
-        
+
         switch data.subject {
         case .viewType:
             return (data.selectedValue! as! ViewType).rawValue
@@ -146,7 +144,7 @@ class OptionsViewModel: NSObject {
             return getScrollableRangeSubTitle(data.selectedValue as? Date)
         }
     }
-    
+
     func getScrollableRangeSubTitle(_ date: Date?) -> String {
         var str = "nil"
         if let date = date {
@@ -154,13 +152,13 @@ class OptionsViewModel: NSObject {
         }
         return str
     }
-    
+
     func insertDayOfWeekToData(firstDayOfWeek: DayOfWeek) {
         let dayOfWeekData = ExpandableData(subject: .firstDayOfWeek, categories: DayOfWeek.dayOfWeekList)
         dayOfWeekData.selectedValue = firstDayOfWeek
         optionsData.insert(dayOfWeekData, at: 3)
     }
-    
+
     func removeDayOfWeekInData() {
         if optionsData[3].subject == .firstDayOfWeek {
             optionsData.remove(at: 3)

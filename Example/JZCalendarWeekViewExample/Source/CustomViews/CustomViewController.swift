@@ -13,25 +13,25 @@ import JZCalendarWeekView
 class CustomViewController: UIViewController {
 
     @IBOutlet weak var calendarWeekView: CustomWeekView!
-    
+
     let viewModel = DefaultViewModel()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupBasic()
         setupCalendarView()
         setupNaviBar()
     }
-    
+
     // Support device orientation change
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         JZWeekViewHelper.viewTransitionHandler(to: size, weekView: calendarWeekView)
     }
-        
+
     private func setupCalendarView() {
         calendarWeekView.baseDelegate = self
-        
+
         if viewModel.currentSelectedData != nil {
             // For example only
             setupCalendarViewWithSelectedData()
@@ -45,11 +45,11 @@ class CustomViewController: UIViewController {
                                            visibleTime: time8AM)
         }
     }
-    
+
     /// For example only
     private func setupCalendarViewWithSelectedData() {
         guard let selectedData = viewModel.currentSelectedData else { return }
-        
+
         let time8AM = DateComponents(calendar: Calendar.current, timeZone: Calendar.current.timeZone, year: 2018, month: 9, day: 24, hour: 8, minute: 0, second: 0).date!
         calendarWeekView.setupCalendar(numOfDays: selectedData.numOfDays,
                                        setDate: selectedData.date,
@@ -69,12 +69,12 @@ extension CustomViewController: JZBaseViewDelegate {
 
 // For example only
 extension CustomViewController: OptionsViewDelegate {
-    
+
     func setupBasic() {
         // Add this to fix lower than iOS11 problems
         self.automaticallyAdjustsScrollViewInsets = false
     }
-    
+
     private func setupNaviBar() {
         updateNaviBarTitle()
         let optionsButton = UIButton(type: .system)
@@ -87,7 +87,7 @@ extension CustomViewController: OptionsViewDelegate {
         optionsButton.addTarget(self, action: #selector(presentOptionsVC), for: .touchUpInside)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: optionsButton)
     }
-    
+
     @objc func presentOptionsVC() {
         let optionsVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "OptionsViewController") as! ExampleOptionsViewController
         let optionsViewModel = OptionsViewModel(selectedData: getSelectedData())
@@ -96,7 +96,7 @@ extension CustomViewController: OptionsViewDelegate {
         let navigationVC = UINavigationController(rootViewController: optionsVC)
         self.present(navigationVC, animated: true, completion: nil)
     }
-    
+
     private func getSelectedData() -> OptionsSelectedData {
         let numOfDays = calendarWeekView.numOfDays!
         let firstDayOfWeek = numOfDays == 7 ? calendarWeekView.firstDayOfWeek : nil
@@ -109,9 +109,9 @@ extension CustomViewController: OptionsViewDelegate {
                                                             scrollableRange: calendarWeekView.scrollableRange)
         return viewModel.currentSelectedData
     }
-    
+
     func finishUpdate(selectedData: OptionsSelectedData) {
-        
+
         // Update numOfDays
         if selectedData.numOfDays != viewModel.currentSelectedData.numOfDays {
             calendarWeekView.numOfDays = selectedData.numOfDays
@@ -140,7 +140,7 @@ extension CustomViewController: OptionsViewDelegate {
             calendarWeekView.scrollableRange = selectedData.scrollableRange
         }
     }
-    
+
     private func updateNaviBarTitle() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM YYYY"
