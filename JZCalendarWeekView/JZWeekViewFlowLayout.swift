@@ -494,77 +494,135 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         }
     }
     
-    /// Adjust items size when overlapping at same period
+    /**
+     New method to adjust items layout for overlap
+     
+     Known existing issues:
+     1. If some events have the same overlap count as others and at the same time, those events are not adjusted yet, then this method will calculate and divide them evenly in the section.
+        However, there might be some cases, in very complicated situation, those same overlap count groups might exist already adjusted item overlapping with one of current group items, which
+        means the order is wrong.
+     2. Efficiency issue for getAvailableRanges and the rest of the code in this method
+    */
     open func adjustItemsForOverlap(_ sectionItemAttributes: [UICollectionViewLayoutAttributes], inSection: Int, sectionMinX: CGFloat, currentSectionZ: Int) {
-        var adjustedAttributes = Set<UICollectionViewLayoutAttributes>()
+        let (maxOverlapIntervalCount, overlapGroups) = groupOverlapItems(items: sectionItemAttributes)
+        guard maxOverlapIntervalCount > 1 else { return }
         
+        var sortedOverlapGroups = overlapGroups.sorted { $0.count > $1.count }
+        var adjustedItems = Set<UICollectionViewLayoutAttributes>()
         var sectionZ = currentSectionZ
         
-        for itemAttributes in sectionItemAttributes {
-            // If an item's already been adjusted, move on to the next one
-            if adjustedAttributes.contains(itemAttributes) {
+        // First draw the largest overlap items layout (only this case itemWidth is fixed and always at the right position)
+        let largestOverlapCountGroup = sortedOverlapGroups[0]
+        setItemsAdjustedAttributes(fullWidth: sectionWidth, items: largestOverlapCountGroup, currentMinX: sectionMinX, sectionZ: &sectionZ, adjustedItems: &adjustedItems)
+        
+        for index in 1..<sortedOverlapGroups.count {
+            let group = sortedOverlapGroups[index]
+            var unadjustedItems = [UICollectionViewLayoutAttributes]()
+            // unavailable area and already sorted
+            var adjustedRanges = [ClosedRange<CGFloat>]()
+            group.forEach {
+                if adjustedItems.contains($0) {
+                    adjustedRanges.append($0.frame.minX...$0.frame.maxX)
+                } else {
+                    unadjustedItems.append($0)
+                }
+            }
+            guard adjustedRanges.count > 0 else {
+                // No need to recalulate the layout
+                setItemsAdjustedAttributes(fullWidth: sectionWidth, items: group, currentMinX: sectionMinX, sectionZ: &sectionZ, adjustedItems: &adjustedItems)
                 continue
             }
+            guard unadjustedItems.count > 0 else { continue }
             
-            // Find the other items that overlap with this item
-            var overlappingItems = [UICollectionViewLayoutAttributes]()
-            let itemFrame = itemAttributes.frame
-            
-            overlappingItems.append(contentsOf: sectionItemAttributes.filter {
-                if $0 != itemAttributes {
-                    return itemFrame.intersects($0.frame)
+            let availableRanges = getAvailableRanges(sectionRange: sectionMinX...sectionMinX + sectionWidth, adjustedRanges: adjustedRanges)
+            let minItemDivisionWidth = (sectionWidth / CGFloat(largestOverlapCountGroup.count)).toDecimal1Value()
+            var i = 0, j = 0
+            while i < unadjustedItems.count && j < availableRanges.count {
+                let availableRange = availableRanges[j]
+                let availableWidth = availableRange.upperBound - availableRange.lowerBound
+                let availableMaxItemsCount = Int(round(availableWidth / minItemDivisionWidth))
+                let leftUnadjustedItemsCount = unadjustedItems.count - i
+                if leftUnadjustedItemsCount <= availableMaxItemsCount {
+                    // All left unadjusted items can evenly divide the current available area
+                    setItemsAdjustedAttributes(fullWidth: availableWidth, items: Array(unadjustedItems[i..<unadjustedItems.count]), currentMinX: availableRange.lowerBound, sectionZ: &sectionZ, adjustedItems: &adjustedItems)
+                    break
                 } else {
-                    return false
-                }
-            })
-            
-            // If there's items overlapping, we need to adjust them
-            if overlappingItems.count > 0 {
-                // Add the item we're adjusting to the overlap set
-                overlappingItems.insert(itemAttributes, at: 0)
-                
-                let startY = overlappingItems.map { $0.frame.minY }
-                let endY = overlappingItems.map { $0.frame.maxY }
-                let divisions = maxOverlapIntervalCount(startY: startY, endY: endY)
-                
-                // Adjust the items to have a width of the section size divided by the number of divisions needed
-                let divisionWidth = (sectionWidth / CGFloat(divisions)).toDecimal1Value()
-                var dividedAttributes = [UICollectionViewLayoutAttributes]()
-                
-                for divisionAttributes in overlappingItems {
-                    let itemWidth = divisionWidth - itemMargin.left - itemMargin.right
-                    
-                    // It it hasn't yet been adjusted, perform adjustment
-                    if !adjustedAttributes.contains(divisionAttributes) {
-                        var divisionAttributesFrame = divisionAttributes.frame
-                        divisionAttributesFrame.origin.x = sectionMinX + itemMargin.left
-                        divisionAttributesFrame.size.width = itemWidth
-                        
-                        // Horizontal Layout
-                        var adjustments = 1
-                        for dividedItemAttributes in dividedAttributes {
-                            if dividedItemAttributes.frame.intersects(divisionAttributesFrame) {
-                                divisionAttributesFrame.origin.x = sectionMinX + ((divisionWidth * CGFloat(adjustments)) + itemMargin.left)
-                                adjustments += 1
-                            }
-                        }
-                        // Stacking (lower items stack above higher items, since the title is at the top)
-                        divisionAttributes.zIndex = sectionZ
-                        sectionZ += 1
-                        
-                        divisionAttributes.frame = divisionAttributesFrame
-                        dividedAttributes.append(divisionAttributes)
-                        adjustedAttributes.insert(divisionAttributes)
-                    }
+                    // This current available interval cannot afford all left unadjusted items
+                    setItemsAdjustedAttributes(fullWidth: availableWidth, items: Array(unadjustedItems[i..<i+availableMaxItemsCount]), currentMinX: availableRange.lowerBound, sectionZ: &sectionZ, adjustedItems: &adjustedItems)
+                    i += availableMaxItemsCount
+                    j += 1
                 }
             }
         }
     }
     
-    /// Determine the number of divisions needed (maximum number of currently overlapping items)
+    /// Get current available ranges for unadjusted items with given current section range and already adjusted ranges
     ///
-    /// Refer to algorithm from http://www.zrzahid.com/maximum-number-of-overlapping-intervals/
-    func maxOverlapIntervalCount(startY: [CGFloat], endY: [CGFloat]) -> Int {
+    /// - Parameters:
+    ///   - sectionRange: current section minX and maxX range
+    ///   - adjustedRanges: already adjusted ranges(cannot draw items on these ranges)
+    /// - Returns: All available ranges after substract all adjusted ranges
+    func getAvailableRanges(sectionRange: ClosedRange<CGFloat>, adjustedRanges: [ClosedRange<CGFloat>]) -> [ClosedRange<CGFloat>] {
+        var availableRanges: [ClosedRange<CGFloat>] = [sectionRange]
+        let sortedAdjustedRange = adjustedRanges.sorted { $0.lowerBound < $1.lowerBound }
+        for adjustedRange in sortedAdjustedRange {
+            let lastAvailableRange = availableRanges.last!
+            if adjustedRange.lowerBound > lastAvailableRange.lowerBound + itemMargin.left + itemMargin.right {
+                var currentAvailableRanges = [ClosedRange<CGFloat>]()
+                // TODO: still exists 707.1999 and 708, needs to be fixed
+                if adjustedRange.upperBound + itemMargin.right >= lastAvailableRange.upperBound {
+                    // Adjusted range covers right part of the last available range
+                    let leftAvailableRange = lastAvailableRange.lowerBound...adjustedRange.lowerBound
+                    currentAvailableRanges.append(leftAvailableRange)
+                } else {
+                    // Adjusted range is in middle of the last available range
+                    let leftAvailableRange = lastAvailableRange.lowerBound...adjustedRange.lowerBound
+                    let rightAvailableRange = adjustedRange.upperBound...lastAvailableRange.upperBound
+                    currentAvailableRanges = [leftAvailableRange, rightAvailableRange]
+                }
+                availableRanges.removeLast()
+                availableRanges += currentAvailableRanges
+            } else {
+                if adjustedRange.upperBound > lastAvailableRange.lowerBound {
+                    let availableRange = adjustedRange.upperBound...lastAvailableRange.upperBound
+                    availableRanges.removeLast()
+                    availableRanges.append(availableRange)
+                } else {
+                    // if false, means this adjustedRange is included in last adjustedRange, like (3, 7) & (5, 7) no need to do anything
+                }
+            }
+        }
+        return availableRanges
+    }
+    
+    /// Set provided items correct adjusted layout attributes
+    ///
+    /// - Parameters:
+    ///   - fullWidth: Full width for items can be divided
+    ///   - items: All the items need to be adjusted
+    ///   - currentMinX: Current minimum contentOffset(start position of the first item)
+    ///   - sectionZ: section Z value (inout)
+    ///   - adjustedItems: already adjused item (inout)
+    private func setItemsAdjustedAttributes(fullWidth: CGFloat,
+                                            items: [UICollectionViewLayoutAttributes],
+                                            currentMinX: CGFloat,
+                                            sectionZ: inout Int,
+                                            adjustedItems: inout Set<UICollectionViewLayoutAttributes>) {
+        let divisionWidth = (fullWidth / CGFloat(items.count)).toDecimal1Value()
+        let itemWidth = divisionWidth - itemMargin.left - itemMargin.right
+        for (index, itemAttribute) in items.enumerated() {
+            itemAttribute.frame.origin.x = (currentMinX + itemMargin.left + CGFloat(index) * divisionWidth).toDecimal1Value()
+            itemAttribute.frame.size = CGSize(width: itemWidth, height: itemAttribute.frame.height)
+            itemAttribute.zIndex = sectionZ
+            sectionZ += 1
+            adjustedItems.insert(itemAttribute)
+        }
+    }
+    
+    /// Get maximum number of currently overlapping items, used to refer only
+    ///
+    /// Algorithm from http://www.zrzahid.com/maximum-number-of-overlapping-intervals/
+    private func maxOverlapIntervalCount(startY: [CGFloat], endY: [CGFloat]) -> Int {
         var maxOverlap = 0, currentOverlap = 0
         let sortedStartY = startY.sorted(), sortedEndY = endY.sorted()
         
@@ -580,6 +638,44 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
             }
         }
         return maxOverlap
+    }
+    
+    /// Group all the overlap items depending on the maximum overlap items
+    ///
+    /// Refer to the previous algorithm but integrated with groups
+    /// - Parameter items: All the items(cells) in the UICollectionView
+    /// - Returns: maxOverlapIntervalCount and all the maximum overlap groups
+    func groupOverlapItems(items: [UICollectionViewLayoutAttributes]) -> (maxOverlapIntervalCount: Int, overlapGroups: [[UICollectionViewLayoutAttributes]]) {
+        var maxOverlap = 0, currentOverlap = 0
+        let sortedMinYItems = items.sorted { $0.frame.minY < $1.frame.minY }
+        let sortedMaxYItems = items.sorted { $0.frame.maxY < $1.frame.maxY }
+        let itemCount = items.count
+        
+        var i = 0, j = 0
+        var overlapGroups = [[UICollectionViewLayoutAttributes]]()
+        var currentOverlapGroup = [UICollectionViewLayoutAttributes]()
+        var shouldAppendToOverlapGroups: Bool = false
+        while i < itemCount && j < itemCount {
+            if sortedMinYItems[i].frame.minY < sortedMaxYItems[j].frame.maxY {
+                currentOverlap += 1
+                maxOverlap = max(maxOverlap, currentOverlap)
+                shouldAppendToOverlapGroups = true
+                currentOverlapGroup.append(sortedMinYItems[i])
+                i += 1
+            } else {
+                currentOverlap -= 1
+                // should not append to group with continuous minus
+                if shouldAppendToOverlapGroups {
+                    if currentOverlapGroup.count > 1 { overlapGroups.append(currentOverlapGroup) }
+                    shouldAppendToOverlapGroups = false
+                }
+                currentOverlapGroup.removeAll { $0 == sortedMaxYItems[j] }
+                j += 1
+            }
+        }
+        // Add last currentOverlapGroup
+        if currentOverlapGroup.count > 1 { overlapGroups.append(currentOverlapGroup) }
+        return (maxOverlap, overlapGroups)
     }
     
     func invalidateLayoutCache() {
