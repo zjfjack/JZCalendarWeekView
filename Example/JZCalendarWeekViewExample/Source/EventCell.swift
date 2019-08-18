@@ -10,7 +10,7 @@ import UIKit
 import JZCalendarWeekView
 
 class EventCell: UICollectionViewCell {
-    
+
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var borderView: UIView!
@@ -18,10 +18,10 @@ class EventCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         setupBasic()
     }
-    
+
     func setupBasic() {
         self.clipsToBounds = true
         layer.shadowColor = UIColor.black.cgColor
@@ -33,7 +33,7 @@ class EventCell: UICollectionViewCell {
         self.backgroundColor = UIColor(hex: 0xEEF7FF)
         borderView.backgroundColor = UIColor(hex: 0x0899FF)
     }
-    
+
     func configureCell(event: DefaultEvent) {
         self.event = event
         locationLabel.text = event.location

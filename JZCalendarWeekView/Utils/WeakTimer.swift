@@ -11,11 +11,11 @@
 import Foundation
 
 final class WeakTimer {
-    
+
     fileprivate weak var timer: Timer?
     fileprivate weak var target: AnyObject?
     fileprivate let action: (Timer) -> Void
-    
+
     fileprivate init(timeInterval: TimeInterval,
                      target: AnyObject,
                      repeats: Bool,
@@ -28,7 +28,7 @@ final class WeakTimer {
                                           userInfo: nil,
                                           repeats: repeats)
     }
-    
+
     class func scheduledTimer(timeInterval: TimeInterval,
                               target: AnyObject,
                               repeats: Bool,
@@ -38,7 +38,7 @@ final class WeakTimer {
                          repeats: repeats,
                          action: action).timer!
     }
-    
+
     @objc fileprivate func fire(timer: Timer) {
         if target != nil {
             action(timer)
