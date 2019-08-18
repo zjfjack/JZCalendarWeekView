@@ -87,7 +87,7 @@ extension LongPressViewController: JZLongPressViewDelegate, JZLongPressViewDataS
     func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {
         guard let event = editingEvent as? AllDayEvent else { return }
         let duration = Calendar.current.dateComponents([.minute], from: event.startDate, to: event.endDate).minute!
-        let selectedIndex = viewModel.events.index(where: { $0.id == event.id })!
+        let selectedIndex = viewModel.events.firstIndex(where: { $0.id == event.id })!
         viewModel.events[selectedIndex].startDate = startDate
         viewModel.events[selectedIndex].endDate = startDate.add(component: .minute, value: duration)
 

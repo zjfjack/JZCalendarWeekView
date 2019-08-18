@@ -331,7 +331,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
             }
         } else {
             cellContentView.layer.opacity = 1
-            if let index = currentEditingInfo.allOpacityContentViews.index(where: {$0 == cellContentView}) {
+            if let index = currentEditingInfo.allOpacityContentViews.firstIndex(where: {$0 == cellContentView}) {
                 currentEditingInfo.allOpacityContentViews.remove(at: index)
             }
         }

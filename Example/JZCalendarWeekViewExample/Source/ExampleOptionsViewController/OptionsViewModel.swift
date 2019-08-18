@@ -20,11 +20,11 @@ class ExpandableData {
     var selectedIndex: Int {
         guard let cate = categories else { fatalError() }
         switch subject {
-        case .viewType: return cate.index(where: {$0 as? ViewType == selectedValue as? ViewType})!
-        case .numOfDays: return cate.index(where: {$0 as? Int == selectedValue as? Int})!
-        case .scrollType: return cate.index(where: {$0 as? JZScrollType == selectedValue as? JZScrollType})!
-        case .firstDayOfWeek: return cate.index(where: {$0 as? DayOfWeek == selectedValue as? DayOfWeek})!
-        case .hourGridDivision: return cate.index(where: {$0 as? JZHourGridDivision == selectedValue as? JZHourGridDivision})!
+        case .viewType: return cate.firstIndex(where: {$0 as? ViewType == selectedValue as? ViewType})!
+        case .numOfDays: return cate.firstIndex(where: {$0 as? Int == selectedValue as? Int})!
+        case .scrollType: return cate.firstIndex(where: {$0 as? JZScrollType == selectedValue as? JZScrollType})!
+        case .firstDayOfWeek: return cate.firstIndex(where: {$0 as? DayOfWeek == selectedValue as? DayOfWeek})!
+        case .hourGridDivision: return cate.firstIndex(where: {$0 as? JZHourGridDivision == selectedValue as? JZHourGridDivision})!
         default:
             return 0
         }
