@@ -97,6 +97,8 @@ public protocol JZLongPressViewDelegate: class {
     func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date)
     /// When Move long press gesture ends, this function will be called.
     func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date)
+    /// When an event is long pressed on, this function will be called.
+    func weekView(_ weekView: JZLongPressWeekView, didBeginLongPressOn cell: JZLongPressEventCell)
     /// Sometimes the longPress will be cancelled because some curtain reason.
     func weekView(_ weekView: JZLongPressWeekView, longPressType: JZLongPressWeekView.LongPressType, didCancelLongPressAt startDate: Date)
 }
@@ -110,10 +112,10 @@ public protocol JZLongPressViewDataSource: class {
 ```
 Also, you should provide the long press types and there are some other properties you can change.
 
-```swift 
+```swift
 calendarWeekView.longPressDelegate = self
 calendarWeekView.longPressDataSource = self
-calendarWeekView.longPressTypes = [.addNew, .move]
+calendarWeekView.longPressTypes = [.addNew, .move, .custom]
 
 // Optional
 calendarWeekView.addNewDurationMins = 120
@@ -126,7 +128,7 @@ If you want to use the `move` type long press, you have to inherit your `UIColle
 In JZCalendarWeekView, the data model is using `[Date: [Event]]` dictionary because for each day (a section in collectionView), there might be some events. <br />
 
 A static function called `getIntraEventsByDate` provided in `JZWeekViewHelper` allow you to tranform your events list into `[Date: [Event]]` dictionary.
-```swift 
+```swift
 open class func getIntraEventsByDate<T: JZBaseEvent>(originalEvents: [T]) -> [Date: [T]]
 ```
 In order to call this function, you should create a subclass of `JZBaseEvent` and also implement the `NSCopying` protocol. <br />
@@ -192,6 +194,3 @@ If you have any questions and suggestions, feel free to contact me.
 ## License
 
 JZCalendarWeekView is available under the MIT license. See the [LICENSE](https://github.com/zjfjack/JZCalendarWeekView/blob/master/LICENSE)  for more info.
-
-
-

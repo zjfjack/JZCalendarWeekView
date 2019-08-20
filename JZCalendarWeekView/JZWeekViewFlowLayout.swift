@@ -44,7 +44,6 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         let height = hourHeight * 24 // statement too long for Swift 5 compiler
         return columnHeaderHeight + height + contentsMargin.top + contentsMargin.bottom + allDayHeaderHeight
     }
-
     let minOverlayZ = 1000  // Allows for 900 items in a section without z overlap issues
     let minCellZ = 100      // Allows for 100 items in a section's background
     let minBackgroundZ = 0
