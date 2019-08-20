@@ -31,7 +31,7 @@ open class JZBaseWeekView: UIView {
      (numOfDays) days before current page first date, which means the start of the collectionView, not the current page first date
      - The core structure of JZCalendarWeekView is 3 pages, previous-current-next
      - If you want to update this value instead of using [updateWeekView(to date: Date)](), please **make sure the date is startOfDay**.
-    */
+     */
     public var initDate: Date! {
         didSet {
             baseDelegate?.initDateDidChange(self, initDate: initDate)
@@ -144,17 +144,17 @@ open class JZBaseWeekView: UIView {
 
     /**
      Basic Setup method for JZCalendarWeekView,it **must** be called.
-     
+
      - Parameters:
-        - numOfDays: Number of days in a page
-        - setDate: The initial set date, the first date in current page except WeekView (numOfDays = 7)
-        - allEvents: The dictionary of all the events for present. JZWeekViewHelper.getIntraEventsByDate can help transform the data
-        - firstDayOfWeek: First day of a week, **only works when numOfDays is 7**. Default value is Sunday
-        - scrollType: The horizontal scroll type for this view. Default value is pageScroll
-        - currentTimelineType: The current time line type for this view. Default value is section
-        - visibleTime: WeekView will be scroll to this time, when it appears the **first time**. This visibleTime only determines **y** offset. Defaut value is current time.
-        - scrollableRange: The scrollable area for this weekView, both start and end dates are included, set nil as unlimited in one side
-    */
+     - numOfDays: Number of days in a page
+     - setDate: The initial set date, the first date in current page except WeekView (numOfDays = 7)
+     - allEvents: The dictionary of all the events for present. JZWeekViewHelper.getIntraEventsByDate can help transform the data
+     - firstDayOfWeek: First day of a week, **only works when numOfDays is 7**. Default value is Sunday
+     - scrollType: The horizontal scroll type for this view. Default value is pageScroll
+     - currentTimelineType: The current time line type for this view. Default value is section
+     - visibleTime: WeekView will be scroll to this time, when it appears the **first time**. This visibleTime only determines **y** offset. Defaut value is current time.
+     - scrollableRange: The scrollable area for this weekView, both start and end dates are included, set nil as unlimited in one side
+     */
     open func setupCalendar(numOfDays: Int,
                             setDate: Date,
                             allEvents: [Date: [JZBaseEvent]],
@@ -330,11 +330,15 @@ open class JZBaseWeekView: UIView {
         return dates
     }
 
+    open func selectedItemAt(indexPath: IndexPath) {
+
+    }
+
     /**
-        Used to Refresh the weekView when viewWillTransition
-     
-        **Must override viewWillTransition in the ViewController and call this function**
-    */
+     Used to Refresh the weekView when viewWillTransition
+
+     **Must override viewWillTransition in the ViewController and call this function**
+     */
     open func refreshWeekView() {
         updateWeekView(to: self.initDate.add(component: .day, value: numOfDays))
     }
@@ -358,7 +362,7 @@ open class JZBaseWeekView: UIView {
 
     /**
      Get date excluding time from **collectionView contentOffset only** rather than gesture point in collectionView
-        - Parameter contentOffsetX: collectionView contentOffset x
+     - Parameter contentOffsetX: collectionView contentOffset x
      */
     open func getDateForContentOffsetX(_ contentOffsetX: CGFloat) -> Date {
         let adjustedX = contentOffsetX - flowLayout.contentsMargin.left
@@ -368,7 +372,7 @@ open class JZBaseWeekView: UIView {
 
     /**
      Get time excluding date from **collectionView contentOffset only** rather than gesture point in collectionView
-        - Parameter contentOffsetY: collectionView contentOffset y
+     - Parameter contentOffsetY: collectionView contentOffset y
      */
     open func getDateForContentOffsetY(_ contentOffsetY: CGFloat) -> (hour: Int, minute: Int) {
         var adjustedY = contentOffsetY - flowLayout.contentsMargin.top
@@ -380,7 +384,7 @@ open class JZBaseWeekView: UIView {
 
     /**
      Get full date from **collectionView contentOffset only** rather than gesture point in collectionView
-        - Parameter contentOffset: collectionView contentOffset
+     - Parameter contentOffset: collectionView contentOffset
      */
     open func getDateForContentOffset(_ contentOffset: CGPoint) -> Date {
         let yearMonthDay = getDateForContentOffsetX(contentOffset.x)
@@ -390,7 +394,7 @@ open class JZBaseWeekView: UIView {
 
     /**
      Get date excluding time from **gesture point in collectionView only** rather than collectionView contentOffset
-        - Parameter xCollectionView: gesture point x in collectionView
+     - Parameter xCollectionView: gesture point x in collectionView
      */
     open func getDateForPointX(_ xCollectionView: CGFloat) -> Date {
         // RowHeader(horizontal UICollectionReusableView) should be considered in gesture point
@@ -402,7 +406,7 @@ open class JZBaseWeekView: UIView {
 
     /**
      Get time excluding date from **gesture point in collectionView only** rather than collectionView contentOffset
-        - Parameter yCollectionView: gesture point y in collectionView
+     - Parameter yCollectionView: gesture point y in collectionView
      */
     open func getDateForPointY(_ yCollectionView: CGFloat) -> (hour: Int, minute: Int) {
         // ColumnHeader and AllDayHeader(vertical UICollectionReusableView) should be considered in gesture point
@@ -418,7 +422,7 @@ open class JZBaseWeekView: UIView {
 
     /**
      Get full date from **gesture point in collectionView only** rather than collectionView contentOffset
-        - Parameter point: gesture point in collectionView
+     - Parameter point: gesture point in collectionView
      */
     open func getDateForPoint(_ point: CGPoint) -> Date {
         let yearMonthDay = getDateForPointX(point.x)
@@ -527,6 +531,10 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
     // This function will be called when veritical scrolling ends
     open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.endOfScroll()
+    }
+
+    open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.selectedItemAt(indexPath: indexPath)
     }
 
     /// Some actions need to be done when scroll ends
