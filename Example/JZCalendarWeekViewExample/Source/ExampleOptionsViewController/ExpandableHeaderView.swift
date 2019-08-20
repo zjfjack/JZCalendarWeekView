@@ -13,38 +13,38 @@ protocol ExpandableHeaderViewDelegate: class {
 }
 
 class ExpandableHeaderView: UITableViewHeaderFooterView {
-    
+
     @IBOutlet weak var lblTitle: UILabel!
     @IBOutlet weak var lblSelectedValue: UILabel!
     weak var delegate: ExpandableHeaderViewDelegate?
     var section: Int!
-    
+
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         setupBasic()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupBasic()
     }
-    
+
     func setupBasic() {
         self.contentView.backgroundColor = .white
         self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(headerViewTapped)))
     }
-    
+
     func updateHeaderView(section: Int, title: String, subTitle: String) {
         self.section = section
         lblTitle.text = title
         lblSelectedValue.text = subTitle
     }
-    
+
     @objc func headerViewTapped() {
         tapAnimation()
         delegate?.toggleSection(section: section)
     }
-    
+
     private func tapAnimation() {
         UIView.animate(withDuration: 0.2,
                        animations: { self.contentView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5) },
@@ -54,6 +54,5 @@ class ExpandableHeaderView: UITableViewHeaderFooterView {
                         }
         })
     }
-    
-    
+
 }

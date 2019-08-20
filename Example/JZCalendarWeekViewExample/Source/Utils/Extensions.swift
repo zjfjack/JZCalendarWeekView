@@ -10,39 +10,39 @@ import UIKit
 import JZCalendarWeekView
 
 extension Date {
-    
+
     func add(component: Calendar.Component, value: Int) -> Date {
         return Calendar.current.date(byAdding: component, value: value, to: self)!
     }
-    
+
     var startOfDay: Date {
         return Calendar.current.startOfDay(for: self)
     }
 }
 
 extension UIColor {
-    
-    convenience init(red: Int, green: Int, blue: Int, a: CGFloat = 1.0) {
+
+    convenience init(red: Int, green: Int, blue: Int, alpha: CGFloat = 1.0) {
         self.init(
             red: CGFloat(red) / 255.0,
             green: CGFloat(green) / 255.0,
             blue: CGFloat(blue) / 255.0,
-            alpha: a
+            alpha: alpha
         )
     }
-    //Get UIColor by hex
-    convenience init(hex: Int, a: CGFloat = 1.0) {
+    // Get UIColor by hex
+    convenience init(hex: Int, alpha: CGFloat = 1.0) {
         self.init(
             red: (hex >> 16) & 0xFF,
             green: (hex >> 8) & 0xFF,
             blue: hex & 0xFF,
-            a: a
+            alpha: alpha
         )
     }
 }
 
 extension NSObject {
-    
+
     class var className: String {
         return String(describing: self)
     }
@@ -70,7 +70,7 @@ extension DayOfWeek {
         case .Saturday: return "Saturday"
         }
     }
-    
+
     static var dayOfWeekList: [DayOfWeek] {
         return [.Sunday, .Monday, .Tuesday, .Wednesday, .Thursday, .Friday, .Saturday]
     }
@@ -89,86 +89,88 @@ extension JZScrollType {
 
 // Anchor Constraints from JZiOSFramework
 extension UIView {
-    
+
     func setAnchorConstraintsEqualTo(widthAnchor: CGFloat?=nil, heightAnchor: CGFloat?=nil, centerXAnchor: NSLayoutXAxisAnchor?=nil, centerYAnchor: NSLayoutYAxisAnchor?=nil) {
-        
+
         self.translatesAutoresizingMaskIntoConstraints = false
-        
-        if let width = widthAnchor{
+
+        if let width = widthAnchor {
             self.widthAnchor.constraint(equalToConstant: width).isActive = true
         }
-        
-        if let height = heightAnchor{
+
+        if let height = heightAnchor {
             self.heightAnchor.constraint(equalToConstant: height).isActive = true
         }
-        
-        if let centerX = centerXAnchor{
+
+        if let centerX = centerXAnchor {
             self.centerXAnchor.constraint(equalTo: centerX).isActive = true
         }
-        
-        if let centerY = centerYAnchor{
+
+        if let centerY = centerYAnchor {
             self.centerYAnchor.constraint(equalTo: centerY).isActive = true
         }
     }
-    
+
     // bottomAnchor & trailingAnchor should be negative
-    func setAnchorConstraintsEqualTo(widthAnchor: CGFloat?=nil, heightAnchor: CGFloat?=nil, topAnchor: (NSLayoutYAxisAnchor,CGFloat)?=nil, bottomAnchor: (NSLayoutYAxisAnchor,CGFloat)?=nil, leadingAnchor: (NSLayoutXAxisAnchor,CGFloat)?=nil, trailingAnchor: (NSLayoutXAxisAnchor,CGFloat)?=nil) {
-        
+    func setAnchorConstraintsEqualTo(widthAnchor: CGFloat? = nil, heightAnchor: CGFloat? = nil,
+                                     topAnchor: (NSLayoutYAxisAnchor, CGFloat)? = nil, bottomAnchor: (NSLayoutYAxisAnchor, CGFloat)? = nil,
+                                     leadingAnchor: (NSLayoutXAxisAnchor, CGFloat)? = nil, trailingAnchor: (NSLayoutXAxisAnchor, CGFloat)? = nil) {
+
         self.translatesAutoresizingMaskIntoConstraints = false
-        
-        if let width = widthAnchor{
+
+        if let width = widthAnchor {
             self.widthAnchor.constraint(equalToConstant: width).isActive = true
         }
-        
-        if let height = heightAnchor{
+
+        if let height = heightAnchor {
             self.heightAnchor.constraint(equalToConstant: height).isActive = true
         }
-        
-        if let topY = topAnchor{
+
+        if let topY = topAnchor {
             self.topAnchor.constraint(equalTo: topY.0, constant: topY.1).isActive = true
         }
-        
-        if let botY = bottomAnchor{
+
+        if let botY = bottomAnchor {
             self.bottomAnchor.constraint(equalTo: botY.0, constant: botY.1).isActive = true
         }
-        
-        if let leadingX = leadingAnchor{
+
+        if let leadingX = leadingAnchor {
             self.leadingAnchor.constraint(equalTo: leadingX.0, constant: leadingX.1).isActive = true
         }
-        
-        if let trailingX = trailingAnchor{
+
+        if let trailingX = trailingAnchor {
             self.trailingAnchor.constraint(equalTo: trailingX.0, constant: trailingX.1).isActive = true
         }
     }
-    
-    func setAnchorCenterVerticallyTo(view: UIView, widthAnchor: CGFloat?=nil, heightAnchor: CGFloat?=nil, leadingAnchor: (NSLayoutXAxisAnchor,CGFloat)?=nil, trailingAnchor: (NSLayoutXAxisAnchor,CGFloat)?=nil) {
+
+    func setAnchorCenterVerticallyTo(view: UIView, widthAnchor: CGFloat?=nil, heightAnchor: CGFloat?=nil, leadingAnchor: (NSLayoutXAxisAnchor, CGFloat)?=nil, trailingAnchor: (NSLayoutXAxisAnchor, CGFloat)?=nil) {
         self.translatesAutoresizingMaskIntoConstraints = false
-        
+
         setAnchorConstraintsEqualTo(widthAnchor: widthAnchor, heightAnchor: heightAnchor, centerYAnchor: view.centerYAnchor)
-        
-        if let leadingX = leadingAnchor{
+
+        if let leadingX = leadingAnchor {
             self.leadingAnchor.constraint(equalTo: leadingX.0, constant: leadingX.1).isActive = true
         }
-        
-        if let trailingX = trailingAnchor{
+
+        if let trailingX = trailingAnchor {
             self.trailingAnchor.constraint(equalTo: trailingX.0, constant: trailingX.1).isActive = true
         }
     }
-    
-    func setAnchorCenterHorizontallyTo(view: UIView, widthAnchor: CGFloat?=nil, heightAnchor: CGFloat?=nil, topAnchor: (NSLayoutYAxisAnchor,CGFloat)?=nil, bottomAnchor: (NSLayoutYAxisAnchor,CGFloat)?=nil) {
+
+    func setAnchorCenterHorizontallyTo(view: UIView, widthAnchor: CGFloat?=nil, heightAnchor: CGFloat?=nil, topAnchor: (NSLayoutYAxisAnchor, CGFloat)?=nil, bottomAnchor: (NSLayoutYAxisAnchor, CGFloat)?=nil) {
         self.translatesAutoresizingMaskIntoConstraints = false
-        
+
         setAnchorConstraintsEqualTo(widthAnchor: widthAnchor, heightAnchor: heightAnchor, centerXAnchor: view.centerXAnchor)
-        
-        if let topY = topAnchor{
+
+        if let topY = topAnchor {
             self.topAnchor.constraint(equalTo: topY.0, constant: topY.1).isActive = true
         }
-        
-        if let botY = bottomAnchor{
+
+        if let botY = bottomAnchor {
             self.bottomAnchor.constraint(equalTo: botY.0, constant: botY.1).isActive = true
         }
     }
-    
+
     func setAnchorConstraintsFullSizeTo(view: UIView, padding: CGFloat = 0) {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.topAnchor.constraint(equalTo: view.topAnchor, constant: padding).isActive = true
@@ -176,7 +178,7 @@ extension UIView {
         self.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: padding).isActive = true
         self.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -padding).isActive = true
     }
-    
+
     func addSubviews(_ views: [UIView]) {
         views.forEach({ self.addSubview($0)})
     }

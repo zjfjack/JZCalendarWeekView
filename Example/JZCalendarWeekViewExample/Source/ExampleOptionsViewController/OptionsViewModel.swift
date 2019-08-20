@@ -10,41 +10,39 @@ import UIKit
 import JZCalendarWeekView
 
 class ExpandableData {
-    
+
     var subject: OptionSectionType
     var categories: [Any]?
     lazy var categoriesStr: [String] = getCategoriesInString()
     var isExpanded: Bool = false
     var selectedValue: Any!
-    
+
     var selectedIndex: Int {
-        get {
-            guard let cate = categories else { fatalError() }
-            switch subject {
-            case .viewType: return cate.index(where: {$0 as! ViewType == selectedValue as! ViewType})!
-            case .numOfDays: return cate.index(where: {$0 as! Int == selectedValue as! Int})!
-            case .scrollType: return cate.index(where: {$0 as! JZScrollType == selectedValue as! JZScrollType})!
-            case .firstDayOfWeek: return cate.index(where: {$0 as! DayOfWeek == selectedValue as! DayOfWeek})!
-            case .hourGridDivision: return cate.index(where: {$0 as! JZHourGridDivision == selectedValue as! JZHourGridDivision})!
-            default:
-                return 0
-            }
+        guard let cate = categories else { fatalError() }
+        switch subject {
+        case .viewType: return cate.firstIndex(where: {$0 as? ViewType == selectedValue as? ViewType})!
+        case .numOfDays: return cate.firstIndex(where: {$0 as? Int == selectedValue as? Int})!
+        case .scrollType: return cate.firstIndex(where: {$0 as? JZScrollType == selectedValue as? JZScrollType})!
+        case .firstDayOfWeek: return cate.firstIndex(where: {$0 as? DayOfWeek == selectedValue as? DayOfWeek})!
+        case .hourGridDivision: return cate.firstIndex(where: {$0 as? JZHourGridDivision == selectedValue as? JZHourGridDivision})!
+        default:
+            return 0
         }
     }
-    
+
     init(subject: OptionSectionType, categories: [Any]?=nil) {
         self.subject = subject
         self.categories = categories
     }
-    
+
     func getCategoriesInString() -> [String] {
         guard let cate = categories else { return [] }
         switch subject {
-        case .viewType: return cate.map { ($0 as! ViewType).rawValue }
-        case .numOfDays: return cate.map { ($0 as! Int).description }
-        case .scrollType: return cate.map { ($0 as! JZScrollType).displayText }
-        case .firstDayOfWeek: return cate.map { ($0 as! DayOfWeek).dayName }
-        case .hourGridDivision: return cate.map { ($0 as! JZHourGridDivision).displayText }
+        case .viewType: return cate.map { ($0 as? ViewType)?.rawValue ?? "" }
+        case .numOfDays: return cate.map { ($0 as? Int)?.description ?? "" }
+        case .scrollType: return cate.map { ($0 as? JZScrollType)?.displayText ?? "" }
+        case .firstDayOfWeek: return cate.map { ($0 as? DayOfWeek)?.dayName ?? "" }
+        case .hourGridDivision: return cate.map { ($0 as? JZHourGridDivision)?.displayText ?? "" }
         default:
             return []
         }
@@ -69,7 +67,7 @@ enum OptionSectionType: String {
 }
 
 struct OptionsSelectedData {
-    
+
     var viewType: ViewType
     var date: Date
     var numOfDays: Int
@@ -77,7 +75,7 @@ struct OptionsSelectedData {
     var firstDayOfWeek: DayOfWeek?
     var hourGridDivision: JZHourGridDivision
     var scrollableRange: (startDate: Date?, endDate: Date?)
-    
+
     init(viewType: ViewType, date: Date, numOfDays: Int, scrollType: JZScrollType, firstDayOfWeek: DayOfWeek?, hourGridDivision: JZHourGridDivision, scrollableRange: (Date?, Date?)) {
         self.viewType = viewType
         self.date = date
@@ -90,7 +88,7 @@ struct OptionsSelectedData {
 }
 
 class OptionsViewModel: NSObject {
-    
+
     let dateFormatter = DateFormatter()
     var optionsData: [ExpandableData] = {
         let hourDivisionCategories: [JZHourGridDivision] = [.noneDiv, .minutes_5, .minutes_10, .minutes_15, .minutes_20, .minutes_30]
@@ -106,11 +104,11 @@ class OptionsViewModel: NSObject {
         ]
     }()
     let perviousSelectedData: OptionsSelectedData
-    
+
     init(selectedData: OptionsSelectedData) {
         self.perviousSelectedData = selectedData
         super.init()
-        
+
         optionsData[0].selectedValue = selectedData.viewType
         optionsData[1].selectedValue = selectedData.date
         optionsData[2].selectedValue = selectedData.numOfDays
@@ -123,30 +121,34 @@ class OptionsViewModel: NSObject {
         }
         dateFormatter.dateFormat = "YYYY-MM-dd"
     }
-    
+
     func getHeaderViewSubtitle(_ section: Int) -> String {
         let data = optionsData[section]
-        
+        var subtitle: String?
+
         switch data.subject {
         case .viewType:
-            return (data.selectedValue! as! ViewType).rawValue
+            subtitle = (data.selectedValue as? ViewType)?.rawValue
         case .currentDate:
-            return dateFormatter.string(from: (data.selectedValue as! Date))
+            if let date = data.selectedValue as? Date {
+                subtitle = dateFormatter.string(from: date)
+            }
         case .numOfDays:
-            return (data.selectedValue! as! Int).description
+            subtitle = (data.selectedValue as? Int)?.description
         case .scrollType:
-            return (data.selectedValue! as! JZScrollType).displayText
+            subtitle = (data.selectedValue! as? JZScrollType)?.displayText
         case .firstDayOfWeek:
-            return (data.selectedValue! as! DayOfWeek).dayName
+            subtitle = (data.selectedValue! as? DayOfWeek)?.dayName
         case .hourGridDivision:
-            return (data.selectedValue! as! JZHourGridDivision).displayText
+            subtitle = (data.selectedValue! as? JZHourGridDivision)?.displayText
         case .scrollableRangeStart:
-            return getScrollableRangeSubTitle(data.selectedValue as? Date)
+            subtitle = (getScrollableRangeSubTitle(data.selectedValue as? Date))
         case .scrollableRangeEnd:
-            return getScrollableRangeSubTitle(data.selectedValue as? Date)
+            subtitle = (getScrollableRangeSubTitle(data.selectedValue as? Date))
         }
+        return subtitle ?? ""
     }
-    
+
     func getScrollableRangeSubTitle(_ date: Date?) -> String {
         var str = "nil"
         if let date = date {
@@ -154,13 +156,13 @@ class OptionsViewModel: NSObject {
         }
         return str
     }
-    
+
     func insertDayOfWeekToData(firstDayOfWeek: DayOfWeek) {
         let dayOfWeekData = ExpandableData(subject: .firstDayOfWeek, categories: DayOfWeek.dayOfWeekList)
         dayOfWeekData.selectedValue = firstDayOfWeek
         optionsData.insert(dayOfWeekData, at: 3)
     }
-    
+
     func removeDayOfWeekInData() {
         if optionsData[3].subject == .firstDayOfWeek {
             optionsData.remove(at: 3)
