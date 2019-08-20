@@ -416,7 +416,6 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
         let state = gestureRecognizer.state
 
         var currentLongPressCell: UICollectionViewCell!
-        var currentMovingCell: UICollectionViewCell!
 
         if isLongPressing == false {
             if let indexPath = collectionView.indexPathForItem(at: pointInCollectionView) {
