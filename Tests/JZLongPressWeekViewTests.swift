@@ -10,19 +10,19 @@ import XCTest
 @testable import JZCalendarWeekView
 
 class JZLongPressWeekViewTests: XCTestCase {
-    
+
     private var longPressView: JZLongPressWeekView!
-    
+
     override func setUp() {
         super.setUp()
         longPressView = JZLongPressWeekView.makeJZLongPressWeekView()
     }
-    
+
     override func tearDown() {
         // TODO: - Should set longPressView to nil after resolve async issue. Cause crash now in setup unowned self
         super.tearDown()
     }
-    
+
     func testGetLongPressStartTime() {
         let timeMinInterval = 15
         let dateInSection = Helpers.getLongDate("2018-02-22 00:00:00")
@@ -39,38 +39,38 @@ class JZLongPressWeekViewTests: XCTestCase {
         XCTAssertEqual(answer3, Helpers.getLongDate("2018-02-22 22:00:00"), "(0,14) => 0")
         XCTAssertEqual(answer4, Helpers.getLongDate("2018-02-22 22:15:00"), "(15,29)) => 15")
     }
-    
+
     // Only test xSelfView in this method, xCollectionView is already tested in JZBaseWeekViewTests
     func testGetDateForPointX() {
         let testDate = Helpers.testDate
         longPressView.setupCalendar(numOfDays: 3, setDate: testDate, allEvents: [:])
         let xCollectionView: CGFloat = longPressView.flowLayout.sectionWidth * 3 + longPressView.flowLayout.rowHeaderWidth
         var xSelfView: CGFloat
-        
+
         // xSelfView > longPressLeftMarginX && xSelfView < longPressRightMarginX
         xSelfView = longPressView.longPressLeftMarginX + 1
         let currentDate = longPressView.getDateForPointX(xCollectionView: xCollectionView, xSelfView: xSelfView)
         XCTAssertEqual(currentDate, testDate)
-        
+
         // xSelfView < longPressLeftMarginX
         xSelfView = longPressView.longPressLeftMarginX - 1
         let previousDate = longPressView.getDateForPointX(xCollectionView: xCollectionView, xSelfView: xSelfView)
         XCTAssertEqual(previousDate, longPressView.getDateForPointX(xCollectionView).add(component: .day, value: 1))
-        
+
         // xSelfView > longPressRightMarginX
         xSelfView = longPressView.frame.width + 1
         let nextDate = longPressView.getDateForPointX(xCollectionView: xCollectionView, xSelfView: xSelfView)
         XCTAssertEqual(nextDate, longPressView.getDateForPointX(xCollectionView).add(component: .day, value: -1))
-        
+
         // Skip isScrolling test because it is private
     }
-    
+
     func testGetDateForPoint() {
         let testDate = Helpers.testDate
         longPressView.setupCalendar(numOfDays: 3, setDate: testDate, allEvents: [:])
         let baseY = longPressView.flowLayout.contentsMargin.top + longPressView.flowLayout.columnHeaderHeight + longPressView.flowLayout.allDayHeaderHeight
         longPressView.collectionView.contentSize.height = baseY + longPressView.flowLayout.hourHeight * 24 + longPressView.flowLayout.contentsMargin.bottom
-        
+
         let pointCollectionView = CGPoint(x: longPressView.flowLayout.sectionWidth * 3 + longPressView.flowLayout.rowHeaderWidth,
                                           y: baseY + longPressView.flowLayout.hourHeight * 1.5)
         let pointSelfView = CGPoint(x: longPressView.longPressLeftMarginX - 1, y: 0)
