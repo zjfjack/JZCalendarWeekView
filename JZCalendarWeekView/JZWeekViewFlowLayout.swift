@@ -15,6 +15,7 @@ public protocol WeekViewFlowLayoutDelegate: class {
     func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, endTimeForItemAtIndexPath indexPath: IndexPath) -> Date
     /// TODO: Get the cell type for given item indexPath (Used for different cell types in the future)
     func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, cellTypeForItemAtIndexPath indexPath: IndexPath) -> String
+    func getVerticalScrollableRange() -> (startTime: Int, endTime: Int)
 }
 
 open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
@@ -41,7 +42,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     open var itemMargin: UIEdgeInsets { return UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1) }
     /// weekview contentSize height
     open var maxSectionHeight: CGFloat {
-        let height = hourHeight * 24 // statement too long for Swift 5 compiler
+        let height = hourHeight * displayHours // statement too long for Swift 5 compiler
         return columnHeaderHeight + height + contentsMargin.top + contentsMargin.bottom + allDayHeaderHeight
     }
 
@@ -83,6 +84,13 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
 
     weak var delegate: WeekViewFlowLayoutDelegate?
     private var minuteTimer: Timer?
+
+    /// After introduced vertical scrollable range, hours could be less than 24 hours
+    private var displayHours: CGFloat {
+        let verticalScrollableRange = self.delegate?.getVerticalScrollableRange()
+        let hours = (verticalScrollableRange?.endTime ?? 24) - (verticalScrollableRange?.startTime ?? 0)
+        return CGFloat(hours)
+    }
 
     // Default UI parameters Initializer
     override init() {
@@ -234,13 +242,14 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     /// Row Header prepare layout method for both row header and background
     open func prepareRowHeaderLayout(for sectionIndexes: NSIndexSet, attributes: inout UICollectionViewLayoutAttributes, calendarContentMinY: CGFloat) {
         let rowHeaderMinX = fmax(collectionView!.contentOffset.x, 0)
+        let (startTime, endTime) = delegate?.getVerticalScrollableRange() ?? (0, 24)
 
         // Row header
-        for rowHeaderIndex in 0...24 {
-            (attributes, rowHeaderAttributes) = layoutAttributesForSupplemantaryView(at: IndexPath(item: rowHeaderIndex, section: 0),
+        for hour in startTime...endTime {
+            (attributes, rowHeaderAttributes) = layoutAttributesForSupplemantaryView(at: IndexPath(item: hour, section: 0),
                                                                                      ofKind: JZSupplementaryViewKinds.rowHeader,
                                                                                      withItemCache: rowHeaderAttributes)
-            let rowHeaderMinY = calendarContentMinY + hourHeight * CGFloat(rowHeaderIndex) - (hourHeight / 2.0).toDecimal1Value()
+            let rowHeaderMinY = calendarContentMinY + hourHeight * CGFloat(hour - startTime) - (hourHeight / 2.0).toDecimal1Value()
             attributes.frame = CGRect(x: rowHeaderMinX, y: rowHeaderMinY, width: rowHeaderWidth, height: hourHeight)
             attributes.zIndex = zIndexForElementKind(JZSupplementaryViewKinds.rowHeader)
         }
@@ -312,7 +321,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
 
     open func prepareGridLinesAndItemsLayout(for sectionIndexes: NSIndexSet, attributes: inout UICollectionViewLayoutAttributes, calendarContentMinX: CGFloat, calendarContentMinY: CGFloat) {
         let calendarGridMinY = columnHeaderHeight + contentsMargin.top + allDayHeaderHeight
-        let sectionHeight = (hourHeight * 24).toDecimal1Value()
+        let sectionHeight = (hourHeight * displayHours).toDecimal1Value()
 
         sectionIndexes.enumerate(_:) { (section, _) in
             let sectionMinX = calendarContentMinX + sectionWidth * CGFloat(section)
@@ -372,14 +381,15 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         var horizontalGridlineIndex = 0
         let calendarGridWidth = collectionViewContentSize.width - rowHeaderWidth - contentsMargin.left - contentsMargin.right
         var attributes = UICollectionViewLayoutAttributes()
+        let (startTime, endTime) = delegate?.getVerticalScrollableRange() ?? (0, 24)
 
-        for hour in 0...24 {
+        for hour in startTime...endTime {
             (attributes, horizontalGridlineAttributes) = layoutAttributesForDecorationView(at: IndexPath(item: horizontalGridlineIndex, section: 0),
                                                                                            ofKind: JZDecorationViewKinds.horizontalGridline,
                                                                                            withItemCache: horizontalGridlineAttributes)
             let horizontalGridlineXOffset = calendarStartX
             let horizontalGridlineMinX = fmax(horizontalGridlineXOffset, collectionView!.contentOffset.x + horizontalGridlineXOffset)
-            let horizontalGridlineMinY = (calendarStartY + (hourHeight * CGFloat(hour))) - (defaultGridThickness / 2.0).toDecimal1Value()
+            let horizontalGridlineMinY = (calendarStartY + (hourHeight * CGFloat(hour - startTime))) - (defaultGridThickness / 2.0).toDecimal1Value()
             let horizontalGridlineWidth = fmin(calendarGridWidth, collectionView!.frame.width)
 
             attributes.frame = CGRect(x: horizontalGridlineMinX, y: horizontalGridlineMinY,

@@ -195,7 +195,7 @@ class JZBaseWeekViewTests: XCTestCase {
                 for j in i..<testDates.count {
                     let startDate = testDates[i], endDate = testDates[j]
                     let scrollableRange = (startDate, endDate)
-                    baseWeekView.scrollableRange = scrollableRange
+                    baseWeekView.horizontalScrollableRange = scrollableRange
 
                     if let startDate = startDate, let endDate = endDate {
                         // out of range
@@ -289,7 +289,7 @@ class JZBaseWeekViewTests: XCTestCase {
                 }
             }
         }
-        baseWeekView.setupCalendar(numOfDays: 3, setDate: Helpers.getShortDate("2018-02-19"), allEvents: [:], scrollType: .pageScroll, scrollableRange: (nil, nil))
+        baseWeekView.setupCalendar(numOfDays: 3, setDate: Helpers.getShortDate("2018-02-19"), allEvents: [:], scrollType: .pageScroll, horizontalScrollableRange: (nil, nil))
         testbaseWeekView()
         baseWeekView.scrollType = .sectionScroll
         baseWeekView.setHorizontalEdgesOffsetX()

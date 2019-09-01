@@ -40,12 +40,18 @@ open class JZBaseWeekView: UIView {
 
     /// Make sure the endDate is always greater than startDate
     /// If call updateView to a date, which is not in the range, you weekview won't be able to scroll
-    public var scrollableRange: (startDate: Date?, endDate: Date?) {
+    public var horizontalScrollableRange: (startDate: Date?, endDate: Date?) {
         didSet {
-            self.scrollableRange = (self.scrollableRange.startDate?.startOfDay, self.scrollableRange.endDate?.startOfDay)
+            self.horizontalScrollableRange = (self.horizontalScrollableRange.startDate?.startOfDay, self.horizontalScrollableRange.endDate?.startOfDay)
             setHorizontalEdgesOffsetX()
         }
     }
+
+    /// Vertical scrollable range for start time hour and end time hour (Only support 24 hour and no half hour)
+    ///
+    /// Make sure the startTime Int is greater than the endTime
+    public var verticalScrollableRange: (startTime: Int?, endTime: Int?)
+
     public var numOfDays: Int!
     public var scrollType: JZScrollType!
     public var currentTimelineType: JZCurrentTimelineType! {
@@ -152,8 +158,9 @@ open class JZBaseWeekView: UIView {
         - firstDayOfWeek: First day of a week, **only works when numOfDays is 7**. Default value is Sunday
         - scrollType: The horizontal scroll type for this view. Default value is pageScroll
         - currentTimelineType: The current time line type for this view. Default value is section
-        - visibleTime: WeekView will be scroll to this time, when it appears the **first time**. This visibleTime only determines **y** offset. Defaut value is current time.
-        - scrollableRange: The scrollable area for this weekView, both start and end dates are included, set nil as unlimited in one side
+        - visibleTime: WeekView will be scroll to this time, when it appears the **first time**. This visibleTime only determines **y** offset. Defaut value is current time
+        - horizontalScrollableRange: The horizontal scrollable area for this weekView, both start and end dates are included, set nil as unlimited in one side
+        - verticalScrollableRange: The vertical scrollable area for this weekView, both start and end time are included, set nil as 0 or 24 for start or end
     */
     open func setupCalendar(numOfDays: Int,
                             setDate: Date,
@@ -162,7 +169,8 @@ open class JZBaseWeekView: UIView {
                             firstDayOfWeek: DayOfWeek? = nil,
                             currentTimelineType: JZCurrentTimelineType = .section,
                             visibleTime: Date = Date(),
-                            scrollableRange: (startDate: Date?, endDate: Date?)? = (nil, nil)) {
+                            horizontalScrollableRange: (startDate: Date?, endDate: Date?)? = (nil, nil),
+                            verticalScrollableRange: (startTime: Int?, endTime: Int?)? = nil) {
 
         self.numOfDays = numOfDays
         if numOfDays == 7 {
@@ -172,8 +180,8 @@ open class JZBaseWeekView: UIView {
         }
         self.allEventsBySection = allEvents
         self.scrollType = scrollType
-        self.scrollableRange.startDate = scrollableRange?.startDate
-        self.scrollableRange.endDate = scrollableRange?.endDate
+        self.horizontalScrollableRange = (horizontalScrollableRange?.startDate, horizontalScrollableRange?.endDate)
+        self.verticalScrollableRange = (verticalScrollableRange?.startTime, verticalScrollableRange?.endTime)
         self.currentTimelineType = currentTimelineType
 
         DispatchQueue.main.async { [unowned self] in
@@ -275,7 +283,7 @@ open class JZBaseWeekView: UIView {
     }
 
     /// Reload the WeekView to date with no animation (Horizontally).
-    /// If the date you set is out of scrollableRange, it will update to that date, but it won't be able to scroll.
+    /// If the date you set is out of horizontalScrollableRange, it will update to that date, but it won't be able to scroll.
     ///
     /// The vertical animated scroll method is *scrollWeekView(to time: Date)*.
     /// - Parameters:
@@ -650,17 +658,17 @@ extension JZBaseWeekView {
         }
     }
 
-    /// This method will be called automatically when ForceReload or resetting the scrollableRange value
+    /// This method will be called automatically when ForceReload or resetting the horizontalScrollableRange value
     /// **If you want to reset the scrollType, numsOfDays, initDate without calling forceReload, you should call this method**
     public func setHorizontalEdgesOffsetX() {
         let currentPageFirstDate = initDate.add(component: .day, value: numOfDays)
         let currentPageLastDate = initDate.add(component: .day, value: numOfDays * 2 - 1)
 
-        if let endDate = scrollableRange.endDate, endDate < currentPageFirstDate {
+        if let endDate = horizontalScrollableRange.endDate, endDate < currentPageFirstDate {
             // out of range
             scrollableEdges.leftX = contentViewWidth
         } else {
-            if let startDate = scrollableRange.startDate {
+            if let startDate = horizontalScrollableRange.startDate {
                 if startDate >= currentPageFirstDate {
                     scrollableEdges.leftX = contentViewWidth
                 } else {
@@ -677,11 +685,11 @@ extension JZBaseWeekView {
             }
         }
 
-        if let startDate = scrollableRange.startDate, startDate > currentPageLastDate {
+        if let startDate = horizontalScrollableRange.startDate, startDate > currentPageLastDate {
             // out of range
             scrollableEdges.rightX = contentViewWidth
         } else {
-            if let endDate = scrollableRange.endDate {
+            if let endDate = horizontalScrollableRange.endDate {
                 if endDate <= currentPageLastDate {
                     scrollableEdges.rightX = contentViewWidth
                 } else {
@@ -703,6 +711,10 @@ extension JZBaseWeekView {
 
 // MARK: - WeekViewFlowLayoutDelegate
 extension JZBaseWeekView: WeekViewFlowLayoutDelegate {
+
+    public func getVerticalScrollableRange() -> (startTime: Int, endTime: Int) {
+        return (verticalScrollableRange.startTime ?? 0, verticalScrollableRange.endTime ?? 24)
+    }
 
     public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, dayForSection section: Int) -> Date {
         return getDateForSection(section)

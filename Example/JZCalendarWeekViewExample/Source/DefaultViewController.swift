@@ -104,7 +104,7 @@ extension DefaultViewController: OptionsViewDelegate {
                                                             scrollType: calendarWeekView.scrollType,
                                                             firstDayOfWeek: firstDayOfWeek,
                                                             hourGridDivision: calendarWeekView.flowLayout.hourGridDivision,
-                                                            scrollableRange: calendarWeekView.scrollableRange)
+                                                            scrollableRange: calendarWeekView.horizontalScrollableRange)
         return viewModel.currentSelectedData
     }
 
@@ -133,9 +133,9 @@ extension DefaultViewController: OptionsViewDelegate {
         if selectedData.hourGridDivision != viewModel.currentSelectedData.hourGridDivision {
             calendarWeekView.updateFlowLayout(JZWeekViewFlowLayout(hourGridDivision: selectedData.hourGridDivision))
         }
-        // Update scrollableRange
+        // Update horizontalScrollableRange
         if selectedData.scrollableRange != viewModel.currentSelectedData.scrollableRange {
-            calendarWeekView.scrollableRange = selectedData.scrollableRange
+            calendarWeekView.horizontalScrollableRange = selectedData.scrollableRange
         }
     }
 
