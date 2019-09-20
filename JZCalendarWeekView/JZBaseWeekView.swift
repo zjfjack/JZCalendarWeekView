@@ -521,19 +521,25 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
 
     open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         // handle the situation scrollViewDidEndDecelerating not being called
-        if !decelerate { self.endOfScroll() }
+        if !decelerate {
+            self.endOfScroll()
+            self.scrollDirection = nil
+        }
     }
 
     // This function will be called when veritical scrolling ends
     open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.endOfScroll()
+        
+        if checkDragRangesInHorizontalScroll() {
+            self.scrollDirection = nil
+        }
     }
 
     /// Some actions need to be done when scroll ends
     private func endOfScroll() {
         // vertical scroll should not load page, handled in loadPage method
         loadPage()
-        self.scrollDirection = nil
     }
 
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -586,10 +592,12 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
 
     // sectionScroll load page
     private func loadPageSectionScroll() {
-        let currentDate = getDateForContentOffsetX(collectionView.contentOffset.x)
-        let currentInitDate = currentDate.add(component: .day, value: -numOfDays)
-        self.initDate = currentInitDate
-        self.forceReload()
+        if checkDragRangesInHorizontalScroll() {
+            let currentDate = getDateForContentOffsetX(collectionView.contentOffset.x)
+            let currentInitDate = currentDate.add(component: .day, value: -numOfDays)
+            self.initDate = currentInitDate
+            self.forceReload()
+        }
     }
 
     /// pageScroll loading next page or previous page (Only three pages (3*numOfDays) exist at the same time)
@@ -635,6 +643,28 @@ extension JZBaseWeekView {
         return timeline
     }
 
+    // If you drag again before the drag is complete,
+    // Ensure that it does not fall outside the set range.
+    func checkDragRangesInHorizontalScroll() -> Bool {
+        guard let scrollDirection = self.scrollDirection, scrollDirection.direction == .horizontal else { return true }
+        let currentStartDate = getDateForContentOffsetX(collectionView.contentOffset.x) // Left-hand date of the screen you are viewing
+        let currentEndDate = getDateForContentOffsetX(collectionView.contentOffset.x + contentViewWidth - 1) // The right-hand date of the screen you are viewing
+        
+        // Initialize if within the set range left scroll.
+        if let startDate = self.scrollableRange.startDate {
+            if startDate.totalDistance(from: currentStartDate, resultIn: .day)! < 0 {
+                return false
+            }
+        }
+        // Initialize if within the set range right scroll.
+        if let endDate = self.scrollableRange.endDate {
+            if endDate.totalDistance(from: currentEndDate, resultIn: .day)! > 0 {
+                return false
+            }
+        }
+        // return OK set next Range
+        return true
+    }
 }
 
 // MARK: - Horizontal scrollable range methods
@@ -733,5 +763,11 @@ extension JZBaseWeekView: WeekViewFlowLayoutDelegate {
     // TODO: Only used when multiple cell types are used and need different overlap rules => layoutItemsAttributes
     public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, cellTypeForItemAtIndexPath indexPath: IndexPath) -> String {
         return JZSupplementaryViewKinds.eventCell
+    }
+}
+
+extension Date { // Date Comparison
+    func totalDistance(from date: Date, resultIn component: Calendar.Component) -> Int? {
+        return Calendar.current.dateComponents([component], from: self, to: date).value(for: component)
     }
 }
