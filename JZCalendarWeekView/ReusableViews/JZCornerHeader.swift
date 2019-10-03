@@ -14,13 +14,13 @@ open class JZCornerHeader: UICollectionReusableView {
     public override init(frame: CGRect) {
         super.init(frame: .zero)
 
-        self.backgroundColor = .white
+        self.backgroundColor = JZWeekViewColors.background
         setupBottomDivider()
     }
 
     open func setupBottomDivider() {
         let bottomDivider = UIView()
-        bottomDivider.backgroundColor = JZWeekViewColors.gridLine
+        bottomDivider.backgroundColor = JZWeekViewColors.separator
         addSubview(bottomDivider)
         bottomDivider.setAnchorConstraintsEqualTo(heightAnchor: 0.5, bottomAnchor: (bottomAnchor, 0), leadingAnchor: (leadingAnchor, 0), trailingAnchor: (trailingAnchor, 0))
     }

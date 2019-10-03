@@ -13,7 +13,7 @@ open class JZGridLine: UICollectionReusableView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = JZWeekViewColors.gridLine
+        backgroundColor = JZWeekViewColors.separator
     }
 
     required public init?(coder aDecoder: NSCoder) {

@@ -25,9 +25,9 @@ open class JZCurrentTimelineSection: UICollectionReusableView {
         halfBallView.setAnchorCenterVerticallyTo(view: self, widthAnchor: halfBallSize, heightAnchor: halfBallSize, leadingAnchor: (leadingAnchor, -5))
         lineView.setAnchorCenterVerticallyTo(view: self, heightAnchor: 1, leadingAnchor: (halfBallView.trailingAnchor, 0), trailingAnchor: (trailingAnchor, 0))
 
-        halfBallView.backgroundColor = JZWeekViewColors.today
+        halfBallView.backgroundColor = JZWeekViewColors.blue
         halfBallView.layer.cornerRadius = halfBallSize/2
-        lineView.backgroundColor = JZWeekViewColors.today
+        lineView.backgroundColor = JZWeekViewColors.blue
         self.clipsToBounds = true
     }
 
