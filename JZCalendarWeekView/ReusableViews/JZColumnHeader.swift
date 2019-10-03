@@ -47,11 +47,11 @@ open class JZColumnHeader: UICollectionReusableView {
         lblWeekday.text = dateFormatter.shortWeekdaySymbols[weekday].uppercased()
 
         if date.isToday {
-            lblDay.textColor = JZWeekViewColors.today
-            lblWeekday.textColor = JZWeekViewColors.today
+            lblDay.textColor = JZWeekViewColors.blue
+            lblWeekday.textColor = JZWeekViewColors.blue
         } else {
-            lblDay.textColor = JZWeekViewColors.columnHeaderDay
-            lblWeekday.textColor = JZWeekViewColors.columnHeaderDay
+            lblDay.textColor = JZWeekViewColors.secondaryLabel
+            lblWeekday.textColor = JZWeekViewColors.secondaryLabel
         }
     }
 
