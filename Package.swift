@@ -25,6 +25,10 @@ let package = Package(
             name: "JZCalendarWeekView",
             dependencies: [],
             path: "JZCalendarWeekView"),
+        .target(
+            name: "JZCalendarWeekViewExample",
+            dependencies: ["JZCalendarWeekView"],
+            path: "Example"),
         .testTarget(
             name: "JZCalendarWeekViewTests",
             dependencies: ["JZCalendarWeekView"],
