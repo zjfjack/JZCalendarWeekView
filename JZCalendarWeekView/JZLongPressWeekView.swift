@@ -230,11 +230,12 @@ open class JZLongPressWeekView: JZBaseWeekView {
         } else {
             var contentOffsetX: CGFloat
             switch scrollType! {
-            case .sectionScroll:
+            case .sectionScroll, .infiniteScroll:
                 let scrollSections: CGFloat = direction == .left ? -1 : 1
                 contentOffsetX = currentOffset.x - flowLayout.sectionWidth! * scrollSections
             case .pageScroll:
                 contentOffsetX = direction == .left ? contentViewWidth * 2 : 0
+                contentOffsetX = currentOffset.x + 100
             }
             // Take the horizontal scrollable edges into account
             let contentOffsetXWithScrollableEdges = min(max(contentOffsetX, scrollableEdges.leftX ?? -1), scrollableEdges.rightX ?? CGFloat.greatestFiniteMagnitude)
