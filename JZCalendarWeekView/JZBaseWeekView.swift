@@ -511,12 +511,22 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
         // Warning: scrollViewWillBeginDragging contentOffset value might be incorrect, 0.5 or 1 pixel difference, ignored for now
         self.scrollDirection = self.getBeginDraggingScrollDirection()
         // deceleration rate should be normal in vertical scroll
+
+        switch scrollDirection?.direction {
+        case .horizontal where scrollType == .infiniteScroll:
+            scrollView.decelerationRate = .normal
+        case .horizontal:
+            scrollView.decelerationRate = .fast
+        default:
+            scrollView.decelerationRate = .normal
+        }
+
         scrollView.decelerationRate = self.scrollDirection!.direction == .horizontal ? .fast : .normal
     }
 
     open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         // vertical scroll should not call paginationEffect
-        guard let scrollDirection = self.scrollDirection, scrollDirection.direction == .horizontal else { return }
+        guard let scrollDirection = self.scrollDirection, scrollDirection.direction == .horizontal, scrollType != .infiniteScroll  else { return }
         paginationEffect(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
     }
 
@@ -582,7 +592,11 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
         // It means collectionView is scrolling back to previous contentOffsetX or It is vertical scroll
         // Each scroll should always start from the middle, which is contentViewWidth
         if collectionView.contentOffset.x == contentViewWidth { return }
-        scrollType == .pageScroll ? loadPagePageScroll() : loadPageSectionScroll()
+        switch scrollType {
+        case .pageScroll: loadPagePageScroll()
+        case .sectionScroll, .infiniteScroll: loadPageSectionScroll()
+        case .none: break
+        }
     }
 
     // sectionScroll load page

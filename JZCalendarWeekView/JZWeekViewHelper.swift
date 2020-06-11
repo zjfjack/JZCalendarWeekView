@@ -44,7 +44,7 @@ struct ScrollDirection {
     }
 }
 
-public enum JZHourGridDivision: Int {
+public enum JZHourGridDivision: Int, CaseIterable {
     case noneDiv = 0
     case minutes_5 = 5
     case minutes_10 = 10
@@ -57,10 +57,10 @@ public enum DayOfWeek: Int {
     case Sunday = 1, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
 }
 
-public enum JZScrollType {
+public enum JZScrollType: CaseIterable {
     case pageScroll
     case sectionScroll
-    //TODO: - infiniteScroll
+    case infiniteScroll
 }
 
 public enum JZCurrentTimelineType {
