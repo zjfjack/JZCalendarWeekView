@@ -164,7 +164,7 @@ Horizontal scrollable range dates allow you to set your preferred scrollable ran
 JZCalendarWeekView can be added to your project by adding the following dependency to your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "0.7.2"))
+.package(url: "https://github.com/zjfjack/JZCalendarWeekView.git", .upToNextMajor(from: "0.7.2"))
 ```
 
 ### Cocoapods
