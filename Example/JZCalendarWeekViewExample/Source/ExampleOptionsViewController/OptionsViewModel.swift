@@ -49,7 +49,7 @@ class ExpandableData {
     }
 }
 
-enum ViewType: String {
+enum ViewType: String, CaseIterable {
     case defaultView = "Default JZBaseWeekView"
     case customView = "Custom JZBaseWeekView"
     case longPressView = "JZLongPressWeekView"
@@ -91,13 +91,13 @@ class OptionsViewModel: NSObject {
 
     let dateFormatter = DateFormatter()
     var optionsData: [ExpandableData] = {
-        let hourDivisionCategories: [JZHourGridDivision] = [.noneDiv, .minutes_5, .minutes_10, .minutes_15, .minutes_20, .minutes_30]
-        let viewTypeCategories: [ViewType] = [.defaultView, .customView, .longPressView]
+        let hourDivisionCategories = JZHourGridDivision.allCases
+        let viewTypeCategories = ViewType.allCases
         return [
             ExpandableData(subject: .viewType, categories: viewTypeCategories),
             ExpandableData(subject: .currentDate),
             ExpandableData(subject: .numOfDays, categories: Array(1...10)),
-            ExpandableData(subject: .scrollType, categories: [JZScrollType.pageScroll, JZScrollType.sectionScroll]),
+            ExpandableData(subject: .scrollType, categories: JZScrollType.allCases),
             ExpandableData(subject: .hourGridDivision, categories: hourDivisionCategories),
             ExpandableData(subject: .scrollableRangeStart),
             ExpandableData(subject: .scrollableRangeEnd)

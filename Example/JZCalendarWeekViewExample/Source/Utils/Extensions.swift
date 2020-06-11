@@ -83,6 +83,8 @@ extension JZScrollType {
             return "Page Scroll"
         case .sectionScroll:
             return "Section Scroll"
+        case .infiniteScroll:
+            return "Infinite Scroll"
         }
     }
 }
