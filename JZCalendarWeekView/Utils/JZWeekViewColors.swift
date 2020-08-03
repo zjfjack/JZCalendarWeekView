@@ -6,7 +6,7 @@
 //  Copyright © 2018 Jeff Zhang. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 /// cannot change for now, will implement theme in the future
 class JZWeekViewColors {
