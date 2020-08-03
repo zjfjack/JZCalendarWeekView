@@ -509,7 +509,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
         let (maxOverlapIntervalCount, overlapGroups) = groupOverlapItems(items: sectionItemAttributes)
         guard maxOverlapIntervalCount > 1 else { return }
 
-        var sortedOverlapGroups = overlapGroups.sorted { $0.count > $1.count }
+        let sortedOverlapGroups = overlapGroups.sorted { $0.count > $1.count }
         var adjustedItems = Set<UICollectionViewLayoutAttributes>()
         var sectionZ = currentSectionZ
 
