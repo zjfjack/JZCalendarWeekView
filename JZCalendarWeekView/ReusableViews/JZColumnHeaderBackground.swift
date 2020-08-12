@@ -13,14 +13,14 @@ open class JZColumnHeaderBackground: UICollectionReusableView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.white
+        backgroundColor = JZWeekViewColors.background
         self.clipsToBounds = true
         setupBottomDivider()
     }
 
     open func setupBottomDivider() {
         let bottomDivider = UIView()
-        bottomDivider.backgroundColor = JZWeekViewColors.gridLine
+        bottomDivider.backgroundColor = JZWeekViewColors.separator
         addSubview(bottomDivider)
         bottomDivider.setAnchorConstraintsEqualTo(heightAnchor: 0.5, bottomAnchor: (bottomAnchor, 0), leadingAnchor: (leadingAnchor, 0), trailingAnchor: (trailingAnchor, 0))
     }

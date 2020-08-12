@@ -113,7 +113,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
     public var longPressTimeLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = JZWeekViewColors.secondaryLabel
         return label
     }()
     /// The moving cell contentView layer opacity (when you move the existing cell, the previous cell will be translucent)
