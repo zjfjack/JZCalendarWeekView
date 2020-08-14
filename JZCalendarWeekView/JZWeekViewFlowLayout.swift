@@ -83,7 +83,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     var allDayHeaderBackgroundAttributes = AttDic()
     var allDayCornerAttributes = AttDic()
 
-    weak var delegate: WeekViewFlowLayoutDelegate?
+    public weak var delegate: WeekViewFlowLayoutDelegate?
     private var minuteTimer: Timer?
 
     // Default UI parameters Initializer
