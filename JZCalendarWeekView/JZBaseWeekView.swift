@@ -49,6 +49,7 @@ open class JZBaseWeekView: UIView {
     }
     public var numOfDays: Int!
     public var scrollType: JZScrollType!
+    public var scrollWithVelocity: Bool = false
     public var currentTimelineType: JZCurrentTimelineType! {
         didSet {
             let viewClass = currentTimelineType == .section ? JZCurrentTimelineSection.self : JZCurrentTimelinePage.self
@@ -562,8 +563,13 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
         var shouldScrollToPage: Int
 
         if isVelocitySatisfied {
-            // If velocity is satisfied, then scroll to next page or current page(currentSection calculated by floor Int)
-            shouldScrollToPage = currentPage + (velocity.x > 0 ? 1 : 0)
+            if scrollWithVelocity {
+                // If velocity is satisfied, then scroll to the nearest page accounting for velocity
+                shouldScrollToPage = currentPage + Int(round(velocity.x))
+            } else {
+                // If velocity is satisfied, then scroll to next page or current page(currentSection calculated by floor Int)
+                shouldScrollToPage = currentPage + (velocity.x > 0 ? 1 : 0)
+            }
         } else {
             // If velocity unsatisfied, then using half distance(round) to check whether scroll to next or current
             let scrollDistanceX = currentContentOffset.x - CGFloat(currentPage) * pageWidth
