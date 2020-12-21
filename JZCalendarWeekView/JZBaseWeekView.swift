@@ -156,15 +156,16 @@ open class JZBaseWeekView: UIView {
         - visibleTime: WeekView will be scroll to this time, when it appears the **first time**. This visibleTime only determines **y** offset. Defaut value is current time.
         - scrollableRange: The scrollable area for this weekView, both start and end dates are included, set nil as unlimited in one side
     */
-    open func setupCalendar(numOfDays: Int,
-                            setDate: Date,
-                            allEvents: [Date: [JZBaseEvent]],
-                            scrollType: JZScrollType = .pageScroll,
-                            firstDayOfWeek: DayOfWeek? = nil,
-                            currentTimelineType: JZCurrentTimelineType = .section,
-                            visibleTime: Date = Date(),
-                            scrollableRange: (startDate: Date?, endDate: Date?)? = (nil, nil)) {
-
+     open func setupCalendar(numOfDays: Int,
+                                setDate: Date,
+                                allEvents: [Date: [JZBaseEvent]],
+                                scrollType: JZScrollType = .pageScroll,
+    //                            firstDayOfWeek: DayOfWeek? = nil,
+                                firstDayOfWeek: DayOfWeek? = DayOfWeek(rawValue: Calendar.current.component(.weekday, from: Date())), // Mohamed//firstDayOfWeek: DayOfWeek? = nil,
+                                currentTimelineType: JZCurrentTimelineType = .section,
+                                visibleTime: Date = Date(),
+                                scrollableRange: (startDate: Date?, endDate: Date?)? = (nil, nil)) {
+        
         self.numOfDays = numOfDays
         if numOfDays == 7 {
             updateFirstDayOfWeek(setDate: setDate, firstDayOfWeek: firstDayOfWeek ?? .Sunday)
