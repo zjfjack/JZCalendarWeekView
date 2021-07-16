@@ -32,6 +32,14 @@ public protocol JZLongPressViewDelegate: class {
     ///   - longPressType: the long press type when gusture cancels
     ///   - startDate: the startDate of the event when gesture cancels
     func weekView(_ weekView: JZLongPressWeekView, longPressType: JZLongPressWeekView.LongPressType, didCancelLongPressAt startDate: Date)
+    
+    /// When long press is begining, this function will be called.
+    /// Normally this function no need to be implemented.
+    /// - Parameters:
+    ///   - weekView: current long pressed JZLongPressWeekView
+    ///   - longPressType: the long press type when gusture cancels
+    ///   - startDate: the startDate of the event when gesture cancels
+    func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent?, didBeganLongPressAt startDate: Date) -> Bool
 }
 
 public protocol JZLongPressViewDataSource: class {
@@ -57,6 +65,7 @@ extension JZLongPressViewDelegate {
     public func weekView(_ weekView: JZLongPressWeekView, longPressType: JZLongPressWeekView.LongPressType, didCancelLongPressAt startDate: Date) {}
     public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {}
     public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {}
+    public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent?, didBeganLongPressAt startDate: Date) -> Bool{return true}
 }
 
 extension JZLongPressViewDataSource {
@@ -97,6 +106,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
     private var currentLongPressType: LongPressType!
     private var longPressView: UIView!
     private var currentEditingInfo = CurrentEditingInfo()
+    public var currentMovingCell: UICollectionViewCell!
     /// Get this value when long press began and save the current relative X and Y value until it ended or cancelled
     private var pressPosition: (xToViewLeft: CGFloat, yToViewTop: CGFloat)?
 
@@ -400,7 +410,6 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
         let pointInCollectionView = gestureRecognizer.location(in: collectionView)
 
         let state = gestureRecognizer.state
-        var currentMovingCell: UICollectionViewCell!
 
         if isLongPressing == false {
             if let indexPath = collectionView.indexPathForItem(at: pointInCollectionView) {
@@ -444,6 +453,12 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
 
             UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 5, options: .curveEaseOut,
                            animations: { self.longPressView.transform = CGAffineTransform.identity }, completion: nil)
+            
+            let isAllowed = longPressDelegate?.weekView(self, editingEvent: currentLongPressType == .addNew ? nil : currentEditingInfo.event, didBeganLongPressAt: longPressViewStartDate)
+            
+            if isAllowed == false{
+                gestureRecognizer.state = .cancelled
+            }
 
         } else if state == .changed {
             let topYPoint = max(pointInSelfView.y - pressPosition!.yToViewTop, longPressTopMarginY)
@@ -459,6 +474,7 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
             })
             longPressDelegate?.weekView(self, longPressType: currentLongPressType, didCancelLongPressAt: longPressViewStartDate)
 
+            self.currentMovingCell = nil
         } else if state == .ended {
 
             self.longPressView.removeFromSuperview()
@@ -467,6 +483,8 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
             } else if currentLongPressType == .move {
                 longPressDelegate?.weekView(self, editingEvent: currentEditingInfo.event, didEndMoveLongPressAt: longPressViewStartDate)
             }
+
+            self.currentMovingCell = nil
         }
 
         if state == .began || state == .changed {
