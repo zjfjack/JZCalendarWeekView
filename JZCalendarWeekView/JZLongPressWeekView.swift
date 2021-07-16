@@ -32,6 +32,14 @@ public protocol JZLongPressViewDelegate: class {
     ///   - longPressType: the long press type when gusture cancels
     ///   - startDate: the startDate of the event when gesture cancels
     func weekView(_ weekView: JZLongPressWeekView, longPressType: JZLongPressWeekView.LongPressType, didCancelLongPressAt startDate: Date)
+    
+    /// When long press is begining, this function will be called.
+    /// Normally this function no need to be implemented.
+    /// - Parameters:
+    ///   - weekView: current long pressed JZLongPressWeekView
+    ///   - longPressType: the long press type when gusture cancels
+    ///   - startDate: the startDate of the event when gesture cancels
+    func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent?, didBeganLongPressAt startDate: Date) -> Bool
 }
 
 public protocol JZLongPressViewDataSource: class {
@@ -57,6 +65,7 @@ extension JZLongPressViewDelegate {
     public func weekView(_ weekView: JZLongPressWeekView, longPressType: JZLongPressWeekView.LongPressType, didCancelLongPressAt startDate: Date) {}
     public func weekView(_ weekView: JZLongPressWeekView, didEndAddNewLongPressAt startDate: Date) {}
     public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent, didEndMoveLongPressAt startDate: Date) {}
+    public func weekView(_ weekView: JZLongPressWeekView, editingEvent: JZBaseEvent?, didBeganLongPressAt startDate: Date) -> Bool{return true}
 }
 
 extension JZLongPressViewDataSource {
@@ -444,6 +453,12 @@ extension JZLongPressWeekView: UIGestureRecognizerDelegate {
 
             UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 5, options: .curveEaseOut,
                            animations: { self.longPressView.transform = CGAffineTransform.identity }, completion: nil)
+            
+            let isAllowed = longPressDelegate?.weekView(self, editingEvent: currentLongPressType == .addNew ? nil : currentEditingInfo.event, didBeganLongPressAt: longPressViewStartDate)
+            
+            if isAllowed == false{
+                gestureRecognizer.state = .cancelled
+            }
 
         } else if state == .changed {
             let topYPoint = max(pointInSelfView.y - pressPosition!.yToViewTop, longPressTopMarginY)
