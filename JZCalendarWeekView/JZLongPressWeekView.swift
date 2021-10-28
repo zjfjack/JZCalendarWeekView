@@ -92,7 +92,7 @@ open class JZLongPressWeekView: JZBaseWeekView {
         var allOpacityContentViews = [UIView]()
     }
     /// When moving the longPress view, if it causes the collectionView scrolling
-    private var isScrolling: Bool = false
+    public var isScrolling: Bool = false
     private var isLongPressing: Bool = false
     private var currentLongPressType: LongPressType!
     private var longPressView: UIView!
