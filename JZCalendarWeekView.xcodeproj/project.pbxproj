@@ -10,6 +10,10 @@
 		1F2F29B522959B16004B7CA1 /* JZBaseWeekViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F29B422959B16004B7CA1 /* JZBaseWeekViewTests.swift */; };
 		1F2F29B722959B6C004B7CA1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F29B622959B6C004B7CA1 /* Constants.swift */; };
 		1F2F29B922959C1E004B7CA1 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F29B822959C1E004B7CA1 /* Helpers.swift */; };
+		1F45653524D82BCA0097CC43 /* JZWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F45653424D82BCA0097CC43 /* JZWeekView.swift */; };
+		1F45653824D82DAE0097CC43 /* JZWeekViewFlowLayoutDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F45653724D82DAE0097CC43 /* JZWeekViewFlowLayoutDelegate.swift */; };
+		1F45653B24D835720097CC43 /* JZWeekViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F45653A24D835720097CC43 /* JZWeekViewDataSource.swift */; };
+		1F45653D24D843410097CC43 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F45653C24D843410097CC43 /* FlowLayout.swift */; };
 		1FB6140D2130FE7400F08ACD /* JZCurrentTimelinePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB6140C2130FE7400F08ACD /* JZCurrentTimelinePage.swift */; };
 		8E023C78206C6E4B00C523BE /* JZLongPressWeekViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E023C77206C6E4B00C523BE /* JZLongPressWeekViewTests.swift */; };
 		8E023C7A206C6E4B00C523BE /* JZCalendarWeekView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E1BA94A206B4329007BE13C /* JZCalendarWeekView.framework */; };
@@ -52,6 +56,10 @@
 		1F2F29B422959B16004B7CA1 /* JZBaseWeekViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZBaseWeekViewTests.swift; sourceTree = "<group>"; };
 		1F2F29B622959B6C004B7CA1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		1F2F29B822959C1E004B7CA1 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		1F45653424D82BCA0097CC43 /* JZWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZWeekView.swift; sourceTree = "<group>"; };
+		1F45653724D82DAE0097CC43 /* JZWeekViewFlowLayoutDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZWeekViewFlowLayoutDelegate.swift; sourceTree = "<group>"; };
+		1F45653A24D835720097CC43 /* JZWeekViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZWeekViewDataSource.swift; sourceTree = "<group>"; };
+		1F45653C24D843410097CC43 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		1FB6140C2130FE7400F08ACD /* JZCurrentTimelinePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZCurrentTimelinePage.swift; sourceTree = "<group>"; };
 		8E023C75206C6E4B00C523BE /* JZCalendarWeekViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JZCalendarWeekViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E023C77206C6E4B00C523BE /* JZLongPressWeekViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JZLongPressWeekViewTests.swift; sourceTree = "<group>"; };
@@ -102,6 +110,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1F45653624D82D860097CC43 /* New */ = {
+			isa = PBXGroup;
+			children = (
+				1F45653424D82BCA0097CC43 /* JZWeekView.swift */,
+				1F45653724D82DAE0097CC43 /* JZWeekViewFlowLayoutDelegate.swift */,
+				1F45653A24D835720097CC43 /* JZWeekViewDataSource.swift */,
+				1F45653C24D843410097CC43 /* FlowLayout.swift */,
+			);
+			path = New;
+			sourceTree = "<group>";
+		};
 		8E023C76206C6E4B00C523BE /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -136,6 +155,7 @@
 		8E1BA94C206B4329007BE13C /* JZCalendarWeekView */ = {
 			isa = PBXGroup;
 			children = (
+				1F45653624D82D860097CC43 /* New */,
 				8E1BA95A206B4826007BE13C /* JZWeekViewFlowLayout.swift */,
 				8E99A0A12134E84800415071 /* JZCollectionView.swift */,
 				8E1BA956206B47DA007BE13C /* JZBaseWeekView.swift */,
@@ -326,6 +346,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F45653B24D835720097CC43 /* JZWeekViewDataSource.swift in Sources */,
+				1F45653524D82BCA0097CC43 /* JZWeekView.swift in Sources */,
 				8E99A0A22134E84800415071 /* JZCollectionView.swift in Sources */,
 				8EEB40DA214B8DDE0027D45E /* WeakTimer.swift in Sources */,
 				8E1BA96C206B5B3F007BE13C /* JZColumnHeaderBackground.swift in Sources */,
@@ -345,7 +367,9 @@
 				8E1BA957206B47DA007BE13C /* JZBaseWeekView.swift in Sources */,
 				8E21E8B020916A96002D72D0 /* JZLongPressWeekView.swift in Sources */,
 				8EF7EBD120A55D1000D5CEEA /* JZAllDayHeaderBackground.swift in Sources */,
+				1F45653D24D843410097CC43 /* FlowLayout.swift in Sources */,
 				8E023C86206C956F00C523BE /* JZWeekViewColors.swift in Sources */,
+				1F45653824D82DAE0097CC43 /* JZWeekViewFlowLayoutDelegate.swift in Sources */,
 				8E1BA96A206B5350007BE13C /* JZWeekViewHelper.swift in Sources */,
 				8E1BA962206B4B99007BE13C /* JZRowHeader.swift in Sources */,
 			);

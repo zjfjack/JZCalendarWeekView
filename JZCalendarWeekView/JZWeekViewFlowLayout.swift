@@ -718,7 +718,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     }
 
     override open func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
-        return true
+        return false
     }
 
     // MARK: - Section sizing
