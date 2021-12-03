@@ -14,7 +14,7 @@ open class JZCornerHeader: UICollectionReusableView {
     public override init(frame: CGRect) {
         super.init(frame: .zero)
 
-        self.backgroundColor = .white
+        self.backgroundColor = .systemBackground
         setupBottomDivider()
     }
 
