@@ -9,7 +9,7 @@
 import UIKit
 import JZCalendarWeekView
 
-protocol OptionsViewDelegate: class {
+protocol OptionsViewDelegate: AnyObject {
     func finishUpdate(selectedData: OptionsSelectedData)
 }
 
@@ -27,7 +27,6 @@ class ExampleOptionsViewController: UIViewController {
     }
 
     func setupBasic() {
-        self.automaticallyAdjustsScrollViewInsets = false
         view.backgroundColor = UIColor.white
         navigationItem.title = "Options"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(onBtnDoneTapped))

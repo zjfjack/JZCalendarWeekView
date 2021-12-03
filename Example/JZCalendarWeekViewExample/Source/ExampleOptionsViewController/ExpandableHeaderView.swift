@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ExpandableHeaderViewDelegate: class {
+protocol ExpandableHeaderViewDelegate: AnyObject {
     func toggleSection(section: Int)
 }
 

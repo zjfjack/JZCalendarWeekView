@@ -108,8 +108,6 @@ extension LongPressViewController: JZLongPressViewDelegate, JZLongPressViewDataS
 extension LongPressViewController: OptionsViewDelegate {
 
     func setupBasic() {
-        // Add this to fix lower than iOS11 problems
-        self.automaticallyAdjustsScrollViewInsets = false
     }
 
     private func setupNaviBar() {

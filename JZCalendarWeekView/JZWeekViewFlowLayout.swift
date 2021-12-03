@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol WeekViewFlowLayoutDelegate: class {
+public protocol WeekViewFlowLayoutDelegate: AnyObject {
     /// Get the date for given section
     func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, dayForSection section: Int) -> Date
     /// Get the start time for given item indexPath

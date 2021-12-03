@@ -71,8 +71,6 @@ extension CustomViewController: JZBaseViewDelegate {
 extension CustomViewController: OptionsViewDelegate {
 
     func setupBasic() {
-        // Add this to fix lower than iOS11 problems
-        self.automaticallyAdjustsScrollViewInsets = false
     }
 
     private func setupNaviBar() {
