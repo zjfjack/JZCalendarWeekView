@@ -26,7 +26,7 @@ public enum JZDecorationViewKinds {
 }
 
 /// For checking scrollView(collectionView) currently scrolling direction
-struct ScrollDirection {
+public struct ScrollDirection {
 
     enum Direction {
         case horizontal
