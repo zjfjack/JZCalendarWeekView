@@ -23,7 +23,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
 
     // UI params
     var hourHeight: CGFloat!
-    var rowHeaderWidth: CGFloat!
+    public var rowHeaderWidth: CGFloat!
     var columnHeaderHeight: CGFloat!
     var allDayHeaderHeight: CGFloat = 0
     public var sectionWidth: CGFloat!
@@ -83,7 +83,7 @@ open class JZWeekViewFlowLayout: UICollectionViewFlowLayout {
     var allDayHeaderBackgroundAttributes = AttDic()
     var allDayCornerAttributes = AttDic()
 
-    weak var delegate: WeekViewFlowLayoutDelegate?
+    public weak var delegate: WeekViewFlowLayoutDelegate?
     private var minuteTimer: Timer?
 
     // Default UI parameters Initializer
