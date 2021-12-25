@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol OptionsCellDelegate: class {
+protocol OptionsCellDelegate: AnyObject {
     func selectedValueChanged(section: Int)
 }
 

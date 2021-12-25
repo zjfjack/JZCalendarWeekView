@@ -7,7 +7,7 @@
 //
 import UIKit
 
-public protocol JZBaseViewDelegate: class {
+public protocol JZBaseViewDelegate: AnyObject {
 
     /// When initDate changed, this function will be called. You can get the current date by adding numOfDays on initDate
     ///
@@ -99,7 +99,7 @@ open class JZBaseWeekView: UIView {
         collectionView.bounces = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.backgroundColor = UIColor.white
+        collectionView.backgroundColor = .systemBackground
         addSubview(collectionView)
         collectionView.setAnchorConstraintsFullSizeTo(view: self)
 

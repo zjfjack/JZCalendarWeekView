@@ -20,7 +20,7 @@ open class JZAllDayCorner: UICollectionReusableView {
     }
 
     open func setupUI() {
-        self.backgroundColor = .white
+        self.backgroundColor = .systemBackground
         self.clipsToBounds = true
         self.addSubview(lblTitle)
         lblTitle.text = "all-day"

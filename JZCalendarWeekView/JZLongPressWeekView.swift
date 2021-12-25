@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol JZLongPressViewDelegate: class {
+public protocol JZLongPressViewDelegate: AnyObject {
 
     /// When addNew long press gesture ends, this function will be called.
     /// You should handle what should be done after creating a new event.
@@ -34,7 +34,7 @@ public protocol JZLongPressViewDelegate: class {
     func weekView(_ weekView: JZLongPressWeekView, longPressType: JZLongPressWeekView.LongPressType, didCancelLongPressAt startDate: Date)
 }
 
-public protocol JZLongPressViewDataSource: class {
+public protocol JZLongPressViewDataSource: AnyObject {
     /// Implement this function to customise your own AddNew longPressView
     /// - Parameters:
     ///   - weekView: current long pressed JZLongPressWeekView

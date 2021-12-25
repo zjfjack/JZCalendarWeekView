@@ -14,7 +14,7 @@ open class JZAllDayHeaderBackground: UICollectionReusableView {
         super.init(frame: frame)
 
         self.clipsToBounds = true
-        self.backgroundColor = .white
+        self.backgroundColor = .systemBackground
         setupBottomDivider()
     }
 
