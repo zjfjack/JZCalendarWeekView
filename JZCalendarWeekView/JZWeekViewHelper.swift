@@ -73,9 +73,9 @@ open class JZWeekViewHelper {
     /**
      Get calculated events dictionary with intraStartTime and intraEndTime
      - Parameters:
-        - originalEvents: A list of original Events (subclassed from BaseEvent)
+     - originalEvents: A list of original Events (subclassed from BaseEvent)
      - Returns:
-        A dictionary used by JZBaseWeekView. Key is a day Date, value is all the events in that day
+     A dictionary used by JZBaseWeekView. Key is a day Date, value is all the events in that day
      */
     open class func getIntraEventsByDate<T: JZBaseEvent>(originalEvents: [T]) -> [Date: [T]] {
         var resultEvents = [Date: [T]]()
@@ -141,7 +141,7 @@ open class JZWeekViewHelper {
             flowLayout.rowHeaderWidth = isLandscape ? flowLayout.defaultRowHeaderWidth + CGFloat(32) : flowLayout.defaultRowHeaderWidth
         }
         if needRefresh {
-            weekView.refreshWeekView()
+            weekView.setFirstDayOnView()
         }
     }
 }
