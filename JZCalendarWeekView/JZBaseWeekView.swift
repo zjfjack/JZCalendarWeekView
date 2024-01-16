@@ -41,15 +41,6 @@ open class JZBaseWeekView: UIView {
             baseDelegate?.initDateDidChange(self, initDate: initDate)
         }
     }
-    
-    /// Флаг который инициирует подгрузку новых событий в CalendarAppointmentPreviewTableViewController
-    public var needToLoadNewEvents: Bool? {
-        didSet {
-            if needToLoadNewEvents ?? false {
-                baseDelegate?.loadMoreEvents()
-            }
-        }
-    }
 
     /// Make sure the endDate is always greater than startDate
     /// If call updateView to a date, which is not in the range, you weekview won't be able to scroll
@@ -87,8 +78,17 @@ open class JZBaseWeekView: UIView {
     internal var isAllDaySupported: Bool!
     internal var scrollDirection: ScrollDirection?
     
+    /// Флаг который инициирует подгрузку новых событий в CalendarAppointmentPreviewTableViewController
+    private var needToLoadNewEvents: Bool? {
+        didSet {
+            if needToLoadNewEvents ?? false {
+                baseDelegate?.loadMoreEvents()
+            }
+        }
+    }
+    
     /// Дата первого отображаемого деня в представлении 3/7 дней
-    public var firstDayOnView: Date?
+    private var firstDayOnView: Date?
 
     // Scrollable Range
     internal var scrollableEdges: (leftX: CGFloat?, rightX: CGFloat?)
