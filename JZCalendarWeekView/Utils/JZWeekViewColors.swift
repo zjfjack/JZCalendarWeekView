@@ -15,10 +15,31 @@ class JZWeekViewColors {
     class var columnHeaderDay: UIColor { return UIColor(hex: 0x757575) }
     class var allDayHeader: UIColor { return UIColor(hex: 0x757575) }
     class var rowHeaderTime: UIColor { return UIColor(hex: 0x999999) }
-    class var gridLine: UIColor { return UIColor.lightGray }
+    class var gridLine: UIColor { return UIColor.separator }
 
     class var today: UIColor { return UIColor(hex: 0x0089FF) }
     class var appleCalendarRed: UIColor { return UIColor(hex: 0xFC3D39) }
+    
+    class var mainCellColor: UIColor {
+        return UIColor { (traitCollection: UITraitCollection) -> UIColor in
+            
+            if traitCollection.userInterfaceStyle == .dark {
+                return UIColor.systemGray5
+            } else {
+                return UIColor.systemBackground
+            }
+        }
+    }
+    
+    class var allDayCellBackgroundColor: UIColor {
+        return UIColor { (traitCollection: UITraitCollection) -> UIColor in
+            if traitCollection.userInterfaceStyle == .dark {
+                return UIColor.systemGray3
+            } else {
+                return UIColor.systemGray6
+            }
+        }
+    }
 }
 
 extension UIColor {
