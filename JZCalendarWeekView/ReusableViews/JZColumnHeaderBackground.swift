@@ -13,7 +13,7 @@ open class JZColumnHeaderBackground: UICollectionReusableView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.white
+        backgroundColor = JZWeekViewColors.mainCellColor
         self.clipsToBounds = true
         setupBottomDivider()
     }

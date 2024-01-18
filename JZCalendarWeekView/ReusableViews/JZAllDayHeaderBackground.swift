@@ -9,12 +9,11 @@
 import UIKit
 
 open class JZAllDayHeaderBackground: UICollectionReusableView {
-
     public override init(frame: CGRect) {
         super.init(frame: frame)
 
         self.clipsToBounds = true
-        self.backgroundColor = .white
+        self.backgroundColor = JZWeekViewColors.allDayCellBackgroundColor
         setupBottomDivider()
     }
 
