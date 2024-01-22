@@ -367,11 +367,17 @@ open class JZBaseWeekView: UIView {
         self.firstDayOfWeek = firstDayOfWeek
     }
     
-    /// Возвращаемся к сегодняшнему дню
+    /// Возвращаемся к сегодняшнему дню.
+    /// Если мы в режиме "недельного представления", то отобразим неделю на которой находится сегодняшний день
     open func scrollToCurrentDay() {
         let currentDay = Date()
         
-        self.updateWeekView(to: currentDay)
+        if numOfDays == 7 {
+            firstDayOnView = currentDay
+            setFirstDayOnView()
+        } else {
+            self.updateWeekView(to: currentDay)
+        }
     }
     
     /// Делаем понедельник первым отображаемым днем при переходе из 3 в 7 дней и обратно
