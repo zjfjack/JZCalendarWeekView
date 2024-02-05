@@ -327,7 +327,7 @@ open class JZBaseWeekView: UIView {
     /// - Parameter indexPath: The indexPath of an item in collectionView
     open func getCurrentEvent(with indexPath: IndexPath) -> JZBaseEvent? {
         let date = flowLayout.dateForColumnHeader(at: indexPath)
-        return isAllDaySupported ? notAllDayEventsBySection[date]?[indexPath.row] : allEventsBySection[date]?[indexPath.row]
+        return isAllDaySupported ? notAllDayEventsBySection[date]?[safe: indexPath.row] : allEventsBySection[date]?[safe: indexPath.row]
     }
 
     open func getDatesInCurrentPage(isScrolling: Bool) -> [Date] {
@@ -795,5 +795,11 @@ extension JZBaseWeekView: WeekViewFlowLayoutDelegate {
     // TODO: Only used when multiple cell types are used and need different overlap rules => layoutItemsAttributes
     public func collectionView(_ collectionView: UICollectionView, layout: JZWeekViewFlowLayout, cellTypeForItemAtIndexPath indexPath: IndexPath) -> String {
         return JZSupplementaryViewKinds.eventCell
+    }
+}
+
+extension Collection where Indices.Iterator.Element == Index {
+    subscript (safe index: Index) -> Iterator.Element? {
+        return indices.contains(index) ? self[index] : nil
     }
 }
