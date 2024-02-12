@@ -482,6 +482,8 @@ extension JZBaseWeekView: UICollectionViewDataSource {
             }
         case JZSupplementaryViewKinds.cornerHeader:
             if let cornerHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: kind, for: indexPath) as? JZCornerHeader {
+                cornerHeader.selectedDate = self.initDate
+                cornerHeader.numOfDays = self.numOfDays
                 view = cornerHeader
             }
         case JZSupplementaryViewKinds.allDayHeader:
