@@ -15,9 +15,6 @@ public protocol JZBaseViewDelegate: class {
     ///   - weekView: current JZBaseWeekView
     ///   - initDate: the new value of initDate
     func initDateDidChange(_ weekView: JZBaseWeekView, initDate: Date)
-    
-    /// Инициируем подгрузку пачки новых событий из сети
-    func loadMoreEvents()
 }
 
 extension JZBaseViewDelegate {
@@ -77,18 +74,6 @@ open class JZBaseWeekView: UIView {
     private var isFirstAppear: Bool = true
     internal var isAllDaySupported: Bool!
     internal var scrollDirection: ScrollDirection?
-    
-    /// Флаг который инициирует подгрузку новых событий в CalendarAppointmentPreviewTableViewController
-    private var needToLoadNewEvents: Bool? {
-        didSet {
-            if needToLoadNewEvents ?? false {
-                baseDelegate?.loadMoreEvents()
-            }
-        }
-    }
-    
-    /// Дата первого отображаемого деня в представлении 3/7 дней
-    private var firstDayOnView: Date?
 
     // Scrollable Range
     internal var scrollableEdges: (leftX: CGFloat?, rightX: CGFloat?)
@@ -96,7 +81,7 @@ open class JZBaseWeekView: UIView {
     override public init(frame: CGRect) {
         super.init(frame: frame)
         setup()
-    }
+    } 
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -181,7 +166,6 @@ open class JZBaseWeekView: UIView {
                             scrollableRange: (startDate: Date?, endDate: Date?)? = (nil, nil)) {
 
         self.numOfDays = numOfDays
-        self.firstDayOnView = setDate
         
         if numOfDays == 7 {
             updateFirstDayOfWeek(setDate: setDate, firstDayOfWeek: firstDayOfWeek)
@@ -355,7 +339,11 @@ open class JZBaseWeekView: UIView {
         **Must override viewWillTransition in the ViewController and call this function**
     */
     open func refreshWeekView() {
-        updateWeekView(to: self.initDate.add(component: .day, value: numOfDays))
+        if numOfDays == 7 {
+            setFirstDayOnView(initDate)
+        } else {
+            updateWeekView(to: self.initDate.add(component: .day, value: numOfDays))
+        }
     }
 
     open func updateFirstDayOfWeek(setDate: Date, firstDayOfWeek: DayOfWeek?) {
@@ -367,29 +355,13 @@ open class JZBaseWeekView: UIView {
         self.firstDayOfWeek = firstDayOfWeek
     }
     
-    /// Возвращаемся к сегодняшнему дню.
-    /// Если мы в режиме "недельного представления", то отобразим неделю на которой находится сегодняшний день
-    open func scrollToCurrentDay() {
-        let currentDay = Date()
-        
-        if numOfDays == 7 {
-            firstDayOnView = currentDay
-            setFirstDayOnView()
-        } else {
-            self.updateWeekView(to: currentDay)
-        }
-    }
-    
     /// Делаем понедельник первым отображаемым днем при переходе из 3 в 7 дней и обратно
-    open func setFirstDayOnView() {
-        guard let firstDayOnView else { return }
-        
-        // определяем порядковый номер дня в неделе
-        let weekDayNum = firstDayOnView.startOfDay.weekday
+    open func setFirstDayOnView(_ setDate: Date) {
+        let weekDayNum = setDate.startOfDay.weekday
         let diff = weekDayNum - DayOfWeek.Monday.rawValue
         
-        updateWeekView(to: firstDayOnView.startOfDay.add(component: .day,
-                                                         value: -diff))
+        updateWeekView(to: setDate.startOfDay.add(component: .day,
+                                                  value: -diff))
     }
 
     // MARK: - Date related getters
@@ -594,22 +566,6 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
         guard flowLayout.sectionWidth != nil, scrollDirection.direction == .horizontal else { return }
         checkScrollableRange(contentOffsetX: scrollView.contentOffset.x)
         updateAllDayBar(isScrolling: true)
-        
-        endDayHandler(scrollView)
-    }
-    
-    /// Отслеживаем последний загруженный день и инициируем подгрузку новых событий
-    private func endDayHandler(_ scrollView: UIScrollView) {
-        let offsetX = scrollView.contentOffset.x
-        let contentWidth = scrollView.contentSize.width
-        let boundsWidth = scrollView.bounds.size.width
-        
-        if let endDay = scrollableRange.endDate,
-           let firstDayOnView,
-           offsetX >= (contentWidth - boundsWidth) && firstDayOnView.add(component: .day, value: numOfDays) >= endDay.add(component: .day, value: -numOfDays) {
-            
-            needToLoadNewEvents = true
-        }
     }
 
     private func paginationEffect(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -671,7 +627,6 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
     private func loadNextOrPrevPage(isNext: Bool) {
         let addValue = isNext ? numOfDays : -numOfDays
         self.initDate = self.initDate.add(component: .day, value: addValue!)
-        firstDayOnView = initDate.add(component: .day, value: numOfDays + 1)
         self.forceReload()
     }
 
