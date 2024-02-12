@@ -141,7 +141,7 @@ open class JZWeekViewHelper {
             flowLayout.rowHeaderWidth = isLandscape ? flowLayout.defaultRowHeaderWidth + CGFloat(32) : flowLayout.defaultRowHeaderWidth
         }
         if needRefresh {
-            weekView.setFirstDayOnView()
+            weekView.refreshWeekView()
         }
     }
 }
