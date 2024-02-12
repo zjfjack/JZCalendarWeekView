@@ -339,7 +339,11 @@ open class JZBaseWeekView: UIView {
         **Must override viewWillTransition in the ViewController and call this function**
     */
     open func refreshWeekView() {
-        updateWeekView(to: self.initDate.add(component: .day, value: numOfDays))
+        if numOfDays == 7 {
+            setFirstDayOnView(initDate)
+        } else {
+            updateWeekView(to: self.initDate.add(component: .day, value: numOfDays))
+        }
     }
 
     open func updateFirstDayOfWeek(setDate: Date, firstDayOfWeek: DayOfWeek?) {
