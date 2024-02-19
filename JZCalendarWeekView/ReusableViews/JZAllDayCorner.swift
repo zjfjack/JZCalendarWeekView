@@ -23,7 +23,7 @@ open class JZAllDayCorner: UICollectionReusableView {
         self.backgroundColor = JZWeekViewColors.allDayCellBackgroundColor
         self.clipsToBounds = true
         self.addSubview(lblTitle)
-        lblTitle.text = "all-day"
+        lblTitle.text = NSLocalizedString("all-day", comment: "")
         lblTitle.textColor = JZWeekViewColors.allDayHeader
         lblTitle.font = UIFont.systemFont(ofSize: 12)
         // Support iPhone X Landscape state (same as JZRowHeader)
