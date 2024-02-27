@@ -83,7 +83,14 @@ open class JZWeekViewHelper {
             let startDateStartDay = event.startDate.startOfDay
             // get days from both startOfDay, otherwise 22:00 - 01:00 case will get 0 daysBetween result
             let daysBetween = Date.daysBetween(start: startDateStartDay, end: event.endDate, ignoreHours: true)
-            if daysBetween == 0 {
+            
+            var crossDays = 0
+            
+            if daysBetween > crossDays {
+                crossDays = daysBetween
+            }
+            
+            if crossDays == 0 {
                 if resultEvents[startDateStartDay] == nil {
                     resultEvents[startDateStartDay] = [T]()
                 }
@@ -92,7 +99,7 @@ open class JZWeekViewHelper {
                 }
             } else {
                 // Cross days
-                for day in 0...daysBetween {
+                for day in 0...crossDays {
                     let currentStartDate = startDateStartDay.add(component: .day, value: day)
                     if resultEvents[currentStartDate] == nil {
                         resultEvents[currentStartDate] = [T]()
@@ -100,7 +107,7 @@ open class JZWeekViewHelper {
                     guard let newEvent = event.copy() as? T else { return resultEvents }
                     if day == 0 {
                         newEvent.intraEndDate = startDateStartDay.endOfDay
-                    } else if day == daysBetween {
+                    } else if day == crossDays {
                         newEvent.intraStartDate = currentStartDate
                     } else {
                         newEvent.intraStartDate = currentStartDate.startOfDay
