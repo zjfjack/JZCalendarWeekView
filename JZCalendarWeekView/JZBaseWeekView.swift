@@ -35,9 +35,12 @@ open class JZBaseWeekView: UIView {
     */
     public var initDate: Date! {
         didSet {
+            firstDayOnView = initDate.startOfDay.add(component: .day, value: numOfDays)
             baseDelegate?.initDateDidChange(self, initDate: initDate)
         }
     }
+    
+    public var firstDayOnView = Date()
 
     /// Make sure the endDate is always greater than startDate
     /// If call updateView to a date, which is not in the range, you weekview won't be able to scroll
@@ -47,7 +50,7 @@ open class JZBaseWeekView: UIView {
             setHorizontalEdgesOffsetX()
         }
     }
-    public var numOfDays: Int!
+    public var numOfDays = 3
     public var scrollType: JZScrollType!
     public var currentTimelineType: JZCurrentTimelineType! {
         didSet {
@@ -160,25 +163,22 @@ open class JZBaseWeekView: UIView {
                             setDate: Date,
                             allEvents: [Date: [JZBaseEvent]],
                             scrollType: JZScrollType = .pageScroll,
-                            firstDayOfWeek: DayOfWeek? = .Monday,
+                            firstDayOfWeek: DayOfWeek = .Monday,
                             currentTimelineType: JZCurrentTimelineType = .section,
                             visibleTime: Date = Date(),
                             scrollableRange: (startDate: Date?, endDate: Date?)? = (nil, nil)) {
-
         self.numOfDays = numOfDays
-        
         if numOfDays == 7 {
             updateFirstDayOfWeek(setDate: setDate, firstDayOfWeek: firstDayOfWeek)
         } else {
-            self.initDate = setDate.startOfDay.add(component: .day,
-                                                   value: -numOfDays)
+            self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays)
         }
         self.allEventsBySection = allEvents
         self.scrollType = scrollType
         self.scrollableRange.startDate = scrollableRange?.startDate
         self.scrollableRange.endDate = scrollableRange?.endDate
         self.currentTimelineType = currentTimelineType
-
+        
         DispatchQueue.main.async { [unowned self] in
             // Check the screen orientation when initialisation
             JZWeekViewHelper.viewTransitionHandler(to: UIScreen.main.bounds.size, weekView: self, needRefresh: false)
@@ -250,12 +250,17 @@ open class JZBaseWeekView: UIView {
 
         DispatchQueue.main.async { [weak self] in
             guard let strongSelf = self else { return }
+            strongSelf.collectionView.isHidden = !strongSelf.isFirstAppear
             strongSelf.updateAllDayBar(isScrolling: false)
             // initial day is one page before the settle day
             strongSelf.collectionView.setContentOffsetWithoutDelegate(CGPoint(x: strongSelf.contentViewWidth, y: strongSelf.getYOffset()), animated: false)
             strongSelf.flowLayout.invalidateLayoutCache()
             strongSelf.collectionView.reloadData()
             strongSelf.setHorizontalEdgesOffsetX()
+
+            UIView.transition(with: strongSelf.collectionView, duration: 0.4, options: .transitionCrossDissolve, animations: {
+                strongSelf.collectionView.isHidden = false
+            }, completion: nil)
         }
     }
 
@@ -340,9 +345,10 @@ open class JZBaseWeekView: UIView {
     */
     open func refreshWeekView() {
         if numOfDays == 7 {
-            setFirstDayOnView(initDate)
+            let firstDateOfWeek = self.firstDayOnView.startOfDay.add(component: .day, value: -numOfDays)
+            updateFirstDayOfWeek(setDate: firstDateOfWeek, firstDayOfWeek: .Monday)
         } else {
-            updateWeekView(to: self.initDate.add(component: .day, value: numOfDays))
+            updateWeekView(to: self.firstDayOnView.startOfDay)
         }
     }
 
@@ -353,15 +359,6 @@ open class JZBaseWeekView: UIView {
         if diff < 0 { diff = 7 - abs(diff) }
         self.initDate = setDate.startOfDay.add(component: .day, value: -numOfDays - diff)
         self.firstDayOfWeek = firstDayOfWeek
-    }
-    
-    /// Делаем понедельник первым отображаемым днем при переходе из 3 в 7 дней и обратно
-    open func setFirstDayOnView(_ setDate: Date) {
-        let weekDayNum = setDate.startOfDay.weekday
-        let diff = weekDayNum - DayOfWeek.Monday.rawValue
-        
-        updateWeekView(to: setDate.startOfDay.add(component: .day,
-                                                  value: -diff))
     }
 
     // MARK: - Date related getters
@@ -628,7 +625,8 @@ extension JZBaseWeekView: UICollectionViewDelegate, UICollectionViewDelegateFlow
 
     private func loadNextOrPrevPage(isNext: Bool) {
         let addValue = isNext ? numOfDays : -numOfDays
-        self.initDate = self.initDate.add(component: .day, value: addValue!)
+        self.initDate = self.initDate.add(component: .day, value: addValue)
+        
         self.forceReload()
     }
 
