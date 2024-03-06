@@ -44,18 +44,20 @@ open class JZCornerHeader: UICollectionReusableView {
     
     private func updateMonthLabel(by date: Date) {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM."
+        dateFormatter.dateFormat = "LLL"
         let updatedText = dateFormatter.string(from: date.add(component: .day, value: numOfDays + 1))
         
-        monthLabel.text = updatedText
+        monthLabel.text = updatedText.capitalized
+        monthLabel.textAlignment = .left
     }
     
     private func setupMonthLabel() {
         addSubview(monthLabel)
         
         NSLayoutConstraint.activate([
-            monthLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            monthLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+            monthLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
+            monthLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 1),
+            monthLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         ])
     }
 
