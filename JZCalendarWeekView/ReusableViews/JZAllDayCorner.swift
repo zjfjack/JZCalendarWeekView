@@ -32,7 +32,7 @@ open class JZAllDayCorner: UICollectionReusableView {
 
     open func setupBottomDivider() {
         let bottomDivider = UIView()
-        bottomDivider.backgroundColor = JZWeekViewColors.gridLine
+        bottomDivider.backgroundColor = .accent100
         addSubview(bottomDivider)
         bottomDivider.setAnchorConstraintsEqualTo(heightAnchor: 0.5, bottomAnchor: (bottomAnchor, 0), leadingAnchor: (leadingAnchor, 0), trailingAnchor: (trailingAnchor, 0))
     }

@@ -202,3 +202,28 @@ JZCalendarWeekView is available under the MIT license. See the [LICENSE](https:/
 
 
 
+# Manage updates with remote
+## configure upstream: 
+
+$ git remote -v
+# List the current remotes
+origin  https://github.com/Workiz/IOSCalendarView (fetch)
+origin  https://github.com/Workiz/IOSCalendarView (push)
+
+git remote add upstream https://github.com/zjfjack/JZCalendarWeekView
+
+## Set a new remote
+
+$ git remote -v
+## Verify new remote
+origin  https://github.com/Workiz/IOSCalendarView (fetch)
+origin  https://github.com/Workiz/IOSCalendarView (push)
+upstream        https://github.com/zjfjack/JZCalendarWeekView (fetch)
+upstream        https://github.com/zjfjack/JZCalendarWeekView (push)
+
+git merge upstream/master
+
+# To edit locally 
+Uncomment `pod 'JZCalendarWeekView', :path => '../IOSCalendarView'` in podfile, and comment out `pod 'JZCalendarWeekView', :git => ...`
+Make sure you have the IOSCalendarView repo cloned in the designated path
+

@@ -99,7 +99,7 @@ open class JZBaseWeekView: UIView {
         collectionView.bounces = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.backgroundColor = UIColor.white
+        collectionView.backgroundColor = .accent50
         addSubview(collectionView)
         collectionView.setAnchorConstraintsFullSizeTo(view: self)
 
